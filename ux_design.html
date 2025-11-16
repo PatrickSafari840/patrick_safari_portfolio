@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>10-Page UX Design Showcase</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Lora:ital,wght@0,400;0,700;1,400&family=Nunito:wght@700;900&family=Roboto+Mono:wght@400;700&family=Playfair+Display:wght@700&family=Poppins:wght@500;700&family=Bebas+Neue&family=Orbitron:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        /* General Styles */
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+            transition: background-color 0.5s;
+            scroll-behavior: smooth;
+            background-color: #e9e9e9; /* A neutral background for the page */
+        }
+        .page {
+            /* From full-page to card-like box */
+            min-height: auto; /* Remove full height */
+            padding: 40px;
+            box-sizing: border-box;
+            display: block; /* Change from flex */
+            margin: 40px auto; /* Add margin between cards */
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            max-width: 1200px;
+            overflow: hidden; /* To contain children with border-radius */
+        }
+        .page-container {
+            max-width: 100%; /* Use full width of the new card */
+            margin: 0 auto;
+            width: 100%;
+            text-align: center; /* Center align all content within the container */
+        }
+        h1, h2, h3, h4, h5, h6, p, button, input, textarea {
+            transition: all 0.3s ease-in-out;
+        }
+        button {
+            cursor: pointer;
+        }
+        form {
+            max-width: 500px; /* Sets a max-width to make forms shorter */
+            margin-left: auto;  /* Centers the form block */
+            margin-right: auto; /* Centers the form block */
+        }
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 15px;
+            z-index: 1000;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+        }
+        nav a {
+            text-decoration: none;
+            color: #333;
+            margin: 0 15px;
+            font-weight: bold;
+            transition: color 0.3s;
+        }
+        nav a:hover {
+            color: #007BFF;
+        }
+        .explanation-box {
+            background: rgba(0,0,0,0.03);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 2em;
+            border-left: 4px solid; /* Color will be inherited */
+            border-color: inherit; /* Use parent's color for accent */
+        }
+
+
+        /* Page 1: Minimalist & Elegant */
+        #page1 {
+            background: linear-gradient(to bottom right, #ffffff, #f5f5f5);
+            color: #333;
+        }
+        #page1 h1 { font-family: 'Playfair Display', serif; font-size: 3.5em; font-weight: 700; margin-bottom: 0.2em; }
+        #page1 h2 { font-family: 'Inter', sans-serif; font-weight: 400; color: #777; margin-bottom: 1em; }
+        #page1 .display-elements { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px; margin-bottom: 2em; text-align: left; }
+        #page1 .box { background: #fff; padding: 30px; border: 1px solid #eee; border-radius: 8px; }
+        #page1 img { border-radius: 8px; }
+        #page1 .explanation-box { border-color: #ccc; }
+
+        #page1 form input, #page1 form textarea { width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 4px; background: #fdfdfd; }
+        #page1 form input:focus, #page1 form textarea:focus { outline: none; border-color: #aaa; box-shadow: 0 0 5px rgba(0,0,0,0.05); }
+        #page1 form button { background: #333; color: #fff; border: none; padding: 12px 20px; border-radius: 4px; font-weight: bold; }
+        #page1 form button:hover { background: #000; }
+
+        /* Page 2: Vibrant & Playful */
+        #page2 {
+            background: linear-gradient(45deg, #ffafbd, #ffc3a0);
+            color: #3d3d3d;
+        }
+        #page2 h1 { font-family: 'Nunito', sans-serif; font-weight: 900; font-size: 4.5em; text-align: center; color: #fff; text-shadow: 3px 3px 0px #ff9f43; }
+        #page2 h2 { font-family: 'Poppins', sans-serif; color: rgba(255,255,255,0.9); margin-top: -20px; }
+        #page2 .display-elements { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+        #page2 .box { background: #fff; padding: 30px; border-radius: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); text-align: center; transition: transform 0.3s; }
+        #page2 .box:hover { transform: translateY(-10px) rotate(2deg); }
+        #page2 .explanation-box { background: rgba(255,255,255,0.2); border-color: #fff; color: #fff; }
+        #page2 .explanation-box p { color: #fff; }
+        #page2 .box i { font-size: 2.5em; margin-bottom: 15px; color: #ff9f43; }
+        #page2 form { background: #fff; padding: 30px; border-radius: 20px; margin-top: 2em; }
+        #page2 form input { width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 10px; margin-bottom: 10px; }
+        #page2 form button { background: #ff9f43; color: #fff; border: none; padding: 12px 25px; border-radius: 30px; font-weight: bold; font-size: 1.1em; width: 100%; }
+        #page2 form button:hover { background: #e88c31; }
+
+        /* Page 3: Dark Mode & Techy */
+        #page3 {
+            background: linear-gradient(135deg, #0d1117, #1f2937);
+            color: #f0f0f0;
+        }
+        #page3 h1 { font-family: 'Roboto Mono', monospace; font-size: 3.5em; color: #58a6ff; text-shadow: 0 0 8px rgba(88, 166, 255, 0.5); }
+        #page3 h2 { color: #8b949e; font-family: 'Roboto Mono', monospace; }
+        #page3 .display-elements { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; align-items: center; }
+        #page3 .box { background: #161b22; border: 1px solid #30363d; padding: 20px; border-radius: 6px; }
+        #page3 .explanation-box { background: #161b22; border-color: #58a6ff; }
+        #page3 img { border: 1px solid #30363d; border-radius: 6px; }
+        #page3 form input, #page3 form textarea { background: #0d1117; color: #c9d1d9; border: 1px solid #30363d; border-radius: 6px; padding: 10px; width: 100%; margin-bottom: 10px; }
+        #page3 form input:focus, #page3 form textarea:focus { outline: none; border-color: #58a6ff; box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.3); }
+        #page3 form button { background: #238636; color: #fff; border: 1px solid #2ea043; padding: 10px 16px; border-radius: 6px; font-weight: 500; }
+        #page3 form button:hover { background: #2ea043; }
+
+        /* Page 4: Natural & Organic */
+        #page4 {
+            background: linear-gradient(to top left, #f4f1ea, #e8f5e9);
+            color: #388e3c;
+        }
+        #page4 h1 { font-family: 'Lora', serif; font-size: 3.2em; color: #2e7d32; }
+        #page4 h2 { color: #6d4c41; font-family: 'Lora', serif; font-style: italic; }
+        #page4 .display-elements { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px; align-items: center; }
+        #page4 .box { background: rgba(255,255,255,0.6); padding: 25px; border-left: 4px solid #a5d6a7; border-radius: 4px; }
+        #page4 .explanation-box { border-color: #388e3c; }
+        #page4 img { border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        #page4 form { background: #fff; padding: 25px; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+        #page4 form input { border: 1px solid #c8e6c9; border-radius: 5px; padding: 10px; width: 100%; margin-bottom: 10px; }
+        #page4 form button { background: #388e3c; color: #fff; border: none; padding: 10px 20px; border-radius: 5px; }
+        #page4 form button:hover { background: #2e7d32; }
+
+        /* Page 5: Corporate & Professional */
+        #page5 {
+            background: linear-gradient(to bottom right, #ffffff, #f0f4f8);
+            color: #212529;
+        }
+        #page5 h1 { font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 2.8em; color: #0d47a1; border-bottom: 4px solid #0d47a1; padding-bottom: 10px; display: inline-block; }
+        #page5 h2 { color: #6c757d; }
+        #page5 .display-elements { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
+        #page5 .box { background: #f8f9fa; padding: 25px; border-top: 4px solid #0d47a1; border-radius: 4px; }
+        #page5 .explanation-box { border-color: #0d47a1; }
+        #page5 .box i { font-size: 2em; color: #0d47a1; margin-bottom: 10px; }
+        #page5 form input, #page5 form textarea { border: 1px solid #ced4da; border-radius: 4px; padding: 10px; width: 100%; margin-bottom: 10px; }
+        #page5 form button { background: #0d47a1; color: #fff; border: none; padding: 12px 20px; border-radius: 4px; font-weight: 500; }
+        #page5 form button:hover { background: #0b3a82; }
+
+        /* Page 6: Retro & Nostalgic */
+        #page6 {
+            background: linear-gradient(45deg, #fdf3e6, #ffccbc);
+            color: #795548;
+        }
+        #page6 h1 { font-family: 'Bebas Neue', cursive; font-size: 6em; text-align: center; color: #ff5722; text-shadow: 2px 2px 0 #fff, 4px 4px 0 #795548; }
+        #page6 .display-elements { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; }
+        #page6 .box { background: #fffaf0; padding: 20px; border: 2px solid #795548; box-shadow: 8px 8px 0px #d7ccc8; }
+        #page6 .explanation-box { background: #ffccbc; border-color: #795548; }
+        #page6 form { background: #ffccbc; padding: 20px; border: 2px solid #795548; }
+        #page6 form input { border: 2px solid #795548; padding: 10px; }
+        #page6 form button { background: #ff5722; color: #fff; border: 2px solid #795548; padding: 10px 15px; font-weight: bold; box-shadow: 4px 4px 0 #795548; }
+        #page6 form button:active { transform: translate(4px, 4px); box-shadow: none; }
+
+        /* Page 7: Artistic & Creative */
+        #page7 {
+            background: linear-gradient(120deg, #a18cd1 0%, #fbc2eb 100%);
+            color: #fff;
+        }
+        #page7 h1 { font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 4em; }
+        #page7 h2 { opacity: 0.8; }
+        #page7 .display-elements { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; align-items: center; }
+        #page7 img { transform: rotate(-5deg); border: 8px solid white; box-shadow: 0 10px 30px rgba(0,0,0,0.3); transition: transform 0.4s; }
+        #page7 .box {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            padding: 30px;
+            backdrop-filter: blur(8px);
+            transform: rotate(-2deg);
+            transition: transform 0.3s ease;
+        }
+        #page7 .box:hover { transform: rotate(2deg) scale(1.05); }
+        #page7 .explanation-box { background: rgba(255,255,255,0.1); border-color: #fff; }
+        #page7 img:hover { transform: rotate(3deg) scale(1.05); }
+        #page7 form { background: rgba(255,255,255,0.1); padding: 25px; border-radius: 10px; backdrop-filter: blur(5px); }
+        #page7 form input { background: transparent; border: none; border-bottom: 2px solid rgba(255,255,255,0.5); color: #fff; padding: 10px 0; }
+        #page7 form button { background: #fff; color: #4a148c; border: none; padding: 10px 20px; border-radius: 20px; font-weight: bold; }
+
+        /* Page 8: Luxurious & Glamorous */
+        #page8 {
+            background: linear-gradient(135deg, #333333 0%, #121212 100%);
+            color: #f5f5f5;
+        }
+        #page8 h1 { font-family: 'Playfair Display', serif; font-size: 4em; text-align: center; letter-spacing: 3px; color: #ffd700; }
+        #page8 h2 { color: #aaa; font-family: 'Inter', sans-serif; font-weight: 400; }
+        #page8 .display-elements { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; border-top: 1px solid #ffd700; border-bottom: 1px solid #ffd700; padding: 20px 0; }
+        #page8 .box { text-align: center; }
+        #page8 .explanation-box { background: #1f1f1f; border-color: #ffd700; }
+        #page8 img { border-radius: 50%; border: 2px solid #ffd700; }
+        #page8 form { background: #1f1f1f; padding: 30px; border: 1px solid #444; border-radius: 8px; margin-top: 2em; }
+        #page8 form input, #page8 form textarea { background: #333; color: #f5f5f5; border: 1px solid #555; padding: 12px; width: 100%; margin-bottom: 15px; }
+        #page8 form button { background: #ffd700; color: #121212; border: none; padding: 12px 20px; font-weight: bold; text-transform: uppercase; }
+        #page8 form button:hover { background: #f0c400; }
+
+        /* Page 9: Futuristic & Sci-Fi */
+        #page9 {
+            background: linear-gradient(45deg, #0f0c29, #302b63, #24243e); /* This one was already great */
+            color: #e0e0e0;
+        }
+        #page9 h1 { font-family: 'Orbitron', sans-serif; font-weight: 700; font-size: 4em; color: #00e5ff; text-shadow: 0 0 15px #00e5ff; }
+        #page9 h2 { color: #a7a7a7; }
+        #page9 .display-elements { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
+        #page9 .box { background: rgba(0, 229, 255, 0.05); padding: 25px; border: 1px solid rgba(0, 229, 255, 0.3); backdrop-filter: blur(5px); border-radius: 8px; }
+        #page9 .explanation-box { background: rgba(0, 229, 255, 0.05); border-color: #00e5ff; }
+        #page9 .box i { font-size: 2em; color: #00e5ff; margin-bottom: 10px; }
+        #page9 form { background: transparent; border: 1px solid rgba(0, 229, 255, 0.3); padding: 25px; border-radius: 8px; margin-top: 2em; }
+        #page9 form input { background: rgba(0,0,0,0.2); color: #fff; border: 1px solid rgba(0, 229, 255, 0.3); padding: 10px; width: 100%; }
+        #page9 form button { background: #00e5ff; color: #0f0c29; border: none; padding: 10px 20px; font-family: 'Orbitron', sans-serif; }
+
+        /* Page 10: Brutalist & Edgy */
+        #page10 {
+            background: linear-gradient(90deg, #d3d3d3, #b5b5b5);
+            color: #000;
+        }
+        #page10 h1 { font-family: 'Arial Black', sans-serif; font-size: 5em; text-decoration: none; border: 3px solid #000; display: inline-block; padding: 0 10px; }
+        #page10 h2 { font-family: 'Courier New', monospace; }
+        #page10 .display-elements { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 10px; }
+        #page10 .box { background: #fff; border: 2px solid #000; padding: 10px; }
+        #page10 .explanation-box { background: #fff; border-color: #000; }
+        #page10 form { border: 2px solid #000; padding: 20px; }
+        #page10 form input, #page10 form textarea { border: 2px solid #000; padding: 10px; width: 100%; margin-bottom: 10px; background: #cccccc; }
+        #page10 form button { background: #000; color: #fff; border: 2px solid #000; padding: 10px 15px; font-family: 'Arial Black', sans-serif; }
+        #page10 form button:hover { background: #fff; color: #000; }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="project.html#gux"><i class="fas fa-arrow-left"></i> Back to Project</a>
+        <a href="#page1">Page 1</a>
+        <a href="#page2">Page 2</a>
+        <a href="#page3">Page 3</a>
+        <a href="#page4">Page 4</a>
+        <a href="#page5">Page 5</a>
+        <a href="#page6">Page 6</a>
+        <a href="#page7">Page 7</a>
+        <a href="#page8">Page 8</a>
+        <a href="#page9">Page 9</a>
+        <a href="#page10">Page 10</a>
+    </nav>
+
+    <!-- Page 1: Minimalist & Elegant -->
+    <div id="page1" class="page">
+        <div class="page-container">
+            <header>
+                <h1>Minimalist & Elegant</h1>
+                <h2>Simplicity is the ultimate sophistication.</h2>
+            </header>
+            <div class="explanation-box">
+                <p>
+                    <strong>UX Design:</strong> The minimalist approach prioritizes content and reduces cognitive load on the user by eliminating non-essential elements. The generous use of whitespace creates a sense of calm and guides the user's eye naturally towards important information. This style is highly effective for portfolios, blogs, and luxury brands where clarity and elegance are paramount.
+                    <br><br><strong>CSS Implementation:</strong> The elegance is achieved through a careful selection of typography, using a classic serif (`Playfair Display`) for headings and a clean sans-serif (`Inter`) for body text. A subtle `linear-gradient` on the background adds depth without being distracting. The layout relies on CSS Grid (`grid-template-columns`) and `gap` properties to maintain consistent spacing and a balanced, harmonious composition.
+                </p>
+            </div>
+            <div class="display-elements" style="text-align:center;">
+                <div class="box">
+                    <h3>Harmonious Composition</h3>
+                    <p>Each element is carefully placed to create a harmonious and balanced composition.</p>
+                </div>
+                <div class="box">
+                    <h3>Clean Typography</h3>
+                    <p>Using a serif font for headings and a sans-serif for body text creates a classic, readable look.</p>
+                </div>
+                <div class="box">
+                    <h3>Monochromatic</h3>
+                    <p>A limited color palette ensures that the content remains the primary focus for the user.</p>
+                </div>
+            </div>
+            <form action="https://api.web3forms.com/submit" method="POST">
+                <input type="hidden" name="access_key" value="YOUR_WEB3FORMS_ACCESS_KEY">
+                <h3>Contact Us</h3>
+                <input type="text" name="name" placeholder="Name" required>
+                <input type="email" name="email" placeholder="Email" required>
+                <textarea name="message" placeholder="Message" required></textarea>
+                <button type="submit">Submit</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Page 2: Vibrant & Playful -->
+    <div id="page2" class="page">
+        <div class="page-container">
+            <header>
+                <h1>Vibrant & Playful</h1>
+                <h2>Injecting fun into functionality.</h2>
+            </header>
+            <div class="explanation-box">
+                <p>
+                    <strong>UX Design:</strong> This style aims to create an emotionally positive and memorable experience. The vibrant colors and playful animations make interactions feel more engaging and less like a chore. It's an excellent choice for products targeting younger audiences, creative applications, or any brand that wants to appear friendly, modern, and approachable.
+                    <br><br><strong>CSS Implementation:</strong> A bright, energetic `linear-gradient` sets the tone. The friendly aesthetic is reinforced by the rounded `font-family` ('Nunito') and a high `border-radius` on cards and buttons. The `text-shadow` on the main heading adds a fun, 3D effect. Interactivity is enhanced with CSS transitions on `transform` properties, making elements playfully rotate and lift on hover.
+                </p>
+            </div>
+            <div class="display-elements">
+                <div class="box">
+                    <i class="fas fa-rocket"></i>
+                    <h3>Fast</h3></div>
+                <div class="box">
+                    <i class="fas fa-lightbulb"></i>
+                    <h3>Intuitive</h3></div>
+                <div class="box">
+                    <i class="fas fa-comments"></i>
+                    <h3>Engaging</h3>
+                </div>
+            </div>
+            <form action="https://api.web3forms.com/submit" method="POST">
+                <input type="hidden" name="access_key" value="YOUR_WEB3FORMS_ACCESS_KEY">
+                <h3>Get in Touch!</h3>
+                <input type="text" name="name" placeholder="Your Name" required>
+                <input type="email" name="email" placeholder="Your Email" required>
+                <button type="submit">Send</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Page 3: Dark Mode & Techy -->
+    <div id="page3" class="page">
+        <div class="page-container">
+            <header>
+                <h1>Dark Mode & Techy</h1>
+                <h2>For the night owls and innovators.</h2>
+            </header>
+            <div class="explanation-box">
+                <p>
+                    <strong>UX Design:</strong> Dark mode is a popular choice for reducing eye strain, especially in low-light environments. It helps create a focused atmosphere and can make graphical content and data visualizations pop. This aesthetic is often associated with sophistication, power, and technology, making it ideal for developer tools, trading platforms, and entertainment apps.
+                    <br><br><strong>CSS Implementation:</strong> The core of this design is a dark `linear-gradient` background. A monospaced font like `Roboto Mono` is used to evoke a "code" or technical feeling. High-contrast, glowing accent colors (`#58a6ff`) are applied to text and interactive elements using `color` and `text-shadow`. The `focus` state on form inputs is clearly defined with a `border-color` and `box-shadow` to ensure accessibility and clear user feedback on the dark background.
+                </p>
+            </div>
+            <div class="display-elements">
+                <div class="box">
+                    <h3><i class="fas fa-server"></i> System Status</h3>
+                    <p>All systems operational.</p>
+                </div>
+                <div class="box">
+                    <h3><i class="fas fa-code-branch"></i> Version Control</h3>
+                    <p>Main branch is stable.</p>
+                </div>
+            </div>
+            <form action="https://api.web3forms.com/submit" method="POST">
+                <input type="hidden" name="access_key" value="YOUR_WEB3FORMS_ACCESS_KEY">
+                <h3>Connect with us</h3>
+                <input type="text" name="name" placeholder="Name" required>
+                <textarea name="message" placeholder="Your message" required></textarea>
+                <button type="submit">Connect</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Page 4: Natural & Organic -->
+    <div id="page4" class="page">
+        <div class="page-container">
+            <header>
+                <h1>Natural & Organic</h1>
+                <h2>Inspired by the beauty of nature.</h2>
+            </header>
+            <div class="explanation-box">
+                <p>
+                    <strong>UX Design:</strong> This approach leverages natural aesthetics to build a sense of trust, authenticity, and calm. The user experience feels grounded and wholesome, making it perfect for brands in the wellness, sustainability, food, or artisanal craft sectors. It connects the digital product to the real world in a soothing, positive way.
+                    <br><br><strong>CSS Implementation:</strong> The style is built on a palette of earthy colors, implemented here with a soft `linear-gradient`. The `Lora` serif font provides a classic, gentle feeling, with `font-style: italic` adding a touch of elegance. Cards use a semi-transparent `background` (`rgba`) to create a soft, layered look, and a subtle `border-left` provides a simple, clean accent.
+                </p>
+            </div>
+            <div class="display-elements">
+                <div class="box">
+                    <h3>Our Philosophy</h3>
+                    <p>We believe in sustainable and eco-friendly design.</p>
+                </div>
+                <div class="box">
+                    <h3>Natural Ingredients</h3>
+                    <p>Sourced directly from nature for the purest quality.</p>
+                </div>
+                <div class="box">
+                    <h3>Handcrafted</h3>
+                    <p>Every item is made with care and attention to detail.</p>
+                </div>
+            </div>
+            <form action="https://api.web3forms.com/submit" method="POST">
+                <input type="hidden" name="access_key" value="YOUR_WEB3FORMS_ACCESS_KEY">
+                <h3>Contact Form</h3>
+                <input type="text" name="name" placeholder="Name" required>
+                <input type="email" name="email" placeholder="Email" required>
+                <button type="submit">Submit</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Page 5: Corporate & Professional -->
+    <div id="page5" class="page">
+        <div class="page-container">
+            <header>
+                <h1>Corporate & Professional</h1>
+                <h2>Clarity, structure, and trust.</h2>
+            </header>
+            <div class="explanation-box">
+                <p>
+                    <strong>UX Design:</strong> The primary goal here is to convey trust, reliability, and competence. The design uses a clear, predictable, and highly structured layout, which helps users navigate complex information with ease. Consistency in spacing, typography, and color is key to building user confidence. This is the go-to style for financial institutions, B2B services, and enterprise software.
+                    <br><br><strong>CSS Implementation:</strong> A professional blue (`#0d47a1`) is used as the primary accent color against a clean white and gray background. The layout is organized and hierarchical, using `border-bottom` on the heading and `border-top` on cards to create clear visual separation. The sans-serif font `Poppins` is chosen for its modern and professional look.
+                </p>
+            </div>
+            <div class="display-elements">
+                <div class="box">
+                    <h4><i class="fas fa-bullseye"></i> Our Mission</h4>
+                    <p>To provide the best services in the industry.</p>
+                </div>
+                <div class="box">
+                    <h4><i class="fas fa-eye"></i> Our Vision</h4>
+                    <p>To be a global leader in our field.</p>
+                </div>
+                <div class="box">
+                    <h4><i class="fas fa-handshake"></i> Our Values</h4>
+                    <p>Integrity, innovation, and customer satisfaction.</p>
+                </div>
+            </div>
+            <form action="https://api.web3forms.com/submit" method="POST">
+                <input type="hidden" name="access_key" value="YOUR_WEB3FORMS_ACCESS_KEY">
+                <h3>Request a Quote</h3>
+                <input type="text" name="company_name" placeholder="Company Name" required>
+                <input type="email" name="work_email" placeholder="Work Email" required>
+                <button type="submit">Request</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Page 6: Retro & Nostalgic -->
+    <div id="page6" class="page">
+        <div class="page-container">
+            <header>
+                <h1>Retro & Nostalgic</h1>
+                <h2>A blast from the past.</h2>
+            </header>
+            <div class="explanation-box">
+                <p>
+                    <strong>UX Design:</strong> This style taps into nostalgia to create a strong emotional connection with the user. It can make a brand feel authentic, long-standing, and fun. The imperfect textures and vintage typography feel human and tangible, standing out in a world of slick, modern interfaces. It's great for unique brands, cafes, or products with a handcrafted feel.
+                    <br><br><strong>CSS Implementation:</strong> The retro vibe is achieved with a bold, display font (`Bebas Neue`) and a warm, faded color palette (`#fdf3e6`, `#ffccbc`). The key effect is the hard `text-shadow` and `box-shadow`, which create a layered, blocky look reminiscent of old print design. The button's `active` state, which removes the shadow and shifts the button, mimics the physical press of a real-life button.
+                </p>
+            </div>
+            <div class="display-elements">
+                <div class="box">
+                    <p>Old-school cool.</p>
+                </div>
+                <div class="box">
+                    <p>Timeless style.</p>
+                </div>
+                <div class="box">
+                    <p>Good vibes only.</p>
+                </div>
+            </div>
+            <form action="https://api.web3forms.com/submit" method="POST">
+                <input type="hidden" name="access_key" value="YOUR_WEB3FORMS_ACCESS_KEY">
+                <h3>Say Hello!</h3>
+                <input type="text" name="name" placeholder="Name" required>
+                <input type="text" name="message" placeholder="Message" required>
+                <button type="submit">Send</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Page 7: Artistic & Creative -->
+    <div id="page7" class="page">
+        <div class="page-container">
+            <header>
+                <h1>Artistic & Creative</h1>
+                <h2>Breaking the rules of design.</h2>
+            </header>
+            <div class="explanation-box">
+                <p>
+                    <strong>UX Design:</strong> Prioritizing aesthetic expression over conventional structure, this style aims to be visually striking and memorable. It breaks the grid with overlapping elements and asymmetrical layouts to create a dynamic and engaging experience. While it can be less intuitive for task-oriented sites, it excels for creative portfolios, event pages, and fashion brands where a strong visual identity is key.
+                    <br><br><strong>CSS Implementation:</strong> This design uses "glassmorphism," achieved by setting a semi-transparent `background` (`rgba`) on the boxes and applying a `backdrop-filter: blur()`. This creates a frosted-glass effect over the vibrant `linear-gradient` background. `transform: rotate()` is used to tilt the boxes, and a hover effect reverses the rotation and scales the box up, adding to the dynamic and interactive feel.
+                </p>
+            </div>
+            <div class="display-elements">
+                <div class="box">
+                    <h3>Unleash your creativity.</h3>
+                </div>
+                <div class="box">
+                    <h3>Think outside the box.</h3>
+                </div>
+                <div class="box">
+                    <h3>Design without limits.</h3>
+                </div>
+            </div>
+            <form action="https://api.web3forms.com/submit" method="POST">
+                <input type="hidden" name="access_key" value="YOUR_WEB3FORMS_ACCESS_KEY">
+                <h3>Collaborate with us</h3>
+                <input type="email" name="email" placeholder="Your Email" required>
+                <button type="submit">Start</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Page 8: Luxurious & Glamorous -->
+    <div id="page8" class="page">
+        <div class="page-container">
+            <header>
+                <h1>Luxurious & Glamorous</h1>
+                <h2>Elegance and sophistication.</h2>
+            </header>
+            <div class="explanation-box">
+                <p>
+                    <strong>UX Design:</strong> This style is all about creating a perception of quality, exclusivity, and prestige. It uses a dark, rich color palette, sophisticated typography, and generous spacing to give content room to breathe. The user journey feels deliberate and refined. It's the perfect choice for luxury goods, high-end services, and premium brands.
+                    <br><br><strong>CSS Implementation:</strong> A dark `linear-gradient` background sets a luxurious mood. The accent color is a rich gold (`#ffd700`), used for headings, borders, and buttons to create a striking contrast. The `Playfair Display` serif font adds a touch of classic elegance. Elements like the `border-radius: 50%` on the images and the decorative `border-top` and `border-bottom` on the container reinforce the glamorous aesthetic.
+                </p>
+            </div>
+            <div class="display-elements">
+                <div class="box">
+                    <img src="https://picsum.photos/seed/luxury/200/200" alt="Luxury item 1" >
+                </div>
+                <div class="box">
+                    <img src="https://picsum.photos/seed/gold/200/200" alt="Luxury item 2">
+                </div>
+            </div>
+            <form action="https://api.web3forms.com/submit" method="POST">
+                <input type="hidden" name="access_key" value="YOUR_WEB3FORMS_ACCESS_KEY">
+                <h3>Inquire</h3>
+                <input type="text" name="name" placeholder="Name" required>
+                <textarea name="inquiry" placeholder="Your inquiry" required></textarea>
+                <button type="submit">Submit</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Page 9: Futuristic & Sci-Fi -->
+    <div id="page9" class="page">
+        <div class="page-container">
+            <header>
+                <h1>Futuristic & Sci-Fi</h1>
+                <h2>Designing tomorrow's world.</h2>
+            </header>
+            <div class="explanation-box">
+                <p>
+                    <strong>UX Design:</strong> This style communicates innovation, technology, and a forward-thinking mindset. It uses glowing neon accents, dark backgrounds, and sharp geometric shapes to create a high-tech feel. The user experience is often dynamic and can feel like interacting with a piece of future technology, making it ideal for SaaS products, crypto platforms, and science or tech companies.
+                    <br><br><strong>CSS Implementation:</strong> The futuristic look is built on a dark, space-like `linear-gradient`. The key element is the vibrant neon accent color (`#00e5ff`), which is enhanced with a `text-shadow` to create a glowing effect. The `Orbitron` font was chosen for its geometric and sci-fi characteristics. The "glassmorphism" effect is used again on the boxes with `background: rgba(...)` and `backdrop-filter: blur()` to add to the high-tech, layered interface.
+                </p>
+            </div>
+            <div class="display-elements">
+                <div class="box">
+                    <h3><i class="fas fa-chart-line"></i> Data Stream</h3>
+                    <p>Real-time analytics.</p>
+                </div>
+                <div class="box">
+                    <h3><i class="fas fa-brain"></i> Neural Net</h3>
+                    <p>AI-powered insights.</p>
+                </div>
+                <div class="box">
+                    <h3><i class="fas fa-atom"></i> Quantum Core</h3>
+                    <p>Next-gen processing.</p>
+                </div>
+            </div>
+            <form action="https://api.web3forms.com/submit" method="POST">
+                <input type="hidden" name="access_key" value="YOUR_WEB3FORMS_ACCESS_KEY">
+                <h3>Join the Future</h3>
+                <input type="email" name="email" placeholder="Email Address" required>
+                <button type="submit">Sign Up</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Page 10: Brutalist & Edgy -->
+    <div id="page10" class="page">
+        <div class="page-container">
+            <header>
+                <h1>Brutalist & Edgy</h1>
+                <h2>Raw, honest, and unapologetic.</h2>
+            </header>
+            <div class="explanation-box">
+                <p>
+                    <strong>UX Design:</strong> Brutalism in web design is a reaction against light, optimistic, and overly-familiar design trends. It prioritizes raw, unstyled content and functionality. The user experience is direct and honest, with no decorative frills. While it can be jarring, it's a powerful way to make a statement and is often used by artists, architects, and brands that want to appear edgy and unconventional.
+                    <br><br><strong>CSS Implementation:</strong> This style is defined by its lack of "design." It uses system fonts like `Arial Black` and `Courier New`, a stark color palette (`#000`, `#fff`, `#cccccc`), and hard, solid `border`s. There are no gradients, soft shadows, or complex animations. The layout is blocky and functional, often using basic CSS Grid or Flexbox without much finesse. The form elements are left with their default browser appearance or given a similarly raw style.
+                </p>
+            </div>
+            <div class="display-elements">
+                <div class="box">
+                    <h3>Function</h3>
+                    <p>No frills. Just the essentials.</p>
+                </div>
+                <div class="box">
+                    <h3>Structure</h3>
+                    <p>Honest and exposed.</p>
+                </div>
+                <div class="box">
+                    <h3>Material</h3>
+                    <p>Unfiltered and direct.</p>
+                </div>
+            </div>
+            <form action="https://api.web3forms.com/submit" method="POST">
+                <input type="hidden" name="access_key" value="YOUR_WEB3FORMS_ACCESS_KEY">
+                <h3>Contact</h3>
+                <input type="text" name="name" placeholder="Name" required>
+                <input type="text" name="message" placeholder="Message" required>
+                <button type="submit">Go</button>
+            </form>
+        </div>
+    </div>
+
+</body>
+</html>>

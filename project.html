@@ -1,0 +1,1739 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Détails des Projets | Patrick Safari</title>
+
+    <!-- Polices & Icônes -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+    <!-- J'ai remplacé le lien vers style.css par le style direct de l'index pour une cohérence parfaite -->
+    <style>
+        /* ---------------------------------- */
+        /*          DESIGN VARIABLES          */
+        /* ---------------------------------- */
+        :root { /* Light Mode (Default) */ --bg-color: #f4f7f9; --main-bg-color: rgba(255, 255, 255, 0.6); --header-bg-color: rgba(255, 255, 255, 0.7); --text-color: #3d3d3d; --heading-color: #1a253c; --accent-color: #0096FF; --accent-color-darker: #0072C6; --border-color: rgba(200, 200, 200, 0.4); --card-bg-color: rgba(249, 250, 251, 0.6); --shadow-color: rgba(0, 0, 0, 0.1); --gradient-accent: linear-gradient(45deg, var(--accent-color), var(--accent-color-darker)); --aurora-color-1: #5BCEFA; --aurora-color-2: #F5A9B8; --aurora-color-3: #92FE9D; }
+        body.dark-mode { --bg-color: #0d1117; --main-bg-color: rgba(30, 30, 30, 0.5); --header-bg-color: rgba(25, 25, 25, 0.6); --text-color: #c9d1d9; --heading-color: #ffffff; --accent-color: #389bff; --accent-color-darker: #1e7eeb; --border-color: rgba(255, 255, 255, 0.1); --card-bg-color: rgba(42, 42, 42, 0.5); --shadow-color: rgba(0, 0, 0, 0.3); --aurora-color-1: #0A4D68; --aurora-color-2: #7E2E84; --aurora-color-3: #146C43; }
+        /* ---------------------------------- */
+        /*          BASE & LAYOUT STYLES      */
+        /* ---------------------------------- */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Poppins', sans-serif; background-color: var(--bg-color); color: var(--text-color); line-height: 1.7; font-size: 16px; transition: background-color 0.4s ease, color 0.4s ease; overflow-x: hidden; }
+        body::before, body::after { content: ''; position: fixed; z-index: -1; filter: blur(100px); opacity: 0.5; transition: opacity 1s ease; }
+        body::before { width: 400px; height: 400px; background: radial-gradient(circle, var(--aurora-color-1), transparent 60%); top: 10vh; left: 10vw; animation: moveAurora1 20s infinite alternate ease-in-out; }
+        body::after { width: 500px; height: 500px; background: radial-gradient(circle, var(--aurora-color-2), transparent 70%); bottom: 5vh; right: 15vw; animation: moveAurora2 25s infinite alternate ease-in-out; }
+        @keyframes moveAurora1 { from { transform: translate(0, 0) rotate(0deg); } to { transform: translate(100px, 50px) rotate(90deg); } }
+        @keyframes moveAurora2 { from { transform: translate(0, 0) rotate(0deg); } to { transform: translate(-80px, -40px) rotate(-90deg); } }
+        .container { max-width: 1100px; margin: 0 auto; padding: 0 2rem; }
+        h1, h2, h3 { color: var(--heading-color); font-weight: 600; }
+        a { color: var(--accent-color); text-decoration: none; transition: color 0.3s; }
+        a:hover { color: var(--accent-color-darker); }
+        /* ---------------------------------- */
+        /*        HEADER & NAVIGATION         */
+        /* ---------------------------------- */
+        .main-header { position: fixed; top: 0; left: 0; width: 100%; z-index: 100; padding: 1rem 0; background-color: var(--header-bg-color); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border-bottom: 1px solid var(--border-color); transition: top 0.3s; }
+        .main-header .container { display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 1.5rem; font-weight: 700; color: var(--heading-color); }
+        .main-nav { display: flex; align-items: center; gap: 1.5rem; }
+        .nav-links { list-style: none; display: flex; gap: 1.5rem; }
+        .nav-links a { font-weight: 500; color: var(--text-color); position: relative; padding: 0.5rem 0; }
+        .nav-links a::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 2px; background: var(--gradient-accent); transform: scaleX(0); transform-origin: right; transition: transform 0.3s ease-out; }
+        .nav-links a:hover::after, .nav-links a.active::after { transform: scaleX(1); transform-origin: left; }
+        .nav-links a.active { color: var(--heading-color); }
+        .hamburger { display: none; cursor: pointer; font-size: 1.5rem; }
+        .theme-switch-wrapper { display: flex; align-items: center; }
+        /* ---------------------------------- */
+        /*        MAIN CONTENT (MAIN)         */
+        /* ---------------------------------- */
+        .main-content { padding-top: 80px; }
+        .content-section { padding: 5rem 0; opacity: 0; transform: translateY(30px); transition: opacity 0.6s ease-out, transform 0.6s ease-out; }
+        .content-section.visible { opacity: 1; transform: translateY(0); }
+        .content-section:not(#hero) { background-color: var(--main-bg-color); padding: 4rem; margin-bottom: 2.5rem; border-radius: 20px; box-shadow: 0 8px 32px var(--shadow-color); border: 1px solid var(--border-color); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); }
+        /* THEME SWITCH */
+        .theme-switch { display: inline-block; height: 24px; position: relative; width: 50px; }
+        .theme-switch input { display: none; }
+        .slider { background-color: #ccc; bottom: 0; cursor: pointer; left: 0; position: absolute; right: 0; top: 0; transition: .4s; border-radius: 34px; }
+        .slider:before { background-color: #fff; bottom: 4px; content: ""; height: 16px; left: 4px; position: absolute; transition: .4s; width: 16px; border-radius: 50%; }
+        input:checked + .slider { background: var(--gradient-accent); }
+        input:checked + .slider:before { transform: translateX(26px); }
+        /* RESPONSIVE DESIGN */
+        @media (max-width: 992px) { .nav-links { display: none; flex-direction: column; position: absolute; top: 100%; left: 0; width: 100%; background-color: var(--header-bg-color); padding: 1rem 0; border-bottom: 1px solid var(--border-color); } .nav-links.active { display: flex; } .nav-links li { text-align: center; width: 100%; } .nav-links a { padding: 1rem; width: 100%; } .hamburger { display: block; } .section-title { font-size: 2.5rem; } .section-subtitle { font-size: 1.2rem; } }
+        @media (max-width: 768px) { body { font-size: 15px; } .container { padding: 0 1.5rem; } .content-section:not(#hero) { padding: 2.5rem; } #hero { min-height: 90vh; } .section-title { font-size: 2rem; } .section-subtitle .form-group { flex-direction: column; gap: 0; margin-bottom: 0; } .form-group input, .form-group textarea { margin-bottom: 1.5rem; } body::before, body::after { filter: blur(70px); } }
+        /* Styles spécifiques à la page projet (conservés) */
+        .project-detail-card {
+            background-color: var(--main-bg-color);
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px var(--shadow-color);
+            border: 1px solid var(--border-color);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+        }
+        .project-detail-card p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+        .back-link {
+            display: inline-block;
+            margin-bottom: 2rem;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        .back-link i {
+            margin-right: 8px;
+        }
+        /* NOUVEAUX STYLES POUR LES DÉTAILS DU PROJET */
+        .project-image {
+            width: 100%;
+            max-width: 350px;
+            height: auto;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 15px var(--shadow-color);
+        }
+        .project-links {
+            margin-top: 2rem;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        .project-link-btn {
+            display: inline-block;
+            padding: 0.7rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            background: var(--gradient-accent);
+            color: #fff;
+        }
+
+        /* NOUVEAUX STYLES POUR LA SIMULATION */
+        .simulation-card {
+            background-color: var(--card-bg-color);
+            padding: 2rem;
+            margin-top: 2rem;
+            border-radius: 15px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 15px var(--shadow-color);
+        }
+        .simulation-card h3 {
+            margin-top: 0;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid var(--accent-color);
+            padding-bottom: 0.5rem;
+            display: inline-block;
+        }
+        .simulation-card pre {
+            background-color: rgba(0,0,0,0.1);
+            padding: 1rem;
+            border-radius: 8px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            color: var(--heading-color);
+        }
+        .dark-mode .simulation-card pre {
+             background-color: rgba(255,255,255,0.05);
+        }
+        .scanner-ui {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .scanner-ui input { flex-grow: 1; padding: 0.8rem; border-radius: 8px; border: 1px solid var(--border-color); background-color: var(--bg-color); color: var(--text-color); }
+        .scanner-ui button { padding: 0.8rem 1.5rem; }
+
+        /* STYLES POUR LE BOUTON COPIER */
+        .code-block-wrapper {
+            position: relative;
+            margin-top: 1rem;
+        }
+        .copy-btn {
+            position: absolute;
+            top: 0.75rem;
+            right: 0.75rem;
+            background-color: var(--card-bg-color);
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            padding: 0.4rem 0.7rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            opacity: 0.6;
+            transition: opacity 0.2s, background-color 0.2s, color 0.2s;
+        }
+        .copy-btn:hover { opacity: 1; background-color: var(--accent-color); color: #fff; }
+        .copy-btn .fa-check { color: #2ecc71; }
+
+        /* SYNTAX HIGHLIGHTING STYLES */
+        .simulation-card pre code.language-python .token.keyword { color: #c792ea; }
+        .simulation-card pre code.language-python .token.string,
+        .simulation-card pre code.language-python .token.comment { color: #c3e88d; }
+        .simulation-card pre code.language-python .token.function { color: #82aaff; }
+        .simulation-card pre code.language-python .token.number { color: #f78c6c; }
+        .simulation-card pre code.language-python .token.operator { color: #89ddff; }
+        .simulation-card pre code.language-python .token.punctuation { color: #89ddff; }
+
+        .dark-mode .simulation-card pre code.language-python .token.keyword { color: #c792ea; }
+        .dark-mode .simulation-card pre code.language-python .token.string,
+        .dark-mode .simulation-card pre code.language-python .token.comment { color: #c3e88d; }
+        .dark-mode .simulation-card pre code.language-python .token.function { color: #82aaff; }
+
+        /* STYLES POUR LA SIMULATION AGROPASTORALE */
+        #agri-sim-form {
+            display: grid;
+            grid-template-columns: 1fr 1fr auto;
+            gap: 1rem;
+            align-items: end;
+            margin-top: 1.5rem;
+        }
+        #agri-sim-form label { font-weight: 600; margin-bottom: 0.5rem; display: block; }
+        #agri-sim-form select, #agri-sim-form input { width: 100%; padding: 0.8rem; border-radius: 8px; border: 1px solid var(--border-color); background-color: var(--bg-color); color: var(--text-color); }
+        #agri-sim-form button { padding: 0.8rem 1.5rem; height: fit-content; }
+
+        #simulation-results h5 { margin-top: 2rem; color: var(--accent-color); }
+        .growth-chart { display: flex; gap: 5px; height: 150px; align-items: flex-end; border-bottom: 2px solid var(--border-color); padding-bottom: 10px; }
+        .growth-chart .bar { flex-grow: 1; background: var(--gradient-accent); border-radius: 5px 5px 0 0; text-align: center; color: white; font-size: 0.7rem; padding-top: 5px; opacity: 0.7; transition: opacity 0.3s; }
+        .growth-chart .bar:hover { opacity: 1; }
+
+        .task-calendar { max-height: 200px; overflow-y: auto; border: 1px solid var(--border-color); border-radius: 8px; padding: 1rem; margin-top: 1rem; }
+        .task-calendar ul { list-style: none; padding: 0; }
+        .task-calendar li { display: flex; gap: 1rem; padding: 0.5rem 0; border-bottom: 1px solid var(--border-color); }
+        .task-calendar li:last-child { border-bottom: none; }
+        .task-calendar .day { font-weight: 600; width: 80px; color: var(--accent-color); }
+
+        .summary-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 1rem; }
+        .summary-card { background: rgba(0,0,0,0.02); padding: 1rem; border-radius: 8px; }
+        .dark-mode .summary-card { background: rgba(255,255,255,0.03); }
+        .summary-card h6 { margin-top: 0; }
+        .summary-card .value { font-size: 1.8rem; font-weight: 700; }
+        .summary-card.profit .value { color: #27ae60; }
+        .summary-card.advice ul { padding-left: 20px; }
+
+        .budget-allocation { border: 1px solid var(--border-color); border-radius: 8px; padding: 1rem; margin-top: 1rem; }
+        .budget-allocation ul { list-style: none; padding: 0; }
+        .budget-allocation li { display: flex; justify-content: space-between; padding: 0.6rem 0; border-bottom: 1px solid var(--border-color); }
+        .budget-allocation li:last-child { border-bottom: none; }
+        .budget-allocation .amount { font-weight: 600; }
+
+        .swot-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; margin-top: 1rem; }
+        .swot-card { padding: 1rem; border-radius: 8px; }
+        .swot-card h6 { margin-top: 0; display: flex; align-items: center; gap: 0.5rem; }
+        .swot-card ul { padding-left: 20px; margin-bottom: 0; }
+        .swot-card.strengths { background-color: rgba(46, 204, 113, 0.1); border-left: 4px solid #2ecc71; }
+        .swot-card.weaknesses { background-color: rgba(231, 76, 60, 0.1); border-left: 4px solid #e74c3c; }
+        .swot-card.opportunities { background-color: rgba(52, 152, 219, 0.1); border-left: 4px solid #3498db; }
+        .swot-card.threats { background-color: rgba(243, 156, 18, 0.1); border-left: 4px solid #f39c12; }
+
+        /* Styles pour la simulation To-Do List */
+        #todo-app {
+            margin-top: 2.5rem;
+            background: rgba(0,0,0,0.02);
+            border-radius: 15px;
+            padding: 2rem;
+            border: 1px solid var(--border-color);
+            box-shadow: inset 0 1px 4px rgba(0,0,0,0.04);
+            max-width: 800px; /* Limite la largeur pour un meilleur centrage */
+            margin-left: auto; margin-right: auto; /* Centre le bloc */
+        }
+        .dark-mode #todo-app {
+            background: rgba(255,255,255,0.02);
+            box-shadow: inset 0 1px 4px rgba(0,0,0,0.2);
+        }
+        #todo-app h5 {
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            text-align: center; /* Centre le titre */
+        }
+        #todo-app .controls { display: flex; gap: 1rem; margin-bottom: 1rem; flex-wrap: wrap; }
+        .input-group { position: relative; display: flex; align-items: center; flex-grow: 1; }
+        .input-group i { position: absolute; left: 1rem; opacity: 0.5; }
+        #todo-app .controls input, #todo-app .controls select, #add-task-form input {
+            flex-grow: 1; padding: 0.8rem; border-radius: 8px; border: 1px solid var(--border-color); background-color: var(--bg-color); color: var(--text-color);
+            padding-left: 2.5rem; /* Espace pour l'icône */
+            transition: box-shadow 0.2s, border-color 0.2s;
+        }
+        #todo-app .controls input:focus, #todo-app .controls select:focus, #add-task-form input:focus {
+            outline: none; border-color: var(--accent-color); box-shadow: 0 0 0 3px rgba(0, 150, 255, 0.2);
+        }
+            #todo-app .controls select { padding-left: 0.8rem; } /* Pas d'icône pour le select */
+        #todo-app table { width: 100%; border-collapse: separate; border-spacing: 0 0.5rem; margin-top: 1rem; }
+        #todo-app th, #todo-app td { padding: 1rem; text-align: left; border-bottom: 1px solid var(--border-color); }
+        #todo-app th { font-weight: 600; font-size: 0.9rem; text-transform: uppercase; opacity: 0.7; border-bottom: 2px solid var(--border-color); }
+        #todo-app td { background-color: var(--card-bg-color); border-bottom: none; }
+        #todo-app tr td:first-child { border-top-left-radius: 8px; border-bottom-left-radius: 8px; }
+        #todo-app tr td:last-child { border-top-right-radius: 8px; border-bottom-right-radius: 8px; }
+        #todo-app tr:last-child td { border-bottom: none; }
+        #todo-app .task-completed { text-decoration: line-through; opacity: 0.6; }
+        #todo-app .actions button { background: none; border: none; cursor: pointer; padding: 0.5rem; font-size: 1.1rem; color: var(--text-color); transition: color 0.2s, transform 0.2s; }
+        #todo-app .actions button:hover { transform: scale(1.2); }
+        #todo-app .actions .complete-btn:hover, #todo-app .actions .complete-btn.completed { color: #2ecc71; }
+        #todo-app .actions .delete-btn:hover { color: #e74c3c; }
+        #todo-app #add-task-form { display: flex; gap: 1rem; margin-top: 1.5rem; }
+        #todo-app #add-task-form input { flex-grow: 1; }
+        #todo-app #add-task-form button { white-space: nowrap; }
+        #todo-app .empty-state { text-align: center; padding: 3rem 1rem; opacity: 0.7; background-color: rgba(0,0,0,0.02); border-radius: 8px; }
+        .dark-mode #todo-app .empty-state { background-color: rgba(255,255,255,0.02); }
+
+        /* STYLES POUR LE CHATBOT IT SUPPORT */
+        .chat-widget { margin-top: 2.5rem; background: rgba(0,0,0,0.02); border-radius: 15px; padding: 1.5rem; border: 1px solid var(--border-color); max-width: 700px; margin-left: auto; margin-right: auto; display: flex; flex-direction: column; }
+        .dark-mode .chat-widget { background: rgba(255,255,255,0.02); }
+        .chat-widget h5 { font-weight: 600; margin-bottom: 1.5rem; text-align: center; }
+        .chat-messages { flex-grow: 1; height: 300px; overflow-y: auto; padding: 1rem; background-color: var(--bg-color); border-radius: 8px; margin-bottom: 1rem; border: 1px solid var(--border-color); }
+        .message { margin-bottom: 1rem; display: flex; flex-direction: column; }
+        .message p { max-width: 80%; padding: 0.7rem 1rem; border-radius: 12px; line-height: 1.5; }
+        .message.user-message { align-items: flex-end; }
+        .message.user-message p { background: var(--accent-color); color: #fff; border-bottom-right-radius: 2px; }
+        .message.bot-message { align-items: flex-start; }
+        .message.bot-message p { background: var(--card-bg-color); border: 1px solid var(--border-color); border-bottom-left-radius: 2px; }
+        .message .timestamp { font-size: 0.75rem; opacity: 0.6; margin-top: 4px; }
+        .message.user-message .timestamp { text-align: right; margin-right: 5px; }
+        .message.bot-message .timestamp { margin-left: 5px; }
+        #chat-form { display: flex; gap: 1rem; }
+        #chat-input { flex-grow: 1; padding: 0.8rem; border-radius: 8px; border: 1px solid var(--border-color); background-color: var(--bg-color); color: var(--text-color); }
+
+        @media (max-width: 768px) {
+            #agri-sim-form { grid-template-columns: 1fr; }
+            .summary-grid { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 576px) {
+            .swot-grid { grid-template-columns: 1fr; }
+            #todo-app .controls { flex-direction: column; }
+            #add-task-form { flex-direction: column; }
+        }
+
+        /* Additional responsive styles for project page */
+        @media (max-width: 576px) {
+            .project-detail-card { padding: 1.5rem; }
+            .section-title { font-size: 1.8rem; }
+            .cert-images-container img { max-width: 100% !important; } /* Stack images on mobile */
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- ==================== HEADER ==================== -->
+    <header class="main-header">
+        <div class="container">
+            <a href="index.html" class="logo">Patrick Safari</a>
+            <nav class="main-nav">
+                <ul class="nav-links" id="nav-links">
+                    <li><a href="index.html#hero" class="nav-link">Accueil</a></li>
+                    <li><a href="index.html#about" class="nav-link">À Propos</a></li>
+                    <li><a href="index.html#skills" class="nav-link">Compétences</a></li>
+                    <li><a href="index.html#experience" class="nav-link">Parcours</a></li>
+                    <li><a href="index.html#projects" class="nav-link active">Projets</a></li>
+                    <li><a href="index.html#contact" class="nav-link">Contact</a></li>
+                </ul>
+                <div class="theme-switch-wrapper">
+                    <label class="theme-switch" for="checkbox">
+                        <input type="checkbox" id="checkbox" />
+                        <div class="slider round"></div>
+                    </label>
+                </div>
+                <div class="hamburger" id="hamburger">
+                    <i class="fas fa-bars"></i>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- ==================== MAIN CONTENT ==================== -->
+    <main class="main-content">
+        <div class="container">
+
+            <section id="project-details" class="content-section visible">
+                <a href="index.html#projects" class="back-link"><i class="fas fa-arrow-left"></i>Retour au portfolio</a>
+                <h2 id="project-title" class="section-title">Détails du Projet</h2>
+                <p class="section-subtitle">
+                    Voici un aperçu des projets clés réalisés dans le cadre de mes certifications.
+                </p>
+                <br>
+
+                <div id="projects-list">
+                    <!-- Le contenu des projets sera injecté ici par JavaScript -->
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <script>
+        const projectData = {
+            'gpm': { 
+                title: 'Google Project Management', 
+                description: `<p>Dans le cadre de cette certification, j'ai appliqué les principes de la gestion de projet pour élaborer un business plan complet pour une ferme agropastorale intégrée à Kalehe, RDC. Le projet visait à améliorer la sécurité alimentaire locale en combinant plusieurs types d'élevages et de cultures de manière durable.</p><p>J'ai mené une analyse des besoins, défini la portée du projet, planifié les ressources, estimé les budgets et identifié les risques potentiels. La simulation ci-dessous est une démonstration interactive de ce plan d'affaires.</p><p><strong>Compétences :</strong> Planification de projet, Analyse des parties prenantes, Gestion des risques, Budgétisation, Élaboration de business plan.</p>`, 
+                imageUrl: 'images/project_management.jpg', 
+                certLink: 'https://coursera.org/verify/professional-cert/351UXTQ0NEAH', 
+                simLink: '#',
+                simulationContent: `
+                    <h3>Contenu : Business Plan Agropastoral à Kalehe</h3>
+                    <p>Ce projet consistait à élaborer un business plan complet pour une ferme intégrée (élevage de poules, porcs et pisciculture) dans le territoire de Kalehe, visant à améliorer la sécurité alimentaire et à créer des opportunités économiques locales.</p>
+                    <h4>1. Résumé Exécutif</h4>
+                    <p><strong>Objectif :</strong> Créer une source de protéines abordable et durable pour la communauté locale. Le projet intègre trois activités complémentaires pour optimiser les ressources et minimiser les déchets (par exemple, utilisation des déjections animales pour fertiliser les étangs).</p>
+                    <h4>2. Analyse du Marché</h4>
+                    <p><strong>Constat :</strong> Forte demande locale pour les œufs, la viande de porc et le poisson, avec une offre actuellement insuffisante et coûteuse. Le projet cible les ménages locaux, les restaurants et les petits marchés.</p>
+                    <h4>3. Plan Opérationnel</h4>
+                    <p><strong>Poulailler :</strong> Démarrage avec 500 poules pondeuses, production estimée à 400 œufs/jour.<br>
+                       <strong>Porcherie :</strong> Démarrage avec 10 truies et 2 verrats, avec un cycle de reproduction visant une production continue.<br>
+                       <strong>Pisciculture :</strong> Aménagement de 3 étangs pour l'élevage de tilapias, une espèce robuste et à croissance rapide.</p>
+                    <h4>4. Plan Financier</h4>
+                    <p>Le plan détaille les coûts de démarrage (infrastructures, achat des animaux, aliments), les coûts opérationnels et les projections de revenus sur 3 ans. Le seuil de rentabilité est estimé à 18 mois.</p>
+                    <h4>5. Impact Social et Environnemental</h4>
+                    <p>Création de 5 emplois directs, amélioration de la nutrition locale, et mise en place d'un système de gestion des déchets pour la production de compost.</p>
+
+                    <hr style="margin: 2.5rem 0; border-color: var(--border-color);">
+
+                    <h4>Lancez une Simulation de Rentabilité</h4>
+                    <p>Utilisez ce simulateur simplifié pour obtenir une prévision basée sur le type d'investissement et le budget initial.</p>
+                    <form id="agri-sim-form">
+                        <div>
+                            <label for="investment-type">Type d'investissement</label>
+                            <select id="investment-type" name="type">
+                                <option value="livestock">Élevage (Poules)</option>
+                                <option value="porcs">Élevage (Porcs)</option>
+                                <option value="caprins">Élevage (Caprins)</option>
+                                <option value="pisciculture">Pisciculture (Tilapia)</option>
+                                <option value="myciculture">Myciculture (Champignons)</option>
+                                <option value="crops">Cultures (Maïs)</option>
+                                <option value="apiculture">Apiculture (Miel)</option>
+                                <option value="maraichage">Maraîchage (Légumes)</option></select>
+                        </div>
+                        <div>
+                            <label for="budget">Budget (en USD)</label>
+                            <input type="number" id="budget" name="budget" value="5000" required>
+                        </div>
+                        <button type="submit" class="project-link-btn">Simuler</button>
+                    </form>
+                    <div id="simulation-results"></div>
+                `
+            },
+            'gcs': { 
+                title: 'Google Cybersecurity', 
+                description: `<p>Cette certification m'a fourni des compétences pratiques en matière de défense des réseaux et des systèmes. Le projet final consistait à utiliser des outils et des scripts pour identifier, évaluer et documenter les vulnérabilités de sécurité. J'ai appris à penser comme un attaquant pour mieux protéger les infrastructures.</p><p>La simulation ci-dessous présente des exemples de scripts Python que j'ai appris à développer pour automatiser les tâches de reconnaissance et d'analyse de vulnérabilités, une compétence fondamentale pour tout professionnel de la cybersécurité.</p><p><strong>Compétences :</strong> Python pour la sécurité, Analyse de vulnérabilités, Outils de scan (Nmap), Sécurité des réseaux, Gestion des risques, SOC.</p>`, 
+                imageUrl: 'images/cybersecurity.jpg', 
+                certLink: 'https://coursera.org/verify/professional-cert/705DJ3IF51UQ', 
+                simLink: '#',
+                simulationContent: `
+                    <h3>Démonstration : Scripts d'Analyse de Vulnérabilités Web</h3>
+                    <p>La certification Google Cybersecurity couvre la création d'outils pour identifier les failles de sécurité. Voici trois exemples de scripts Python, chacun ciblant un type de vulnérabilité différent, suivis d'une explication détaillée.</p>
+
+                    <h4>1. Scan de Ports pour la Reconnaissance</h4>
+                    <p>La première étape de l'évaluation d'une cible est de découvrir les services exposés. Ce script identifie les ports ouverts, qui sont des portes d'entrée potentielles pour un attaquant.</p>
+                    
+                    <div class="code-block-wrapper">
+                        <button class="copy-btn" title="Copier le code"><i class="far fa-copy"></i></button>
+                        <pre><code class="language-python">import socket
+
+def scan_port(ip, port):
+    """Scanne un port unique sur une IP donnée."""
+    try:
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        sock.settimeout(0.5) # Ne pas attendre trop longtemps
+        result = sock.connect_ex((ip, port))
+        if result == 0:
+            print(f"[+] Port {port} est ouvert")
+        sock.close()
+    except socket.error as e:
+        print(f"Erreur de socket : {e}")
+
+# ATTENTION : N'exécutez ce script que sur des systèmes autorisés.
+target_ip = socket.gethostbyname('scanme.nmap.org')
+common_ports = [21, 22, 80, 443, 8080]
+print(f"[*] Scan de {target_ip}...")
+for port in common_ports:
+    scan_port(target_ip, port)
+                        </code></pre>
+                    </div>
+                    <h5>Description Détaillée</h5>
+                    <p>Ce script utilise le module <code>socket</code> de Python pour tenter d'établir une connexion TCP sur une liste de ports courants. Si la connexion réussit (<code>connect_ex</code> retourne 0), le port est considéré comme "ouvert". L'identification des ports ouverts permet de cartographier la surface d'attaque d'un serveur (par exemple, un port 22 ouvert indique un service SSH, un port 80 un service web HTTP).</p>
+
+                    <hr style="margin: 2rem 0; border-color: var(--border-color);">
+
+                    <h4>2. Vérification des En-têtes de Sécurité HTTP</h4>
+                    <p>Les en-têtes HTTP mal configurés peuvent exposer un site web à des attaques comme le clickjacking ou le Cross-Site Scripting (XSS). Ce script vérifie leur présence.</p>
+                    <div class="code-block-wrapper">
+                        <button class="copy-btn" title="Copier le code"><i class="far fa-copy"></i></button>
+                        <pre><code class="language-python">import requests
+
+def check_security_headers(url):
+    """Vérifie la présence d'en-têtes de sécurité essentiels."""
+    headers_to_check = [
+        'Strict-Transport-Security',
+        'Content-Security-Policy',
+        'X-Content-Type-Options',
+        'X-Frame-Options'
+    ]
+    try:
+        response = requests.get(url, timeout=5)
+        print(f"[*] Analyse des en-têtes pour {url}")
+        for header in headers_to_check:
+            if header in response.headers:
+                print(f"[+] En-tête '{header}' trouvé.")
+            else:
+                print(f"[-] AVERTISSEMENT : En-tête '{header}' manquant.")
+    except requests.exceptions.RequestException as e:
+        print(f"[!] Erreur de connexion : {e}")
+
+# Cible de test qui a des en-têtes manquants
+check_security_headers('http://testphp.vulnweb.com/')
+                        </code></pre>
+                    </div>
+                    <h5>Description Détaillée</h5>
+                    <p>Ce script utilise la bibliothèque <code>requests</code> pour envoyer une requête GET à l'URL spécifiée. Il analyse ensuite les en-têtes de la réponse pour vérifier si des en-têtes de sécurité critiques sont présents. Par exemple, l'absence de <code>X-Frame-Options</code> peut permettre à un site malveillant d'intégrer le site vulnérable dans une iframe et de tromper l'utilisateur pour qu'il clique sur des éléments invisibles (clickjacking).</p>
+
+                    <hr style="margin: 2rem 0; border-color: var(--border-color);">
+
+                    <h4>3. Test d'Injection SQL de Base</h4>
+                    <p>L'injection SQL est l'une des vulnérabilités les plus critiques. Ce script simule une tentative d'injection très simple en envoyant une charge utile SQL commune dans un champ de formulaire.</p>
+                    <div class="code-block-wrapper">
+                        <button class="copy-btn" title="Copier le code"><i class="far fa-copy"></i></button>
+                        <pre><code class="language-python">import requests
+
+def basic_sql_injection_test(url, form_data_template):
+    """Tente une injection SQL basique avec ' OR '1'='1'."""
+    sql_payload = "' OR '1'='1"
+    # Injecte la charge utile dans chaque champ du formulaire
+    for field in form_data_template:
+        injected_data = form_data_template.copy()
+        injected_data[field] = sql_payload
+        
+        response = requests.post(url, data=injected_data)
+        
+        # Un test simple : si le contenu change radicalement, c'est suspect
+        if "error" not in response.text.lower() and "SQL" not in response.text.upper():
+             print(f"[!] Potentielle vulnérabilité SQLi dans le champ '{field}'")
+
+# ATTENTION : À n'utiliser que sur des sites de test autorisés.
+# L'URL et les données sont fictives et à adapter à la cible.
+# basic_sql_injection_test('http://testphp.vulnweb.com/login.php', {'uname': 'test', 'pass': 'test'})
+print("[*] Simulation du test d'injection SQL terminée (code à titre d'exemple).")
+                        </code></pre>
+                    </div>
+                    <h5>Description Détaillée</h5>
+                    <p>Ce script tente d'exploiter une faille d'injection SQL en soumettant une charge utile (<code>' OR '1'='1'</code>) dans les champs d'un formulaire de connexion. Si le serveur concatène directement cette entrée dans une requête SQL sans la nettoyer, la condition deviendra <code>WHERE username = '' OR '1'='1'</code>, ce qui est toujours vrai et pourrait connecter l'attaquant sans mot de passe valide. Le script vérifie si la réponse du serveur change de manière anormale, ce qui peut indiquer une vulnérabilité. <strong>Ce type de test est illégal sur des systèmes sans autorisation explicite.</strong></p>
+
+                    <hr style="margin: 2.5rem 0; border-color: var(--border-color);">
+
+                    <h4>Testez un site web (Simulation)</h4>
+                    <p>Entrez une URL (par exemple, le site de test autorisé <strong>testphp.vulnweb.com</strong>) pour lancer une analyse de vulnérabilité simulée et recevoir des conseils de sécurité.</p>
+                    <div class="scanner-ui" id="vulnerability-scanner">
+                        <input type="text" id="vuln-test-url" placeholder="http://testphp.vulnweb.com" value="http://testphp.vulnweb.com">
+                        <button type="button" id="scan-vuln-btn" class="project-link-btn">Scanner</button>
+                    </div>
+                    <div id="scan-results"></div>
+                `
+            },
+            'ibm': { 
+                title: 'IBM Full Stack Developer', 
+                description: `<p>Développement d'une application web "To-Do List" en utilisant une stack PHP et MySQL. Le projet comprenait la création d'un backend en PHP pour gérer les tâches, la conception d'une base de données relationnelle avec MySQL, et la construction d'une interface utilisateur simple en HTML/CSS. Le code source est disponible sur GitHub.</p><p><strong>Compétences :</strong> PHP, MySQL, SQL, HTML, CSS, JavaScript.</p>`, 
+                imageUrl: 'images/ibm_full_stack_developer.jpg', 
+                certLink: 'https://coursera.org/verify/professional-cert/EGUL98Z14H07', 
+                simLink: 'https://github.com/PatrickSafari',
+                simulationContent: `
+                    <h3>Démonstration : Composants d'une Application "To-Do List"</h3>
+                    <p>Ce projet de certification m'a permis de construire une application web complète. Voici trois extraits de code illustrant les différentes couches de l'application : le frontend (HTML), le backend (PHP) et la base de données (MySQL).</p>
+
+                    <h4>1. Frontend : Structure HTML de la To-Do List (index.html)</h4>
+                    <p>Cette structure HTML définit l'interface utilisateur de l'application. Elle inclut un champ de saisie pour ajouter de nouvelles tâches et une liste pour afficher les tâches existantes, qui seraient chargées par le backend PHP.</p>
+                    <div class="code-block-wrapper">
+                        <button class="copy-btn" title="Copier le code"><i class="far fa-copy"></i></button>
+                        <pre><code class="language-html">&lt;!DOCTYPE html&gt;
+&lt;html lang="fr"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;title&gt;Ma To-Do List&lt;/title&gt;
+    &lt;style&gt;
+        body { font-family: Arial, sans-serif; background-color: #f4f4f4; margin: 0; padding: 0; }
+        .container { max-width: 600px; margin: 50px auto; background: #fff; padding: 20px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        h1 { text-align: center; color: #333; }
+        form { display: flex; margin-bottom: 20px; }
+        input[type="text"] { flex: 1; padding: 10px; border: 1px solid #ccc; border-radius: 4px; }
+        button { padding: 10px 15px; border: none; background: #28a745; color: #fff; border-radius: 4px; cursor: pointer; }
+        ul { list-style-type: none; padding: 0; }
+        li { background: #f9f9f9; margin-bottom: 10px; padding: 10px; border-radius: 4px; display: flex; justify-content: space-between; align-items: center; }
+        a { color: #dc3545; text-decoration: none; }
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;div class="container"&gt;
+        &lt;h1&gt;Ma Liste de Tâches&lt;/h1&gt;
+        &lt;form action="backend.php" method="POST"&gt;
+            &lt;input type="hidden" name="action" value="add_task"&gt;
+            &lt;input type="text" name="task_title" placeholder="Ajouter une nouvelle tâche..." required&gt;
+            &lt;button type="submit"&gt;Ajouter&lt;/button&gt;
+        &lt;/form&gt;
+        &lt;ul id="task-list"&gt;
+            &lt;!-- Les tâches seront chargées ici par PHP --&gt;
+            &lt;li&gt;Tâche 1 &lt;a href="backend.php?action=delete&id=1"&gt;Supprimer&lt;/a&gt;&lt;/li&gt;
+        &lt;/ul&gt;
+    &lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+                                        </div>
+                                        <h5>Description Détaillée</h5>
+                                        <p>Le frontend est la partie visible de l'application. Ce code HTML simple mais structuré est la base de l'interaction avec l'utilisateur. Le formulaire envoie les nouvelles tâches au script <code>backend.php</code>, et la liste (<code>&lt;ul&gt;</code>) est destinée à être peuplée dynamiquement avec les données provenant de la base de données.</p>
+
+                                        <hr style="margin: 2rem 0; border-color: var(--border-color);">
+
+                                        <h4>2. Backend : Logique d'Ajout de Tâche (backend.php)</h4>
+                                        <p>Ce script PHP gère la logique côté serveur. Il contient la configuration de la connexion, reçoit les données du formulaire, se connecte à la base de données, valide les informations et insère la nouvelle tâche.</p>
+                                        <div class="code-block-wrapper">
+                                            <button class="copy-btn" title="Copier le code"><i class="far fa-copy"></i></button>
+                                            <pre><code class="language-php">&lt;?php
+// 1. Configuration de la connexion
+$servername = "localhost";
+$username = "root";
+$password = ""; // Votre mot de passe
+$dbname = "todo_app_db";
+
+$conn = new mysqli($servername, $username, $password, $dbname);
+if ($conn-&gt;connect_error) {
+    die("Connection failed: " . $conn-&gt;connect_error);
+}
+
+// 2. Logique pour gérer les actions
+$action = $_POST['action'] ?? '';
+
+if ($action === 'add_task' && !empty($_POST['task_title'])) {
+    $title = htmlspecialchars($_POST['task_title']);
+
+    // Utiliser une requête préparée pour la sécurité
+    $stmt = $conn-&gt;prepare("INSERT INTO tasks (title) VALUES (?)");
+    $stmt-&gt;bind_param("s", $title);
+    $stmt-&gt;execute();
+    $stmt-&gt;close();
+}
+
+$conn-&gt;close();
+
+// 3. Rediriger vers la page principale
+header("Location: index.html");
+exit();
+?&gt;</code></pre>
+                                        </div>
+                                        <h5>Description Détaillée</h5>
+                                        <p>Ce script PHP est un exemple classique de traitement de formulaire. Il inclut la configuration de la connexion à la base de données en haut du fichier. Il utilise <strong>MySQLi</strong> avec des <strong>requêtes préparées</strong> (<code>prepare</code> et <code>bind_param</code>) pour insérer des données en toute sécurité, ce qui prévient les injections SQL. La fonction <code>htmlspecialchars</code> est également utilisée pour nettoyer l'entrée utilisateur et se protéger contre les attaques XSS.</p>
+
+                                        <hr style="margin: 2rem 0; border-color: var(--border-color);">
+
+                                        <h4>3. Base de Données : Création de la Table (MySQL)</h4>
+                                        <p>Le cœur du stockage de données. Ce code SQL est utilisé pour créer la table <code>tasks</code> dans la base de données MySQL. Il définit la structure des données, y compris les types de champs, les valeurs par défaut et la clé primaire.</p>
+                                        <div class="code-block-wrapper">
+                                            <button class="copy-btn" title="Copier le code"><i class="far fa-copy"></i></button>
+                                            <pre><code class="language-sql">-- Création de la table pour stocker les tâches
+CREATE TABLE tasks (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    is_completed BOOLEAN NOT NULL DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Insertion de quelques tâches d'exemple
+INSERT INTO tasks (title) VALUES ('Apprendre le SQL');
+INSERT INTO tasks (title) VALUES ('Construire un backend en PHP');
+INSERT INTO tasks (title, is_completed) VALUES ('Créer un frontend en HTML', TRUE);
+</code></pre>
+                                        </div>
+                                        <h5>Description Détaillée</h5>
+                                        <p>Ce script SQL définit une table <code>tasks</code> avec quatre colonnes : un <code>id</code> unique qui s'incrémente automatiquement, un <code>title</code> pour le nom de la tâche, un booléen <code>is_completed</code> pour suivre son état (avec une valeur par défaut à <code>FALSE</code>), et un <code>created_at</code> qui enregistre automatiquement la date et l'heure de création. C'est une structure de table simple et efficace pour une application de ce type.</p>
+
+                                        <hr style="margin: 2.5rem 0; border-color: var(--border-color);">
+
+                                        <h4>Lancez une Simulation de la To-Do List</h4>
+                                        <p>Cette simulation interactive en JavaScript vous permet de gérer une liste de tâches directement dans votre navigateur. Vous pouvez ajouter, filtrer, marquer comme terminées et supprimer des tâches.</p>
+                                        <br>
+                                        <div id="todo-app">
+                                            <h5><i class="fas fa-tasks" style="margin-right: 10px; color: var(--accent-color);"></i>Gestionnaire de Tâches</h5>
+                                            <div class="controls">
+                                                <div class="input-group">
+                                                    <i class="fas fa-search"></i>
+                                                    <input type="text" id="filter-text" placeholder="Filtrer par nom...">
+                                                </div>
+                                                <select id="filter-status">
+                                                    <option value="all">Toutes</option>
+                                                    <option value="pending">En cours</option>
+                                                    <option value="completed">Terminées</option>
+                                                </select>
+                                            </div>
+                                            <br>
+                                            <table>
+                                                <thead>
+                                                    <tr>
+                                                        <th>Tâche</th>
+                                                        <th>Statut</th>
+                                                        <th>Actions</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="todo-table-body">
+                                                    <!-- Les tâches seront injectées ici -->
+                                                </tbody>
+                                            </table>
+                                            <br>
+                                            <form id="add-task-form">
+                                                <div class="input-group">
+                                                    <i class="fas fa-plus"></i>
+                                                    <input type="text" id="new-task-title" placeholder="Entrez une nouvelle tâche..." required>
+                                                </div>
+                                                <button type="submit" class="project-link-btn">Ajouter la Tâche</button>
+                                            </form>
+                                        </div>
+                `,
+                js: 'todoList'
+                    },
+            'gux': { 
+                title: 'Google UX Design Showcase', 
+                description: `<p>Ce projet est une démonstration interactive de 10 styles de design UX/UI distincts, chacun implémenté en HTML et CSS. Plutôt qu'un simple prototype Figma, cette page présente des mises en page fonctionnelles et stylisées, allant du minimalisme élégant au brutalisme audacieux. Chaque section explique les principes de conception UX et les techniques CSS utilisées pour y parvenir.</p><p><strong>Compétences :</strong> HTML5, CSS3, Design UX/UI, Responsive Design, Principes de Gestalt.</p>`, 
+                imageUrl: 'images/ux_design.jpg',
+                certLink: 'https://coursera.org/verify/professional-cert/6R8451VM3CQ5', 
+                simLink: 'C:/Users/Patrick cimana/Desktop/work/my_website/ux_design.html',
+                simulationContent: `
+                    <h3>Contenu : Processus de Design UX</h3>
+                    <p>Le design UX est un processus structuré. Pour ce projet d'application de réservation, j'ai suivi les étapes suivantes pour garantir que la solution réponde aux vrais besoins des utilisateurs.</p>
+                    <h4>1. Empathie (Recherche)</h4>
+                    <p>J'ai mené 5 interviews d'utilisateurs et déployé un sondage (30+ réponses) pour comprendre leurs frustrations avec les systèmes de réservation actuels. Un point clé : la difficulté de trouver des restaurants avec une disponibilité immédiate.</p>
+                    <h4>2. Définition (Personas & User Stories)</h4>
+                    <p>À partir de la recherche, j'ai créé deux personas : "Clara la planificatrice" et "Marc le spontané". Pour Marc, une user story clé était : "En tant qu'utilisateur pressé, je veux voir en un coup d'œil les restaurants avec des tables libres maintenant près de moi."</p>
+                    <h4>3. Idéation (Wireframing)</h4>
+                    <p>J'ai dessiné des wireframes basse-fidélité sur papier pour explorer rapidement plusieurs agencements de l'écran d'accueil, en me concentrant sur la mise en avant de la disponibilité en temps réel.</p>
+                    <h4>4. Prototypage & Test</h4>
+                    <p>J'ai ensuite créé un prototype interactif haute-fidélité dans Figma. J'ai mené des tests d'utilisabilité avec 3 utilisateurs, ce qui a révélé que le bouton "Réserver" était trop petit. J'ai itéré sur le design pour l'agrandir et améliorer sa visibilité. La page de simulation présente une collection de ces principes de design.</p>
+                `
+            },
+            'gitp': { 
+                title: 'Google IT Automation with Python', 
+                description: `<p>Automatisation de tâches d'administration système à l'aide de Python. J'ai développé plusieurs scripts pour des cas concrets : un script pour redimensionner et ajouter un filigrane à des centaines d'images, et un autre pour analyser des fichiers journaux, extraire des erreurs et générer un rapport PDF automatisé. Ces scripts démontrent ma capacité à résoudre des problèmes réels par le code.</p><p><strong>Compétences :</strong> Python, Automatisation, Manipulation de fichiers, Expressions régulières, Bash.</p>`, 
+                imageUrl: 'images/it_automation_with_python.jpg', 
+                certLink: 'https://coursera.org/verify/professional-cert/GMEVP24UVGP8', 
+                simLink: '#',
+                simulationContent: `
+                    <h3>Démonstration : 10 Scripts d'Automatisation avec Python</h3>
+                    <p>La certification "IT Automation with Python" de Google se concentre sur la résolution de problèmes réels grâce à des scripts. Voici 10 exemples concrets de tâches qui peuvent être automatisées avec Python, illustrant les compétences acquises durant cette formation.</p>
+
+                    <hr style="margin: 2.5rem 0; border-color: var(--border-color);">
+
+                    <h4>1. Renommage de Fichiers en Masse</h4>
+                    <p>Ce script parcourt un répertoire et renomme les fichiers selon un modèle spécifique, par exemple en ajoutant un préfixe. C'est utile pour organiser de grandes quantités de fichiers.</p>
+                    <div class="code-block-wrapper">
+                        <button class="copy-btn" title="Copier le code"><i class="far fa-copy"></i></button>
+                        <pre><code class="language-python">import os
+
+def batch_rename(directory, prefix):
+    """Renomme tous les fichiers dans un répertoire avec un préfixe."""
+    for count, filename in enumerate(os.listdir(directory)):
+        # S'assure qu'on ne renomme que les fichiers, pas les sous-dossiers
+        if os.path.isfile(os.path.join(directory, filename)):
+            new_name = f"{prefix}_{count}_{filename}"
+            source = os.path.join(directory, filename)
+            destination = os.path.join(directory, new_name)
+            os.rename(source, destination)
+            print(f"Renamed '{filename}' to '{new_name}'")
+
+# # Utilisation (à exécuter dans un environnement sûr)
+# # batch_rename('/chemin/vers/vos/fichiers', 'archive')
+print("[*] Script de renommage de fichiers prêt.")
+</code></pre>
+                    </div>
+                    <h5>Explication du code</h5>
+                    <p>Ce script utilise le module <code>os</code> pour interagir avec le système de fichiers. <code>os.listdir()</code> liste tous les éléments d'un répertoire, <code>os.path.isfile()</code> vérifie si un chemin est un fichier, et <code>os.rename()</code> effectue le renommage. La fonction <code>enumerate</code> permet d'obtenir un compteur pour garantir des noms de fichiers uniques.</p>
+
+                    <hr style="margin: 2.5rem 0; border-color: var(--border-color);">
+
+                    <h4>2. Redimensionnement d'Images</h4>
+                    <p>Automatise le redimensionnement de toutes les images d'un dossier à une taille spécifiée, en utilisant la bibliothèque Pillow.</p>
+                    <div class="code-block-wrapper">
+                        <button class="copy-btn" title="Copier le code"><i class="far fa-copy"></i></button>
+                        <pre><code class="language-python">from PIL import Image
+import os
+
+def resize_images(input_dir, output_dir, size=(800, 600)):
+    """Redimensionne les images d'un répertoire et les sauvegarde dans un autre."""
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+
+    for filename in os.listdir(input_dir):
+        if filename.lower().endswith(('.png', '.jpg', '.jpeg')):
+            img = Image.open(os.path.join(input_dir, filename))
+            img.thumbnail(size)
+            img.save(os.path.join(output_dir, filename))
+            print(f"Resized '{filename}'")
+
+# # Utilisation
+# # resize_images('/chemin/images_originales', '/chemin/images_redimensionnees')
+print("[*] Script de redimensionnement d'images prêt.")
+</code></pre>
+                    </div>
+                    <h5>Explication du code</h5>
+                    <p>Ce script dépend de la bibliothèque Pillow (<code>PIL</code>). Il parcourt un répertoire source, ouvre chaque image, la redimensionne avec <code>img.thumbnail()</code> (qui conserve les proportions) et la sauvegarde dans un répertoire de destination. C'est essentiel pour préparer des images pour le web.</p>
+
+                    <hr style="margin: 2.5rem 0; border-color: var(--border-color);">
+
+                    <h4>3. Conversion CSV vers JSON</h4>
+                    <p>Lit les données d'un fichier CSV et les convertit en un format JSON, très courant pour les APIs web.</p>
+                    <div class="code-block-wrapper">
+                        <button class="copy-btn" title="Copier le code"><i class="far fa-copy"></i></button>
+                        <pre><code class="language-python">import csv
+import json
+
+def csv_to_json(csv_path, json_path):
+    """Convertit un fichier CSV en JSON."""
+    data = []
+    with open(csv_path, 'r', encoding='utf-8') as csv_file:
+        csv_reader = csv.DictReader(csv_file)
+        for row in csv_reader:
+            data.append(row)
+    
+    with open(json_path, 'w', encoding='utf-8') as json_file:
+        json.dump(data, json_file, indent=4)
+    print(f"Converted '{csv_path}' to '{json_path}'")
+
+# # Utilisation
+# # csv_to_json('donnees.csv', 'donnees.json')
+print("[*] Script de conversion CSV vers JSON prêt.")
+</code></pre>
+                    </div>
+                    <h5>Explication du code</h5>
+                    <p>Le script utilise les modules <code>csv</code> et <code>json</code>. <code>csv.DictReader</code> lit le fichier CSV et transforme chaque ligne en un dictionnaire, ce qui est idéal pour la conversion. <code>json.dump()</code> écrit ensuite la liste de dictionnaires dans un fichier JSON, avec une indentation pour la lisibilité.</p>
+
+                    <hr style="margin: 2.5rem 0; border-color: var(--border-color);">
+
+                    <h4>4. Analyse de Fichiers Journaux (Logs)</h4>
+                    <p>Ce script lit un fichier journal et utilise des expressions régulières pour extraire toutes les lignes contenant un mot-clé comme "ERROR".</p>
+                    <div class="code-block-wrapper">
+                        <button class="copy-btn" title="Copier le code"><i class="far fa-copy"></i></button>
+                        <pre><code class="language-python">import re
+
+def find_errors_in_log(log_file_path):
+    """Trouve et affiche les lignes d'erreur dans un fichier log."""
+    error_pattern = re.compile(r'ERROR:.*')
+    try:
+        with open(log_file_path, 'r') as f:
+            for line in f:
+                if error_pattern.search(line):
+                    print(f"Found error: {line.strip()}")
+    except FileNotFoundError:
+        print(f"Error: File not found at '{log_file_path}'")
+
+# # Utilisation
+# # find_errors_in_log('application.log')
+print("[*] Script d'analyse de logs prêt.")
+</code></pre>
+                    </div>
+                    <h5>Explication du code</h5>
+                    <p>Le module <code>re</code> (expressions régulières) est utilisé pour définir un modèle (<code>pattern</code>) qui correspond aux lignes commençant par "ERROR:". Le script lit le fichier ligne par ligne et utilise <code>pattern.search()</code> pour vérifier si le modèle est trouvé, ce qui est beaucoup plus efficace que de simples vérifications de chaînes de caractères.</p>
+
+                    <hr style="margin: 2.5rem 0; border-color: var(--border-color);">
+
+                    <h4>5. Envoi d'un E-mail Automatisé</h4>
+                    <p>Envoie un e-mail simple en utilisant le protocole SMTP. Utile pour envoyer des notifications ou des rapports à la fin d'un script.</p>
+                    <div class="code-block-wrapper">
+                        <button class="copy-btn" title="Copier le code"><i class="far fa-copy"></i></button>
+                        <pre><code class="language-python">import smtplib
+from email.mime.text import MIMEText
+
+def send_email(subject, body, sender, recipients, smtp_server, smtp_port, password):
+    """Envoie un e-mail."""
+    msg = MIMEText(body)
+    msg['Subject'] = subject
+    msg['From'] = sender
+    msg['To'] = ', '.join(recipients)
+    
+    with smtplib.SMTP_SSL(smtp_server, smtp_port) as smtp_server:
+       smtp_server.login(sender, password)
+       smtp_server.sendmail(sender, recipients, msg.as_string())
+    print("Email sent successfully!")
+
+# # Utilisation (remplacer avec vos informations)
+# # send_email("Rapport d'automatisation", "Le script a terminé.", "votre_email@gmail.com", ["destinataire@example.com"], "smtp.gmail.com", 465, "votre_mot_de_passe")
+print("[*] Script d'envoi d'e-mail prêt.")
+</code></pre>
+                    </div>
+                    <h5>Explication du code</h5>
+                    <p>Ce script utilise le module <code>smtplib</code> pour la connexion au serveur de messagerie et <code>email.mime.text</code> pour construire le message. Il se connecte à un serveur SMTP via SSL, s'authentifie avec un login/mot de passe, et envoie l'e-mail. <strong>Attention :</strong> ne jamais stocker de mots de passe en clair dans un script en production.</p>
+
+                    <hr style="margin: 2.5rem 0; border-color: var(--border-color);">
+
+                    <h4>6. Vérification de l'État du Système</h4>
+                    <p>Utilise la bibliothèque <code>psutil</code> pour récupérer des informations système clés comme l'utilisation du CPU, de la mémoire et de l'espace disque.</p>
+                    <div class="code-block-wrapper">
+                        <button class="copy-btn" title="Copier le code"><i class="far fa-copy"></i></button>
+                        <pre><code class="language-python">import psutil
+
+def check_system_health():
+    """Vérifie et affiche l'état du système."""
+    cpu_usage = psutil.cpu_percent(interval=1)
+    memory_info = psutil.virtual_memory()
+    disk_info = psutil.disk_usage('/')
+
+    print(f"Utilisation CPU: {cpu_usage}%")
+    print(f"Utilisation Mémoire: {memory_info.percent}%")
+    print(f"Utilisation Disque: {disk_info.percent}%")
+
+    if cpu_usage > 80 or memory_info.percent > 80:
+        print("ALERTE: Utilisation élevée des ressources !")
+
+# # Utilisation
+# # check_system_health()
+print("[*] Script de vérification système prêt.")
+</code></pre>
+                    </div>
+                    <h5>Explication du code</h5>
+                    <p>La bibliothèque externe <code>psutil</code> est un outil puissant pour la surveillance système. <code>psutil.cpu_percent()</code>, <code>psutil.virtual_memory()</code> et <code>psutil.disk_usage()</code> retournent des informations détaillées. Ce type de script peut être planifié pour s'exécuter périodiquement et envoyer une alerte (par e-mail, par exemple) si les seuils sont dépassés.</p>
+
+                    <hr style="margin: 2.5rem 0; border-color: var(--border-color);">
+
+                    <h4>7. Archivage de Fichiers en ZIP</h4>
+                    <p>Crée une archive ZIP contenant tous les fichiers d'un répertoire. Idéal pour les sauvegardes automatisées.</p>
+                    <div class="code-block-wrapper">
+                        <button class="copy-btn" title="Copier le code"><i class="far fa-copy"></i></button>
+                        <pre><code class="language-python">import os
+import zipfile
+
+def zip_directory(folder_path, zip_path):
+    """Crée une archive ZIP d'un répertoire."""
+    with zipfile.ZipFile(zip_path, 'w', zipfile.ZIP_DEFLATED) as zipf:
+        for root, _, files in os.walk(folder_path):
+            for file in files:
+                file_path = os.path.join(root, file)
+                zipf.write(file_path, os.path.relpath(file_path, folder_path))
+    print(f"Directory '{folder_path}' zipped to '{zip_path}'")
+
+# # Utilisation
+# # zip_directory('/chemin/vers/donnees', 'sauvegarde.zip')
+print("[*] Script d'archivage ZIP prêt.")
+</code></pre>
+                    </div>
+                    <h5>Explication du code</h5>
+                    <p>Le module <code>zipfile</code> permet de manipuler les archives ZIP. Le script utilise <code>os.walk()</code> pour parcourir récursivement tous les fichiers et dossiers. Chaque fichier est ajouté à l'archive avec <code>zipf.write()</code>. <code>os.path.relpath()</code> est utilisé pour conserver la structure des dossiers à l'intérieur du ZIP.</p>
+
+                    <hr style="margin: 2.5rem 0; border-color: var(--border-color);">
+
+                    <h4>8. Web Scraping Simple</h4>
+                    <p>Extrait tous les titres (balises &lt;h1&gt;) d'une page web en utilisant les bibliothèques requests et BeautifulSoup.</p>
+                    <div class="code-block-wrapper">
+                        <button class="copy-btn" title="Copier le code"><i class="far fa-copy"></i></button>
+                        <pre><code class="language-python">import requests
+from bs4 import BeautifulSoup
+
+def scrape_titles(url):
+    """Récupère et affiche tous les titres H1 d'une URL."""
+    try:
+        response = requests.get(url)
+        response.raise_for_status() # Lève une exception pour les mauvaises réponses (4xx ou 5xx)
+        
+        soup = BeautifulSoup(response.text, 'html.parser')
+        titles = soup.find_all('h1')
+        
+        print(f"Titres H1 trouvés sur {url}:")
+        for title in titles:
+            print(f"- {title.get_text(strip=True)}")
+            
+    except requests.exceptions.RequestException as e:
+        print(f"Erreur de requête: {e}")
+
+# # Utilisation
+# # scrape_titles('https://www.python.org/')
+print("[*] Script de web scraping prêt.")
+</code></pre>
+                    </div>
+                    <h5>Explication du code</h5>
+                    <p><code>requests.get(url)</code> télécharge le contenu HTML de la page. <code>BeautifulSoup</code> analyse ce HTML et le transforme en un objet navigable. <code>soup.find_all('h1')</code> trouve toutes les balises &lt;h1&gt; dans le document, et <code>.get_text()</code> extrait le texte qu'elles contiennent. C'est la base de l'extraction de données sur le web.</p>
+
+                    <hr style="margin: 2.5rem 0; border-color: var(--border-color);">
+
+                    <h4>9. Interaction avec une API</h4>
+                    <p>Récupère des données depuis une API publique (JSONPlaceholder) et affiche les titres des publications.</p>
+                    <div class="code-block-wrapper">
+                        <button class="copy-btn" title="Copier le code"><i class="far fa-copy"></i></button>
+                        <pre><code class="language-python">import requests
+
+def fetch_api_data(api_url):
+    """Récupère des données depuis une API et les affiche."""
+    try:
+        response = requests.get(api_url)
+        response.raise_for_status()
+        
+        posts = response.json() # Convertit la réponse JSON en objet Python
+        
+        for post in posts[:5]: # Affiche les 5 premiers
+            print(f"Titre du post {post['id']}: {post['title']}")
+            
+    except requests.exceptions.RequestException as e:
+        print(f"Erreur API: {e}")
+
+# # Utilisation
+# # fetch_api_data('https://jsonplaceholder.typicode.com/posts')
+print("[*] Script d'interaction API prêt.")
+</code></pre>
+                    </div>
+                    <h5>Explication du code</h5>
+                    <p>Similaire au web scraping, ce script utilise <code>requests</code> pour interroger une URL d'API. La différence clé est l'utilisation de <code>response.json()</code>, qui décode automatiquement la réponse JSON en une structure de données Python (généralement une liste de dictionnaires). C'est la méthode standard pour interagir avec les services web modernes.</p>
+
+                    <hr style="margin: 2.5rem 0; border-color: var(--border-color);">
+
+                    <h4>10. Génération de Rapport PDF</h4>
+                    <p>Crée un rapport PDF simple à partir de données textuelles en utilisant la bibliothèque <code>reportlab</code>.</p>
+                    <div class="code-block-wrapper">
+                        <button class="copy-btn" title="Copier le code"><i class="far fa-copy"></i></button>
+                        <pre><code class="language-python">from reportlab.pdfgen import canvas
+from reportlab.lib.pagesizes import letter
+
+def generate_pdf_report(filename, title, content_lines):
+    """Génère un rapport PDF simple."""
+    c = canvas.Canvas(filename, pagesize=letter)
+    width, height = letter
+
+    # Titre
+    c.setFont("Helvetica-Bold", 16)
+    c.drawString(72, height - 72, title)
+
+    # Contenu
+    c.setFont("Helvetica", 12)
+    text_object = c.beginText(72, height - 108)
+    for line in content_lines:
+        text_object.textLine(line)
+    c.drawText(text_object)
+
+    c.save()
+    print(f"Rapport PDF '{filename}' généré.")
+
+# # Utilisation
+# # report_lines = ["Ligne 1: Tout est OK.", "Ligne 2: Utilisation CPU à 25%.", "Ligne 3: Fin du rapport."]
+# # generate_pdf_report("rapport_systeme.pdf", "Rapport d'État du Système", report_lines)
+print("[*] Script de génération PDF prêt.")
+</code></pre>
+                    </div>
+                    <h5>Explication du code</h5>
+                    <p>La bibliothèque <code>reportlab</code> est un outil complet pour créer des PDF en Python. Ce script initialise un "canevas" (<code>canvas.Canvas</code>), définit les polices et les tailles, puis écrit le titre et les lignes de contenu à des coordonnées spécifiques sur la page. <code>c.save()</code> finalise et enregistre le fichier PDF.</p>
+                `
+            },
+            'gits': { 
+                title: 'Google IT Support', 
+                description: `<p>Ce projet était une série de simulations de dépannage informatique. J'ai diagnostiqué et résolu des problèmes complexes sur différents systèmes d'exploitation (Windows, Linux, MacOS), couvrant des domaines comme les réseaux (problèmes de DNS, DHCP), les permissions de fichiers, et la récupération de données. Chaque scénario était conçu pour tester les compétences de diagnostic et de résolution de problèmes.</p><p>La simulation ci-dessous est un chatbot simple qui guide un utilisateur à travers des étapes de dépannage de base, démontrant une approche structurée du support informatique.</p><p><strong>Compétences :</strong> Dépannage (Windows, Linux, MacOS), Réseautique, Support technique, Active Directory.</p>`, 
+                imageUrl: 'images/it_support.jpg', 
+                certLink: 'https://coursera.org/verify/professional-cert/L4ZFS6SSKHE6', 
+                simLink: '#',
+                simulationContent: `
+                    <div class="chat-widget">
+                        <h5><i class="fas fa-headset" style="margin-right: 10px; color: var(--accent-color);"></i>Assistant de Support IT</h5>
+                        <div class="chat-messages" id="chat-messages">
+                            <!-- Les messages du chat apparaîtront ici -->
+                        </div>
+                        <form id="chat-form">
+                            <input type="text" id="chat-input" placeholder="Décrivez votre problème..." autocomplete="off" required>
+                            <button type="submit" class="project-link-btn">Envoyer</button>
+                        </form>
+                    </div>
+                `,
+                js: 'itSupportChatbot'
+            },
+            'gda-gbi': {
+                title: 'Analyse des Devises Mondiales et du Franc Congolais',
+                description: `<p>Ce projet combine les compétences acquises dans les certifications Google Data Analytics et Business Intelligence. L'objectif était de suivre et d'analyser les fluctuations des taux de change de 7 devises mondiales clés : celles des 6 plus grandes économies (USD, CNY, EUR, JPY, INR, GBP) et le Franc Congolais (CDF).</p>
+                              <p>Le processus a impliqué la collecte de données de taux de change via une API, le nettoyage et la préparation des données avec Python (Pandas), l'analyse des tendances et la création d'un tableau de bord interactif pour visualiser les corrélations et la volatilité. Une attention particulière a été portée à l'analyse de la performance du Franc Congolais face au dollar américain.</p>
+                              <p><strong>Compétences :</strong> SQL, Python (Pandas, Matplotlib), Analyse de données, Tableau, Business Intelligence, Visualisation de données, KPI.</p>
+                              <div class="cert-images-container" style="display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 1.5rem; justify-content: center;">
+                                  <img src="images/advanced_data_analytics.jpg" alt="Certification Google Advanced Data Analytics" style="max-width: 48%; height: auto; border-radius: 8px; border: 1px solid var(--border-color);">
+                                  <img src="images/busness_inteligence.jpg" alt="Certification Google Business Intelligence" style="max-width: 48%; height: auto; border-radius: 8px; border: 1px solid var(--border-color);">
+                              </div>`,
+                imageUrl: 'images/advanced_data_analytics.jpg', // Main image, kept for consistency
+                certLink: '#', // This will be hidden
+                simLink: '#', // This will be hidden
+                extraLinks: [
+                    { name: 'Cert. Data Analytics', url: 'https://coursera.org/verify/professional-cert/LCGH3RERGP7B', icon: 'fa-certificate' },
+                    { name: 'Cert. Business Intelligence', url: 'https://coursera.org/verify/professional-cert/YDNCH3ULLKRU', icon: 'fa-certificate' },
+                ],
+                simulationContent: `
+                    <h3>Démonstration : Tableau de Bord Interactif des Devises</h3>
+                    <p>Cette simulation représente un tableau de bord interactif pour suivre la performance de plusieurs devises par rapport à l'USD. Les graphiques ci-dessous sont générés avec des données aléatoires pour illustrer les différentes vues analytiques possibles.</p>
+                    
+                    <div id="currency-charts-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 2.5rem; margin-top: 2rem;">
+                        <div class="chart-card" style="border: 1px solid var(--border-color); border-radius: 8px; padding: 1.5rem; grid-column: 1 / -1;">
+                            <canvas id="drcIncomeExpenseChart"></canvas>
+                        </div>
+                        <div class="chart-card" style="border: 1px solid var(--border-color); border-radius: 8px; padding: 1.5rem;">
+                            <canvas id="drcFiscalTrendChart"></canvas>
+                        </div>
+                        <div class="chart-card" style="border: 1px solid var(--border-color); border-radius: 8px; padding: 1.5rem;">
+                            <canvas id="drcCorrelationChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div id="currency-analysis" style="margin-top: 3rem;">
+                        <h4>Analyse Approfondie du Franc Congolais (CDF)</h4>
+                        <p>Le Franc Congolais (CDF) présente une volatilité particulièrement élevée par rapport aux autres devises majeures, comme l'illustre le graphique dédié. Cette instabilité est le reflet de défis macroéconomiques structurels propres à la République Démocratique du Congo.</p>
+                        <p><strong>Facteurs d'influence :</strong></p>
+                        <ul>
+                            <li><strong>Dépendance aux matières premières :</strong> L'économie congolaise est fortement tributaire des exportations de minerais (cuivre, cobalt). La fluctuation des prix de ces matières sur les marchés mondiaux a un impact direct et quasi immédiat sur la valeur du CDF. Une baisse des prix entraîne une diminution des entrées de devises étrangères (USD), créant une pression à la baisse sur le CDF.</li>
+                            <li><strong>Inflation et politique monétaire :</strong> Un historique d'inflation élevée érode la confiance dans la monnaie nationale. Bien que la Banque Centrale du Congo (BCC) intervienne régulièrement pour stabiliser le taux de change, ses réserves limitées rendent ces interventions difficiles à maintenir sur le long terme. Le graphique annuel montre des périodes de dépréciation rapide suivies de tentatives de stabilisation.</li>
+                            <li><strong>Contexte politique et sécuritaire :</strong> L'incertitude politique et les défis sécuritaires dans certaines régions du pays peuvent décourager les investissements étrangers et provoquer des fuites de capitaux, affaiblissant davantage le CDF.</li>
+                        </ul>
+                        <p><strong>Interprétation des graphiques :</strong> L'analyse de ces tendances permettrait aux entreprises et aux décideurs politiques d'anticiper les risques de change et de mettre en place des stratégies de couverture ou des politiques monétaires adaptées.</p>
+
+                        <h4 style="margin-top: 2.5rem;">Analyse de Corrélation : Devise, Revenus et Dépenses de l'État</h4>
+                        <p>Les graphiques ci-dessous explorent la relation complexe entre le taux de change du CDF, les revenus de l'État (principalement issus des exportations minières) et ses dépenses publiques. Ces visualisations sont cruciales pour une analyse macroéconomique complète.</p>
+                        <p><strong>Graphique de Superposition (Revenus, Dépenses & Taux de Change) :</strong> Ce graphique montre que les périodes de forte dépréciation du CDF coïncident souvent avec des déficits budgétaires croissants (dépenses supérieures aux revenus). Lorsque les revenus de l'État, souvent en devises étrangères (USD), diminuent (par exemple, suite à une chute des prix du cobalt), la BCC dispose de moins de réserves pour défendre le franc congolais sur le marché des changes. Simultanément, des dépenses publiques non maîtrisées, parfois financées par la "planche à billets", injectent une masse monétaire excessive dans l'économie, ce qui alimente l'inflation et accélère la dépréciation de la monnaie.</p>
+                        <p><strong>Graphique de Tendance Fiscale (Revenus vs. Dépenses) :</strong> Ce graphique se concentre exclusivement sur la dynamique budgétaire. Il permet de visualiser clairement les "ciseaux budgétaires" : l'écart entre les courbes de revenus et de dépenses. Un écart grandissant indique une pression accrue sur les finances publiques, un facteur clé qui peut précéder une période de dépréciation monétaire.</p>
+                        <p><strong>Graphique de Corrélation (Solde Budgétaire vs. Taux de Change) :</strong> Cette vue met en évidence la corrélation négative : un solde budgétaire qui se dégrade (devient plus négatif) est généralement associé à une augmentation du taux de change USD/CDF (dépréciation du CDF). À l'inverse, les rares périodes d'excédent budgétaire ou de déficit maîtrisé coïncident avec une plus grande stabilité du taux de change. Cet outil analytique permet de quantifier cette relation et de modéliser l'impact potentiel des politiques budgétaires sur la stabilité monétaire.</p>
+
+                        <h4 style="margin-top: 2.5rem;">Simulation d'Impact Macroéconomique sur la Volatilité</h4>
+                        <p>Cette simulation interactive vous permet de voir comment différents facteurs macroéconomiques peuvent influencer la volatilité du Franc Congolais (CDF). Ajustez les curseurs et observez l'impact projeté.</p>
+                        <div id="macro-sim-container" style="background: rgba(0,0,0,0.02); border-radius: 15px; padding: 2rem; border: 1px solid var(--border-color); margin-top: 1.5rem;">
+                            <div id="macro-sim-form" style="display: grid; grid-template-columns: 1fr; gap: 1.5rem;">
+                                <div>
+                                    <label for="sim-budget-balance">Solde Budgétaire (Revenus - Dépenses, en millions USD)</label>
+                                    <input type="range" id="sim-budget-balance" min="-500" max="100" value="-150" step="10" style="width: 100%;">
+                                    <span id="sim-budget-value" style="font-weight: bold; margin-left: 1rem;">-150 M USD</span>
+                                </div>
+                                <div>
+                                    <label for="sim-commodity-change">Variation du Prix des Matières Premières (%)</label>
+                                    <input type="range" id="sim-commodity-change" min="-20" max="20" value="-5" step="1" style="width: 100%;">
+                                    <span id="sim-commodity-value" style="font-weight: bold; margin-left: 1rem;">-5 %</span>
+                                </div>
+                            </div>
+                            <div id="volatility-output" style="margin-top: 2rem;">
+                                <h5>Niveau de Volatilité Projeté</h5>
+                                <div id="volatility-gauge" style="width: 100%; background-color: var(--border-color); border-radius: 8px; overflow: hidden;"><div id="volatility-bar" style="height: 30px; width: 50%; background: var(--gradient-accent); transition: width 0.5s ease, background-color 0.5s ease;"></div></div>
+                                <p id="volatility-text" style="margin-top: 1rem; text-align: center; font-weight: 600;"></p>
+                            </div>
+                        </div>
+                    </div>
+                `,
+                js: 'currencyAnalysis'
+            }
+        };
+
+        const displayProject = () => {
+            const projectId = window.location.hash.substring(1);
+            const project = projectData[projectId];
+            const projectsList = document.getElementById('projects-list');
+            const projectTitle = document.getElementById('project-title');
+
+            projectsList.innerHTML = ''; // Vider le contenu précédent
+
+            if (project) {
+                document.title = `${project.title} | Patrick Safari`;
+                projectTitle.textContent = project.title;
+
+                const projectCard = document.createElement('div');
+                projectCard.className = 'project-detail-card';
+                projectCard.innerHTML = `
+                    ${projectId !== 'gda-gbi' ? `<img src="${project.imageUrl}" alt="Certification ${project.title}" class="project-image">` : ''}
+                    <h3>${project.title}</h3>
+                    ${project.description}
+                    <div class="project-links"></div>
+                `;
+
+                // Handle extra links for combined projects
+                if (project.certLink && project.certLink !== '#') {
+                    const linksContainer = projectCard.querySelector('.project-links');
+                    linksContainer.innerHTML += `<a href="${project.certLink}" target="_blank" class="project-link-btn"><i class="fas fa-certificate"></i> Voir la Certification</a>`;
+                }
+                if (project.simLink && project.simLink !== '#') {
+                    const linksContainer = projectCard.querySelector('.project-links');
+                    linksContainer.innerHTML += ` <a href="${project.simLink}" target="_blank" class="project-link-btn"><i class="fas fa-flask"></i> Voir la Simulation</a>`;
+                }
+
+                if (project.extraLinks) {
+                    const linksContainer = projectCard.querySelector('.project-links');
+                    project.extraLinks.forEach(link => {
+                        linksContainer.innerHTML += ` <a href="${link.url}" target="_blank" class="project-link-btn"><i class="fas ${link.icon}"></i> ${link.name}</a>`;
+                    });
+                }
+
+                projectsList.appendChild(projectCard);
+
+                // Injecter la simulation si elle existe
+                if (project.simulationContent) {
+                    const simulationCard = document.createElement('div');
+                    simulationCard.className = 'simulation-card';
+                    simulationCard.innerHTML = project.simulationContent;
+                    projectCard.appendChild(simulationCard);
+                    if (project.js === 'itSupportChatbot') { initItSupportChatbot(); }
+                    if (project.js === 'todoList') { initTodoList(); }
+                    if (project.js === 'currencyAnalysis') { initCurrencyAnalysis(); }
+                }
+
+            } else {
+                // Si aucun hash n'est présent, afficher une liste de tous les projets
+                document.title = 'Projets | Patrick Safari';
+                projectTitle.textContent = 'Mes Projets & Certifications';
+                document.querySelector('.section-subtitle').textContent = "Cliquez sur un projet pour voir les détails et les simulations.";
+                document.querySelector('.back-link').style.display = 'none'; // Cacher le lien de retour
+
+                for (const id in projectData) {
+                    const p = projectData[id];
+                    const projectCard = document.createElement('div');
+                    projectCard.className = 'project-detail-card';
+                    // Extrait les 20 premiers mots pour la description courte
+                    const shortDescription = p.description.replace(/<[^>]*>/g, '').split(/\s+/).slice(0, 25).join(' ') + '...';
+                    projectCard.innerHTML = `
+                        <h3>${p.title}</h3>
+                        <p>${shortDescription}</p>
+                        <div class="project-links" style="margin-top: 1rem;">
+                            <a href="project.html#${id}" class="project-link-btn">Voir les détails <i class="fas fa-arrow-right"></i></a>
+                        </div>`;
+                    projectsList.appendChild(projectCard);
+                }
+            }
+        };
+
+        const initTodoList = () => {
+            const filterText = document.getElementById('filter-text');
+            const filterStatus = document.getElementById('filter-status');
+            const todoTableBody = document.getElementById('todo-table-body');
+            const addTaskForm = document.getElementById('add-task-form');
+            const newTaskTitle = document.getElementById('new-task-title');
+
+            const defaultTasks = [
+                { id: 1, title: 'Apprendre le SQL', completed: true },
+                { id: 2, title: 'Construire un backend en PHP', completed: false },
+                { id: 3, title: 'Créer un frontend en HTML', completed: true },
+                { id: 4, title: 'Déployer l\'application', completed: false }
+            ];
+
+            let tasks = JSON.parse(localStorage.getItem('todoTasks')) || defaultTasks;
+
+            const saveTasks = () => {
+                localStorage.setItem('todoTasks', JSON.stringify(tasks));
+            };
+
+            const renderTasks = () => {
+                const text = filterText.value.toLowerCase();
+                const status = filterStatus.value;
+
+                const filteredTasks = tasks.filter(task => {
+                    const matchesText = task.title.toLowerCase().includes(text);
+                    const matchesStatus = status === 'all' || (status === 'completed' && task.completed) || (status === 'pending' && !task.completed);
+                    return matchesText && matchesStatus;
+                });
+
+                todoTableBody.innerHTML = '';
+
+                if (filteredTasks.length === 0) {
+                    todoTableBody.innerHTML = '<tr><td colspan="3" class="empty-state">Aucune tâche ne correspond à votre recherche.</td></tr>';
+                    return;
+                }
+
+                filteredTasks.forEach(task => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td class="${task.completed ? 'task-completed' : ''}">${task.title}</td>
+                        <td><span class="badge ${task.completed ? 'bg-success' : 'bg-warning'}" style="color: white; padding: 5px 10px; border-radius: 12px; font-size: 0.8rem;">${task.completed ? 'Terminée' : 'En cours'}</span></td>
+                        <td class="actions">
+                            <button class="complete-btn ${task.completed ? 'completed' : ''}" data-id="${task.id}" title="Marquer comme terminée"><i class="fas fa-check-circle"></i></button>
+                            <button class="delete-btn" data-id="${task.id}" title="Supprimer"><i class="fas fa-trash-alt"></i></button>
+                        </td>
+                    `;
+                    todoTableBody.appendChild(row);
+                });
+            };
+
+            addTaskForm.addEventListener('submit', e => {
+                e.preventDefault();
+                const title = newTaskTitle.value.trim();
+                if (title) {
+                    tasks.push({ id: Date.now(), title, completed: false });
+                    newTaskTitle.value = '';
+                    saveTasks();
+                    renderTasks();
+                }
+            });
+
+            todoTableBody.addEventListener('click', e => {
+                const completeBtn = e.target.closest('.complete-btn');
+                const deleteBtn = e.target.closest('.delete-btn');
+                if (completeBtn) {
+                    const id = parseInt(completeBtn.dataset.id);
+                    tasks = tasks.map(t => t.id === id ? { ...t, completed: !t.completed } : t);
+                    saveTasks();
+                } else if (deleteBtn) {
+                    const id = parseInt(deleteBtn.dataset.id);
+                    tasks = tasks.filter(t => t.id !== id);
+                    saveTasks();
+                }
+                renderTasks();
+            });
+
+            filterText.addEventListener('input', renderTasks);
+            filterStatus.addEventListener('change', renderTasks);
+            renderTasks();
+        };
+
+        const initItSupportChatbot = () => {
+            const chatMessages = document.getElementById('chat-messages');
+            const chatForm = document.getElementById('chat-form');
+            const chatInput = document.getElementById('chat-input');
+
+            const addMessage = (sender, text) => {
+                const messageDiv = document.createElement('div');
+                messageDiv.classList.add('message', `${sender}-message`);
+                
+                const messageP = document.createElement('p');
+                messageP.innerHTML = text; // Use innerHTML to render links
+                
+                const timestampSpan = document.createElement('span');
+                timestampSpan.classList.add('timestamp');
+                timestampSpan.textContent = new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+
+                messageDiv.appendChild(messageP);
+                messageDiv.appendChild(timestampSpan);
+                chatMessages.appendChild(messageDiv);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            };
+
+            const getBotResponse = (userInput) => {
+                const input = userInput.toLowerCase();
+                if (input.includes('wifi') || input.includes('internet') || input.includes('connexion')) {
+                    return "Je vois que vous avez un problème de connexion. Essayons quelques étapes :<br>1. Avez-vous redémarré votre routeur ?<br>2. Vérifiez que tous les câbles sont bien branchés.<br>3. Essayez de vous connecter avec un autre appareil pour voir si le problème persiste.";
+                } else if (input.includes('lent') || input.includes('ralenti') || input.includes('slow')) {
+                    return "Un ordinateur lent peut être frustrant. Voici quoi faire :<br>1. Redémarrez votre ordinateur.<br>2. Fermez les applications que vous n'utilisez pas.<br>3. Lancez une analyse antivirus pour vérifier la présence de logiciels malveillants.";
+                } else if (input.includes('imprimante') || input.includes('imprimer')) {
+                    return "Problème d'impression ? Vérifions ensemble :<br>1. Assurez-vous que l'imprimante est allumée et connectée à votre ordinateur (USB ou Wi-Fi).<br>2. Vérifiez qu'il y a du papier et de l'encre.<br>3. Essayez d'annuler tous les travaux d'impression en attente et de redémarrer l'imprimante.";
+                } else if (input.includes('mot de passe') || input.includes('password')) {
+                    return "Si vous avez oublié votre mot de passe, vous pouvez le réinitialiser. Je ne peux pas le faire pour vous pour des raisons de sécurité, mais je peux vous guider. De quel compte s'agit-il (Windows, Google, etc.) ?";
+                } else if (input.includes('bonjour') || input.includes('salut')) {
+                    return "Bonjour ! Comment puis-je vous aider aujourd'hui ?";
+                } else {
+                    return "Je ne suis pas sûr de comprendre. Pouvez-vous reformuler votre problème ? Essayez d'utiliser des mots-clés comme 'wifi', 'imprimante', 'ordinateur lent', etc.";
+                }
+            };
+
+            chatForm.addEventListener('submit', e => {
+                e.preventDefault();
+                const userInput = chatInput.value.trim();
+                if (userInput) {
+                    addMessage('user', userInput);
+                    chatInput.value = '';
+
+                    // Simulate bot thinking
+                    setTimeout(() => {
+                        const botResponse = getBotResponse(userInput);
+                        addMessage('bot', botResponse);
+                    }, 1000);
+                }
+            });
+
+            // Initial welcome message
+            addMessage('bot', 'Bonjour, je suis votre assistant de support IT. Comment puis-je vous aider ?');
+        };
+
+        const initCurrencyAnalysis = () => {
+            // Check if Chart.js is loaded, if not, load it
+            if (typeof Chart === 'undefined') {
+                const script = document.createElement('script');
+                script.src = 'https://cdn.jsdelivr.net/npm/chart.js';
+                script.onload = () => renderCurrencyChart();
+                document.head.appendChild(script);
+            } else {
+                renderCurrencyChart();
+            }
+        };
+
+        const renderCurrencyChart = () => {
+            const generateData = (numPoints, base, volatility, trend = 0) => {
+                let value = base;
+                return Array.from({ length: numPoints }, (_, i) => {
+                    value += (Math.random() - 0.5) * volatility + (trend * i / numPoints);
+                    return value;
+                });
+            };
+
+            // --- DRC Income vs Expenses vs Currency Chart ---
+            const ctxDrcIncome = document.getElementById('drcIncomeExpenseChart').getContext('2d');
+            const labelsYearlyMonths = ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin', 'Juil', 'Août', 'Sep', 'Oct', 'Nov', 'Déc'];
+            const stateIncome = generateData(12, 100, 30); // in Millions USD
+            const stateExpenses = generateData(12, 110, 25); // in Millions USD
+            const cdfRateForIncome = generateData(12, 2800, 300, 200);
+            new Chart(ctxDrcIncome, {
+                type: 'bar',
+                data: {
+                    labels: labelsYearlyMonths,
+                    datasets: [
+                        { type: 'bar', label: 'Revenus État (M USD)', data: stateIncome, backgroundColor: 'rgba(46, 204, 113, 0.6)', borderColor: '#2ecc71', yAxisID: 'y-budget' },
+                        { type: 'bar', label: 'Dépenses État (M USD)', data: stateExpenses, backgroundColor: 'rgba(231, 76, 60, 0.6)', borderColor: '#e74c3c', yAxisID: 'y-budget' },
+                        { type: 'line', label: 'Taux USD/CDF', data: cdfRateForIncome, borderColor: '#3498db', fill: false, tension: 0.2, borderWidth: 3, yAxisID: 'y-cdf' }
+                    ]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    plugins: {
+                        title: { display: true, text: 'Superposition : Revenus, Dépenses & Taux de Change', font: { size: 16, weight: 'bold' } },
+                        legend: { position: 'top' }
+                    },
+                    scales: {
+                        'y-budget': {
+                            type: 'linear', position: 'left',
+                            title: { display: true, text: 'Budget (Millions USD)' }
+                        },
+                        'y-cdf': {
+                            type: 'linear', position: 'right',
+                            title: { display: true, text: 'Taux de Change USD/CDF' },
+                            grid: { drawOnChartArea: false } // Only show grid for the left axis
+                        }
+                    }
+                }
+            });
+
+            // --- DRC Fiscal Trend Chart ---
+            const ctxDrcFiscal = document.getElementById('drcFiscalTrendChart').getContext('2d');
+            new Chart(ctxDrcFiscal, {
+                type: 'line',
+                data: {
+                    labels: labelsYearlyMonths,
+                    datasets: [
+                        { label: 'Revenus État (M USD)', data: stateIncome, borderColor: '#2ecc71', backgroundColor: 'rgba(46, 204, 113, 0.1)', fill: true, tension: 0.3 },
+                        { label: 'Dépenses État (M USD)', data: stateExpenses, borderColor: '#e74c3c', backgroundColor: 'rgba(231, 76, 60, 0.1)', fill: true, tension: 0.3 }
+                    ]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    plugins: {
+                        title: { display: true, text: 'Tendance Fiscale : Revenus vs. Dépenses', font: { size: 16, weight: 'bold' } },
+                        legend: { position: 'top' }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: { display: true, text: 'Montant (Millions USD)' }
+                        }
+                    }
+                }
+            });
+
+            // --- DRC Budget Balance vs Currency Correlation Chart ---
+            const ctxDrcCorrelation = document.getElementById('drcCorrelationChart').getContext('2d');
+            const budgetBalance = stateIncome.map((income, i) => income - stateExpenses[i]);
+            new Chart(ctxDrcCorrelation, {
+                type: 'line',
+                data: {
+                    labels: labelsYearlyMonths,
+                    datasets: [
+                        { 
+                            label: 'Solde Budgétaire (M USD)', 
+                            data: budgetBalance, 
+                            backgroundColor: budgetBalance.map(v => v >= 0 ? 'rgba(46, 204, 113, 0.5)' : 'rgba(231, 76, 60, 0.5)'),
+                            borderColor: budgetBalance.map(v => v >= 0 ? '#2ecc71' : '#e74c3c'),
+                            fill: true,
+                            yAxisID: 'y-balance',
+                            tension: 0.3
+                        },
+                        { 
+                            label: 'Taux USD/CDF', 
+                            data: cdfRateForIncome, 
+                            borderColor: '#3498db', 
+                            fill: false, 
+                            borderWidth: 3,
+                            yAxisID: 'y-cdf',
+                            tension: 0.2
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    plugins: {
+                        title: { display: true, text: 'Corrélation : Solde Budgétaire vs. Taux de Change', font: { size: 16, weight: 'bold' } },
+                        legend: { position: 'top' }
+                    },
+                    scales: {
+                        'y-balance': {
+                            type: 'linear', position: 'left',
+                            title: { display: true, text: 'Solde Budgétaire (Millions USD)' },
+                            // Add a horizontal line at 0
+                            afterBuildTicks: axis => {
+                                if (!axis.ticks.some(tick => tick.value === 0)) {
+                                    axis.ticks.push({ value: 0, label: '0' });
+                                }
+                            }
+                        },
+                        'y-cdf': {
+                            type: 'linear', position: 'right',
+                            title: { display: true, text: 'Taux de Change USD/CDF' },
+                            grid: { drawOnChartArea: false }
+                        }
+                    }
+                }
+            });
+
+            // --- Macro-economic Simulation Logic ---
+            const budgetSlider = document.getElementById('sim-budget-balance');
+            const commoditySlider = document.getElementById('sim-commodity-change');
+            const budgetValueSpan = document.getElementById('sim-budget-value');
+            const commodityValueSpan = document.getElementById('sim-commodity-value');
+            const volatilityBar = document.getElementById('volatility-bar');
+            const volatilityText = document.getElementById('volatility-text');
+
+            const updateVolatility = () => {
+                const budgetBalance = parseInt(budgetSlider.value, 10);
+                const commodityChange = parseInt(commoditySlider.value, 10);
+
+                // Update display values
+                budgetValueSpan.textContent = `${budgetBalance} M USD`;
+                commodityValueSpan.textContent = `${commodityChange} %`;
+
+                // Simple logic to calculate volatility score (0-100)
+                let volatilityScore = 50; // Base volatility
+
+                // Impact of budget deficit (max impact: +40)
+                if (budgetBalance < 0) {
+                    volatilityScore += Math.min(40, (-budgetBalance / 500) * 40);
+                }
+
+                // Impact of commodity prices (max impact: +/- 25)
+                volatilityScore -= (commodityChange / 20) * 25;
+
+                volatilityScore = Math.max(5, Math.min(95, volatilityScore)); // Clamp between 5% and 95%
+
+                volatilityBar.style.width = `${volatilityScore}%`;
+
+                if (volatilityScore > 75) {
+                    volatilityText.textContent = "Volatilité Élevée : Un déficit budgétaire important et/ou une chute des prix des matières premières exercent une forte pression à la baisse sur le CDF.";
+                    volatilityBar.style.background = 'linear-gradient(45deg, #e74c3c, #c0392b)';
+                } else if (volatilityScore > 40) {
+                    volatilityText.textContent = "Volatilité Modérée : La situation est tendue mais gérable. La stabilité dépendra des interventions de la banque centrale et de l'évolution des marchés.";
+                    volatilityBar.style.background = 'linear-gradient(45deg, #f39c12, #e67e22)';
+                } else {
+                    volatilityText.textContent = "Volatilité Faible : Un excédent budgétaire et des prix des matières premières favorables contribuent à une forte stabilité du CDF.";
+                    volatilityBar.style.background = 'linear-gradient(45deg, #2ecc71, #27ae60)';
+                }
+            };
+
+            budgetSlider.addEventListener('input', updateVolatility);
+            commoditySlider.addEventListener('input', updateVolatility);
+            updateVolatility(); // Initial call
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            displayProject();
+
+            // --- DARK MODE LOGIC ---
+            const themeSwitch = document.getElementById('checkbox');
+            const applyTheme = (theme) => { document.body.classList.toggle('dark-mode', theme === 'dark'); if(themeSwitch) themeSwitch.checked = (theme === 'dark'); };
+            if(themeSwitch) {
+                themeSwitch.addEventListener('change', () => { const newTheme = themeSwitch.checked ? 'dark' : 'light'; localStorage.setItem('theme', newTheme); applyTheme(newTheme); });
+            }
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            applyTheme(localStorage.getItem('theme') || (prefersDark ? 'dark' : 'light'));
+
+            // --- RESPONSIVE NAV (HAMBURGER) ---
+            const hamburger = document.getElementById('hamburger');
+            const navLinks = document.getElementById('nav-links');
+            if(hamburger) hamburger.addEventListener('click', () => { navLinks.classList.toggle('active'); });
+
+            // Mettre à jour le projet si le hash dans l'URL change
+            window.addEventListener('hashchange', displayProject);
+
+            // Logique pour la simulation agropastorale
+            // On utilise la délégation d'événement car le formulaire est ajouté dynamiquement
+            document.body.addEventListener('submit', function(event) {
+                if (event.target.id === 'agri-sim-form') {
+                    event.preventDefault();
+                    const form = event.target;
+                    const type = form.elements.type.value;
+                    const budget = parseInt(form.elements.budget.value, 10);
+                    const resultsContainer = document.getElementById('simulation-results');
+
+                    if (isNaN(budget) || budget <= 0) {
+                        resultsContainer.innerHTML = `<p style="color: red; text-align: center; margin-top: 1rem;">Veuillez entrer un budget valide.</p>`;
+                        return;
+                    }
+
+                    let simulationData;
+                    if (type === 'livestock') {
+                        simulationData = {
+                            growth: Array.from({length: 12}, (_, i) => budget * (1 + (i + 1) * 0.08) * (1 - Math.random() * 0.1)),
+                            swot: { s: ['Demande constante (œufs)', 'Cycle de production rapide'], w: ['Sensible aux maladies', 'Besoin d\'alimentation constant'], o: ['Vente de fumier comme engrais', 'Marché local en croissance'], t: ['Fluctuation du prix des aliments', 'Concurrence'] },
+                            allocation: [ { item: 'Infrastructure (poulailler)', percent: 0.40 }, { item: 'Achat des poussins', percent: 0.20 }, { item: 'Alimentation (3 mois)', percent: 0.30 }, { item: 'Frais vétérinaires & divers', percent: 0.10 } ],
+                            calendar: [
+                                { day: 'Jour 1-7', task: 'Préparation du poulailler et achat des 100 poussins.' },
+                                { day: 'Jour 8-30', task: 'Alimentation de démarrage, vaccination et suivi sanitaire.' },
+                                { day: 'Mois 2-5', task: 'Alimentation de croissance et surveillance quotidienne.' },
+                                { day: 'Mois 6', task: 'Début de la ponte. Collecte et vente des premiers œufs.' },
+                                { day: 'Mois 7-12', task: 'Phase de production de pointe. Vente et gestion des revenus.' }
+                            ],
+                            margin: '25% - 35%',
+                            advice: ['Surveiller les maladies.', 'Optimiser le coût de l\'alimentation.', 'Assurer un débouché stable pour les œufs.']
+                        };
+                        } else if (type === 'porcs') {
+                            simulationData = {
+                                growth: Array.from({length: 12}, (_, i) => budget * (1 + (i + 1) * 0.12) * (1 - Math.random() * 0.15)), // Higher growth, higher risk
+                                swot: { s: ['Haute valeur par animal', 'Reproduction rapide'], w: ['Investissement initial élevé', 'Besoin d\'espace important'], o: ['Vente de viande transformée', 'Forte demande pour les fêtes'], t: ['Peste porcine', 'Régulations sanitaires'] },
+                                allocation: [ { item: 'Infrastructure (porcherie)', percent: 0.50 }, { item: 'Achat des porcelets', percent: 0.25 }, { item: 'Alimentation (3 mois)', percent: 0.20 }, { item: 'Frais vétérinaires & divers', percent: 0.05 } ],
+                                calendar: [
+                                    { day: 'Mois 1', task: 'Achat des porcelets et préparation de la porcherie.' },
+                                    { day: 'Mois 2-6', task: 'Phase d\'engraissement, alimentation et suivi vétérinaire.' },
+                                    { day: 'Mois 7', task: 'Vente des premiers porcs charcutiers.' },
+                                    { day: 'Mois 8-12', task: 'Gestion des cycles de reproduction et ventes continues.' }
+                                ],
+                                margin: '30% - 45%',
+                                advice: ['Coût élevé de l\'alimentation.', 'Risque de maladies (peste porcine).', 'Nécessite une gestion rigoureuse des déchets.']
+                            };
+                        } else if (type === 'pisciculture') {
+                            simulationData = {
+                                growth: Array.from({length: 12}, (_, i) => budget * (1 + (i + 1) * 0.06) * (1 - Math.random() * 0.08)), // Slower, steadier growth
+                                swot: { s: ['Espèce robuste (Tilapia)', 'Bonne conversion alimentaire'], w: ['Nécessite une source d\'eau', 'Gestion technique de l\'eau'], o: ['Marché du poisson frais/fumé', 'Intégration avec agriculture'], t: ['Prédateurs (oiseaux, etc.)', 'Contamination de l\'eau'] },
+                                allocation: [ { item: 'Aménagement des étangs', percent: 0.60 }, { item: 'Achat des alevins', percent: 0.15 }, { item: 'Alimentation', percent: 20 }, { item: 'Qualité de l\'eau & divers', percent: 0.05 } ],
+                                calendar: [
+                                    { day: 'Mois 1', task: 'Aménagement des étangs et achat des alevins de tilapia.' },
+                                    { day: 'Mois 2-5', task: 'Alimentation et contrôle de la qualité de l\'eau.' },
+                                    { day: 'Mois 6-7', task: 'Première pêche et vente sur le marché local.' },
+                                    { day: 'Mois 8-12', task: 'Pêches régulières et réempoissonnement des étangs.' }
+                                ],
+                                margin: '20% - 30%',
+                                advice: ['Nécessite une source d\'eau fiable.', 'Contrôle des prédateurs (oiseaux, etc.).', 'Qualité de l\'eau est un facteur critique.']
+                            };
+                        } else if (type === 'apiculture') {
+                            simulationData = {
+                                growth: Array.from({length: 12}, (_, i) => budget * (1 + (i + 1) * 0.05) * (1 - Math.random() * 0.05)), // Slow initial, then jumps
+                                swot: { s: ['Faible coût opérationnel', 'Produit à haute valeur'], w: ['Dépend de la flore locale', 'Nécessite compétences'], o: ['Vente de produits dérivés (cire)', 'Pollinisation des cultures'], t: ['Pesticides', 'Changement climatique'] },
+                                allocation: [ { item: 'Achat des ruches modernes', percent: 0.50 }, { item: 'Achat des essaims', percent: 0.25 }, { item: 'Équipement de protection et d\'extraction', percent: 0.15 }, { item: 'Formation & divers', percent: 0.10 } ],
+                                calendar: [
+                                    { day: 'Mois 1-2', task: 'Installation des ruches et introduction des essaims.' },
+                                    { day: 'Mois 3-5', task: 'Surveillance du développement des colonies.' },
+                                    { day: 'Mois 6', task: 'Première récolte de miel (petite quantité).' },
+                                    { day: 'Mois 7-12', task: 'Gestion des ruches et récoltes saisonnières.' }
+                                ],
+                                margin: '50% - 70% (après la première année)',
+                                advice: ['Faible coût opérationnel après installation.', 'Bénéfique pour la pollinisation locale.', 'Sensible aux pesticides et au changement climatique.']
+                            };
+                        } else if (type === 'maraichage') {
+                            simulationData = {
+                                growth: [budget*0.5, budget*1.2, budget*1.8, budget*0.6, budget*1.3, budget*1.9, budget*0.7, budget*1.4, budget*2.0, budget*0.8, budget*1.5, budget*2.2], // Cyclical growth
+                                swot: { s: ['Cycles de revenus rapides', 'Diversification des produits'], w: ['Produits très périssables', 'Demande beaucoup de main-d\'œuvre'], o: ['Vente directe aux restaurants', 'Culture de variétés à haute valeur'], t: ['Nuisibles et maladies', 'Forte concurrence locale'] },
+                                allocation: [ { item: 'Préparation des planches et amendement', percent: 0.30 }, { item: 'Achat de semences et plants', percent: 0.40 }, { item: 'Petit matériel et irrigation', percent: 0.20 }, { item: 'Divers', percent: 0.10 } ],
+                                calendar: [
+                                    { day: 'Semaine 1', task: 'Préparation du sol et semis (ex: tomates, aubergines).' },
+                                    { day: 'Semaine 2-8', task: 'Arrosage, désherbage et traitement phytosanitaire bio.' },
+                                    { day: 'Semaine 9-12', task: 'Récolte et vente sur le marché local.' },
+                                    { day: 'Cycle continu', task: 'Rotation des cultures pour maintenir la fertilité du sol.' }
+                                ],
+                                margin: '60% - 100% (par cycle de 3-4 mois)',
+                                advice: ['Cycles de revenus rapides.', 'Nécessite une gestion intensive de l\'eau et des nuisibles.', 'Sensible aux maladies et aux conditions météorologiques.']
+                            };
+                        } else if (type === 'caprins') {
+                            simulationData = {
+                                growth: Array.from({length: 12}, (_, i) => budget * (1 + (i + 1) * 0.09) * (1 - Math.random() * 0.12)),
+                                swot: { s: ['Animaux robustes', 'Produits multiples (lait, viande)'], w: ['Reproduction plus lente que la volaille', 'Nécessite un espace de pâturage'], o: ['Production de fromage local', 'Forte demande pour la viande'], t: ['Maladies (parasites)', 'Vol'] },
+                                allocation: [ { item: 'Infrastructure (chèvrerie)', percent: 0.30 }, { item: 'Achat des animaux', percent: 0.40 }, { item: 'Alimentation & suppléments', percent: 0.20 }, { item: 'Frais vétérinaires', percent: 0.10 } ],
+                                calendar: [
+                                    { day: 'Mois 1', task: 'Achat du cheptel de départ (10 chèvres, 1 bouc).' },
+                                    { day: 'Mois 2-6', task: 'Gestion du pâturage et suivi sanitaire.' },
+                                    { day: 'Mois 7', task: 'Premières mises bas et début de la production laitière.' },
+                                    { day: 'Mois 8-12', task: 'Vente des chevreaux et du lait/fromage.' }
+                                ],
+                                margin: '35% - 50%',
+                                advice: ['Assurer un suivi vétérinaire régulier.', 'Sécuriser l\'enclos contre le vol.', 'Envisager la transformation du lait en fromage pour plus de valeur.']
+                            };
+                        } else if (type === 'myciculture') {
+                            simulationData = {
+                                growth: [budget*0.2, budget*1.5, budget*2.5, budget*0.3, budget*1.6, budget*2.8, budget*0.4, budget*1.7, budget*3.0, budget*0.5, budget*1.8, budget*3.2], // Fast cycles
+                                swot: { s: ['Cycle de production très rapide', 'Peu d\'espace requis'], w: ['Nécessite un environnement contrôlé (humidité)', 'Substrat doit être stérile'], o: ['Marché de niche pour restaurants', 'Vente de kits de culture'], t: ['Contamination par d\'autres moisissures', 'Concurrence'] },
+                                allocation: [ { item: 'Aménagement de la champignonnière', percent: 0.40 }, { item: 'Achat du substrat et du mycélium', percent: 0.35 }, { item: 'Système de contrôle (humidité/temp.)', percent: 0.15 }, { item: 'Emballage & divers', percent: 0.10 } ],
+                                calendar: [
+                                    { day: 'Semaine 1', task: 'Pasteurisation du substrat et ensemencement.' },
+                                    { day: 'Semaine 2-3', task: 'Incubation dans l\'obscurité et le contrôle de la température.' },
+                                    { day: 'Semaine 4-6', task: 'Fructification : induction par la lumière et l\'humidité. Première récolte.' },
+                                    { day: 'Cycles suivants', task: 'Plusieurs volées de récoltes possibles sur le même substrat.' }
+                                ],
+                                margin: '100% - 200% (par cycle de 2 mois)',
+                                advice: ['La stérilisation est la clé du succès.', 'Le contrôle de l\'humidité et de la température est crucial.', 'Identifier un marché stable (restaurants, marchés bio).']
+                            };
+                        } else { // Default to crops
+                            simulationData = {
+                            growth: [0, 0, budget * 0.8, budget * 1.5, budget * 1.6, budget * 1.7, 0, 0, 0, 0, 0, 0], // Croissance saisonnière
+                            swot: { s: ['Culture de base (sécurité alim.)', 'Stockage facile (grain sec)'], w: ['Dépendance à la saison des pluies', 'Une seule grosse récolte/an'], o: ['Vente pour alimentation animale', 'Transformation (farine)'], t: ['Sécheresse/inondations', 'Maladies des plantes'] },
+                            allocation: [ { item: 'Préparation du terrain & location', percent: 0.25 }, { item: 'Achat semences & intrants', percent: 0.45 }, { item: 'Main d\'œuvre (semis/récolte)', percent: 0.20 }, { item: 'Transport & divers', percent: 0.10 } ],
+                            calendar: [
+                                { day: 'Mois 1', task: 'Préparation du sol et achat des semences de maïs.' },
+                                { day: 'Mois 2', task: 'Semis et première fertilisation.' },
+                                { day: 'Mois 3-4', task: 'Désherbage, surveillance des parasites et seconde fertilisation.' },
+                                { day: 'Mois 5-6', task: 'Récolte, séchage et stockage du maïs.' },
+                                { day: 'Mois 7', task: 'Vente de la récolte sur le marché.' }
+                            ],
+                            margin: '40% - 60% (par cycle)',
+                            advice: ['Dépendance à la météo (pluie).', 'Risque de maladies des cultures.', 'Fluctuation des prix du marché.']
+                        };
+                    }
+
+                    const maxGrowth = Math.max(...simulationData.growth);
+                    const chartHTML = simulationData.growth.map(g => `<div class="bar" style="height: ${(g / maxGrowth) * 100}%;" title="$${Math.round(g)}"></div>`).join('');
+                    const calendarHTML = simulationData.calendar.map(t => `<li><span class="day">${t.day}</span><span>${t.task}</span></li>`).join('');
+                    const allocationHTML = simulationData.allocation.map(a => `<li><span>${a.item}</span><span class="amount">$${(budget * a.percent).toLocaleString()}</span></li>`).join('');
+                    const swotHTML = `
+                        <div class="swot-card strengths"><h6><i class="fas fa-check-circle"></i>Forces</h6><ul>${simulationData.swot.s.map(i => `<li>${i}</li>`).join('')}</ul></div>
+                        <div class="swot-card weaknesses"><h6><i class="fas fa-exclamation-circle"></i>Faiblesses</h6><ul>${simulationData.swot.w.map(i => `<li>${i}</li>`).join('')}</ul></div>
+                        <div class="swot-card opportunities"><h6><i class="fas fa-lightbulb"></i>Opportunités</h6><ul>${simulationData.swot.o.map(i => `<li>${i}</li>`).join('')}</ul></div>
+                        <div class="swot-card threats"><h6><i class="fas fa-exclamation-triangle"></i>Menaces</h6><ul>${simulationData.swot.t.map(i => `<li>${i}</li>`).join('')}</ul></div>
+                    `;
+                    const adviceHTML = simulationData.advice.map(a => `<li>${a}</li>`).join('');
+
+                    resultsContainer.innerHTML = `
+                        <h5>Prévision de Croissance sur 12 Mois</h5>
+                        <div class="growth-chart">${chartHTML}</div>
+
+                        <h5>Analyse SWOT</h5>
+                        <div class="swot-grid">
+                            ${swotHTML}
+                        </div>
+
+                        <h5>Répartition du Budget Initial</h5>
+                        <div class="budget-allocation"><ul>${allocationHTML}</ul></div>
+
+                        <div class="summary-grid">
+                            <div class="summary-card profit">
+                                <h6>Marge Bénéficiaire Estimée</h6>
+                                <p class="value">${simulationData.margin}</p>
+                            </div>
+                            <div class="summary-card advice"><h6>Conseils & Risques à Gérer</h6><ul>${adviceHTML}</ul></div>
+                        </div>
+                        <h5>Exemple de Calendrier de Tâches</h5>
+                        <div class="task-calendar"><ul>${calendarHTML}</ul></div>`;
+                }
+            });
+
+            // Logique pour le scanner de vulnérabilités simulé
+            document.body.addEventListener('click', function(event) {
+                if (event.target.id === 'scan-vuln-btn') {
+                    const url = document.getElementById('vuln-test-url').value;
+                    const resultsContainer = document.getElementById('scan-results');
+                    if (!url) {
+                        resultsContainer.innerHTML = `<p style="color: red;">Veuillez entrer une URL.</p>`;
+                        return;
+                    }
+                    resultsContainer.innerHTML = `<p><strong>Analyse de ${url} en cours...</strong></p>`;
+
+                    setTimeout(() => {
+                        resultsContainer.innerHTML = `
+                            <h5>Rapport de Scan pour ${url} (Simulation)</h5>
+                            <div class="swot-card weaknesses" style="margin-bottom: 1rem;"><h6><i class="fas fa-exclamation-circle"></i>[CRITICITÉ MOYENNE] En-têtes de sécurité manquants</h6><p>L'en-tête <strong>X-Frame-Options</strong> n'a pas été détecté.</p><p><strong>Conseil :</strong> Implémentez cet en-tête pour vous protéger contre les attaques de type "clickjacking", où un attaquant pourrait intégrer votre site dans une iframe malveillante.</p></div>
+                            <div class="swot-card threats" style="margin-bottom: 1rem;"><h6><i class="fas fa-exclamation-triangle"></i>[CRITICITÉ BASSE] Version du serveur exposée</h6><p>La bannière du serveur (ex: Apache/2.4.52) est visible.</p><p><strong>Conseil :</strong> Masquez la version du serveur dans la configuration de votre serveur web. Cela empêche les attaquants de cibler facilement des vulnérabilités connues pour cette version spécifique.</p></div>
+                            <div class="swot-card opportunities"><h6><i class="fas fa-lightbulb"></i>[INFORMATION] Ports ouverts</h6><p>Les ports <strong>80 (HTTP)</strong> et <strong>443 (HTTPS)</strong> sont ouverts, ce qui est normal pour un site web.</p><p><strong>Conseil :</strong> Assurez-vous que seuls les ports absolument nécessaires sont ouverts sur votre pare-feu. Des ports inutiles (comme FTP, Telnet) augmentent la surface d'attaque.</p></div>
+                        `;
+                    }, 2000);
+                }
+            });
+
+            // Logique pour les boutons de copie de code
+            document.body.addEventListener('click', function(event) {
+                const button = event.target.closest('.copy-btn');
+                if (button) {
+                    const wrapper = button.closest('.code-block-wrapper');
+                    const codeElement = wrapper.querySelector('code');
+                    navigator.clipboard.writeText(codeElement.innerText).then(() => {
+                        const originalContent = button.innerHTML;
+                        button.innerHTML = '<i class="fas fa-check"></i>';
+                        setTimeout(() => { button.innerHTML = originalContent; }, 2000);
+                    });
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>
