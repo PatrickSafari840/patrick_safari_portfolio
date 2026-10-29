@@ -516,6 +516,12 @@
             .form-group input, .form-group textarea { margin-bottom: 1.5rem; }
             body::before, body::after { filter: blur(70px); }
         }
+
+        /* Language switch */
+        .lang-switch { display: flex; border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden; flex-shrink: 0; }
+        .lang-switch button { font: inherit; font-size: 0.8rem; font-weight: 700; letter-spacing: 0.05em; padding: 0.35rem 0.6rem; min-width: 2.4rem; border: none; background: transparent; color: var(--text-color); cursor: pointer; }
+        .lang-switch button[aria-pressed="true"] { background: var(--accent-color); color: #fff; }
+        @media (max-width: 992px) { .main-nav { gap: 0.9rem; } }
     </style>
 </head>
 <body>
@@ -526,14 +532,18 @@
             <a href="#" class="logo">Patrick safari</a>
             <nav class="main-nav">
                 <ul class="nav-links" id="nav-links">
-                    <li><a href="#hero" class="nav-link active">Accueil</a></li>
-                    <li><a href="#about" class="nav-link">À Propos</a></li>
-                    <li><a href="#services" class="nav-link">Services</a></li>
-                    <li><a href="#skills" class="nav-link">Compétences</a></li>
-                    <li><a href="#experience" class="nav-link">Parcours</a></li>
-                    <li><a href="#projects" class="nav-link">Projets</a></li>
-                    <li><a href="#contact" class="nav-link">Contact</a></li>
+                    <li><a href="#hero" class="nav-link active" data-en="Home">Accueil</a></li>
+                    <li><a href="#about" class="nav-link" data-en="About">À Propos</a></li>
+                    <li><a href="#services" class="nav-link" data-en="Services">Services</a></li>
+                    <li><a href="#skills" class="nav-link" data-en="Skills">Compétences</a></li>
+                    <li><a href="#experience" class="nav-link" data-en="Experience">Parcours</a></li>
+                    <li><a href="#projects" class="nav-link" data-en="Projects">Projets</a></li>
+                    <li><a href="#contact" class="nav-link" data-en="Contact">Contact</a></li>
                 </ul>
+                <div class="lang-switch" role="group" aria-label="Language / Langue">
+                    <button type="button" data-set-lang="en" aria-pressed="false">EN</button>
+                    <button type="button" data-set-lang="fr" aria-pressed="true">FR</button>
+                </div>
                 <div class="theme-switch-wrapper">
                     <label class="theme-switch" for="checkbox">
                         <input type="checkbox" id="checkbox" />
@@ -557,21 +567,21 @@
                     <!-- Colonne de gauche pour le texte -->
                     <div class="hero-image-content">
                         <!-- IMPORTANT: Utilisez une image sans arrière-plan (format .png) -->
-                        <img src="profile_1-removed_bg.png" alt="Photo de Patrick safari" class="hero-img-redesigned">
+                        <img src="profile_1-removed_bg.png" alt="Photo de Patrick safari" data-en-alt="Photo of Patrick safari" class="hero-img-redesigned">
                     </div>
                     
                     <!-- Colonne de droite pour l'image -->
                      <div class="hero-text-content">
                         <h1 class="hero-name">Patrick safari</h1>
-                        <p class="hero-title">Développeur Full Stack & Spécialiste IT</p>
-                        <p class="hero-bio">
+                        <p class="hero-title" data-en="Full Stack Developer &amp;amp; IT Specialist">Développeur Full Stack & Spécialiste IT</p>
+                        <p class="hero-bio" data-en="Welcome to my portfolio. I am a digital problem-solver who builds reliable web applications and fixes complex IT issues. I also help small businesses get seen online with websites, social media visuals and video ads.">
                             Bienvenue sur mon portfolio. Je suis un créateur de solutions numériques passionné, spécialisé dans la conception d'applications web robustes et la résolution de défis informatiques complexes. J'aide aussi les petites entreprises à se montrer en ligne : sites web, visuels pour les réseaux sociaux et vidéos publicitaires.
                         </p>
                         <div class="hero-actions">
-                            <a href="services.html" class="hero-cta">
+                            <a href="services.html" class="hero-cta" data-en="See my services &lt;i class=&quot;fas fa-arrow-right&quot; style=&quot;margin-left: 8px;&quot;&gt;&lt;/i&gt;">
                                 Voir mes services <i class="fas fa-arrow-right" style="margin-left: 8px;"></i>
                             </a>
-                            <a href="#projects" class="hero-cta-secondary">Mes certifications</a>
+                            <a href="#projects" class="hero-cta-secondary" data-en="My certifications">Mes certifications</a>
                         </div>
                     </div>
                 </div>
@@ -579,8 +589,8 @@
 
             <!-- ABOUT SECTION - AMÉLIORÉE -->
             <section id="about" class="content-section">
-                <h2 class="section-title">À Propos de Moi</h2>
-                <p class="section-subtitle">
+                <h2 class="section-title" data-en="About Me">À Propos de Moi</h2>
+                <p class="section-subtitle" data-en="I turn complex ideas into clean, fast digital solutions.">
                     Je transforme des idées complexes en solutions numériques élégantes et performantes.
                 </p>
 
@@ -588,46 +598,46 @@
 
                 <div class="about-container">
                     <div class="about-text">
-                        <p>
+                        <p data-en="My path in IT started in technical support, where I grew a love for solving problems and a real understanding of what users need. That foundation led me to software development, where I can not only fix problems but also build the tools that prevent them.">
                             Mon parcours dans l'informatique a débuté par le support technique, une expérience formatrice où j'ai développé une passion pour la résolution de problèmes et une compréhension approfondie des besoins des utilisateurs. Cette base solide m'a naturellement conduit vers le développement de logiciels, où je pouvais non seulement résoudre des problèmes, mais aussi construire les outils pour les prévenir.
                         </p>
-                        <p>
+                        <p data-en="Today, as a Full Stack Developer and IT Specialist, I enjoy combining technical rigour with creativity. I hold a degree in Business Computing and keep learning, as my Google and IBM certifications show. I believe clear communication and a user-centred approach are the keys to a successful project.">
                             Aujourd'hui, en tant que Développeur Full Stack et Spécialiste IT, je m'épanouis en combinant ma rigueur technique et ma créativité. Diplômé en Informatique de Gestion, je suis un fervent adepte de l'apprentissage continu, comme en témoignent mes certifications Google et IBM. Je suis convaincu qu'une bonne communication et une approche centrée sur l'utilisateur sont les clés de la réussite d'un projet.
                         </p>
                     </div>
                     <div class="about-sidebar">
-                        <h3>Intérêts &amp; Langues</h3>
+                        <h3 data-en="Interests &amp;amp; Languages">Intérêts &amp; Langues</h3>
                         <ul class="about-details">
                             <li>
                                 <i class="fas fa-language"></i>
                                 <div class="language-item">
-                                    <span>Français (Natif)</span>
+                                    <span data-en="French (Native)">Français (Natif)</span>
                                     <div class="progress-bar-container"><div class="progress-bar" style="width: 100%;"></div></div>
                                 </div>
                             </li>
                             <li>
                                 <i class="fas fa-language"></i>
                                 <div class="language-item">
-                                    <span>Anglais (Professionnel)</span>
+                                    <span data-en="English (Professional)">Anglais (Professionnel)</span>
                                     <div class="progress-bar-container"><div class="progress-bar" style="width: 90%;"></div></div>
                                 </div>
                             </li>
                             <li>
                                 <i class="fas fa-language"></i>
                                 <div class="language-item">
-                                    <span>Swahili (Professionnel)</span>
+                                    <span data-en="Swahili (Professional)">Swahili (Professionnel)</span>
                                     <div class="progress-bar-container"><div class="progress-bar" style="width: 90%;"></div></div>
                                 </div>
                             </li>
                             <li>
                                 <i class="fas fa-language"></i>
                                 <div class="language-item">
-                                    <span>Lingala (Professionnel)</span>
+                                    <span data-en="Lingala (Professional)">Lingala (Professionnel)</span>
                                     <div class="progress-bar-container"><div class="progress-bar" style="width: 90%;"></div></div>
                                 </div>
                             </li>
-                            <li><i class="fas fa-pencil-ruler"></i><span>Art &amp; Dessin</span><small>Créativité & Souci du détail</small></li>
-                            <li><i class="fas fa-dumbbell"></i><span>Calisthenie</span><small>Discipline & Persévérance</small></li>
+                            <li><i class="fas fa-pencil-ruler"></i><span data-en="Art &amp;amp; Drawing">Art &amp; Dessin</span><small data-en="Creativity &amp;amp; Attention to detail">Créativité & Souci du détail</small></li>
+                            <li><i class="fas fa-dumbbell"></i><span data-en="Calisthenics">Calisthenie</span><small data-en="Discipline &amp;amp; Perseverance">Discipline & Persévérance</small></li>
                         </ul>
                     </div>
                 </div>
@@ -635,50 +645,50 @@
             
             <!-- SERVICES SECTION -->
             <section id="services" class="content-section">
-                <h2 class="section-title">Mes Services</h2>
-                <p class="section-subtitle">
+                <h2 class="section-title" data-en="My Services">Mes Services</h2>
+                <p class="section-subtitle" data-en="I work with businesses in East Africa and abroad, in French, English and Swahili.">
                     Je travaille avec des entreprises en Afrique de l'Est et à l'étranger, en français, anglais et swahili.
                 </p>
                 <div class="services-grid">
                     <div class="service-card">
                         <i class="fas fa-globe"></i>
-                        <h3>Sites web pour entreprises</h3>
-                        <p>Site rapide, adapté au mobile, avec bouton WhatsApp, carte et formulaire de contact.</p>
+                        <h3 data-en="Business websites">Sites web pour entreprises</h3>
+                        <p data-en="A fast, mobile-friendly site with a WhatsApp button, map and contact form.">Site rapide, adapté au mobile, avec bouton WhatsApp, carte et formulaire de contact.</p>
                     </div>
                     <div class="service-card">
                         <i class="fas fa-photo-film"></i>
-                        <h3>Visuels réseaux sociaux</h3>
-                        <p>Photos produits propres et publications prêtes pour Facebook, Instagram et WhatsApp.</p>
+                        <h3 data-en="Social media visuals">Visuels réseaux sociaux</h3>
+                        <p data-en="Clean product photos and posts ready for Facebook, Instagram and WhatsApp.">Photos produits propres et publications prêtes pour Facebook, Instagram et WhatsApp.</p>
                     </div>
                     <div class="service-card">
                         <i class="fas fa-video"></i>
-                        <h3>Vidéos publicitaires IA</h3>
-                        <p>Courtes vidéos pour présenter vos produits sur TikTok, Reels et Facebook.</p>
+                        <h3 data-en="AI video ads">Vidéos publicitaires IA</h3>
+                        <p data-en="Short videos that show off your products on TikTok, Reels and Facebook.">Courtes vidéos pour présenter vos produits sur TikTok, Reels et Facebook.</p>
                     </div>
                     <div class="service-card">
                         <i class="fas fa-pen-nib"></i>
-                        <h3>Logo & affiches</h3>
-                        <p>Identité visuelle simple : logo, flyers, menus et cartes de visite.</p>
+                        <h3 data-en="Logos &amp;amp; posters">Logo & affiches</h3>
+                        <p data-en="A simple visual identity: logo, flyers, menus and business cards.">Identité visuelle simple : logo, flyers, menus et cartes de visite.</p>
                     </div>
                     <div class="service-card">
                         <i class="fas fa-laptop-code"></i>
-                        <h3>Support IT & automatisation</h3>
-                        <p>Dépannage, sécurité de base et scripts Python pour gagner du temps.</p>
+                        <h3 data-en="IT support &amp;amp; automation">Support IT & automatisation</h3>
+                        <p data-en="Troubleshooting, basic security and Python scripts that save you time.">Dépannage, sécurité de base et scripts Python pour gagner du temps.</p>
                     </div>
                     <div class="service-card">
                         <i class="fas fa-chart-column"></i>
-                        <h3>Tableaux de bord</h3>
-                        <p>Vos ventes et chiffres clés dans un tableau clair et facile à lire.</p>
+                        <h3 data-en="Dashboards">Tableaux de bord</h3>
+                        <p data-en="Your sales and key numbers in one clear, easy-to-read dashboard.">Vos ventes et chiffres clés dans un tableau clair et facile à lire.</p>
                     </div>
                 </div>
                 <div class="services-cta">
-                    <a href="services.html" class="hero-cta">Voir les offres et les prix <i class="fas fa-arrow-right" style="margin-left: 8px;"></i></a>
+                    <a href="services.html" class="hero-cta" data-en="See packages and prices &lt;i class=&quot;fas fa-arrow-right&quot; style=&quot;margin-left: 8px;&quot;&gt;&lt;/i&gt;">Voir les offres et les prix <i class="fas fa-arrow-right" style="margin-left: 8px;"></i></a>
                 </div>
             </section>
 
             <!-- SKILLS SECTION -->
             <section id="skills" class="content-section">
-                <h2 class="section-title">Compétences Techniques</h2>
+                <h2 class="section-title" data-en="Technical Skills">Compétences Techniques</h2>
                 <div class="skills-grid">
                     <div class="skill-card"> <i class="fab fa-html5"></i> <h3>HTML5 & CSS3</h3> </div>
                     <div class="skill-card"> <i class="fab fa-js-square"></i> <h3>JavaScript</h3> </div>
@@ -687,68 +697,68 @@
                     <div class="skill-card"> <i class="fab fa-python"></i> <h3>Python</h3> </div>
                     <div class="skill-card"> <i class="fas fa-database"></i> <h3>SQL & NoSQL</h3> </div>
                     <div class="skill-card"> <i class="fab fa-docker"></i> <h3>Docker</h3> </div>
-                    <div class="skill-card"> <i class="fas fa-shield-alt"></i> <h3>Cybersécurité</h3> </div>
+                    <div class="skill-card"> <i class="fas fa-shield-alt"></i> <h3 data-en="Cybersecurity">Cybersécurité</h3> </div>
                     <div class="skill-card"> <i class="fas fa-drafting-compass"></i> <h3>UX/UI Design</h3> </div>
-                    <div class="skill-card"> <i class="fas fa-tasks"></i> <h3>Gestion de Projet</h3> </div>
+                    <div class="skill-card"> <i class="fas fa-tasks"></i> <h3 data-en="Project Management">Gestion de Projet</h3> </div>
                 </div>
             </section>
 
             <!-- EXPERIENCE & EDUCATION SECTION -->
             <section id="experience" class="content-section">
-                <h2 class="section-title">Parcours Professionnel & Formation</h2>
+                <h2 class="section-title" data-en="Experience &amp;amp; Education">Parcours Professionnel & Formation</h2>
                 <div class="timeline">
                     <!-- Experience -->
                     <div class="timeline-item">
-                        <div class="timeline-icon"></div> <h3 class="timeline-title">Développeur Logiciel Freelance</h3>
-                        <p class="timeline-subtitle">Indépendant | <span>2023 - Présent</span></p>
-                        <p>Conception et développement d'applications web sur mesure pour divers clients. Création de sites vitrines, de visuels pour les réseaux sociaux et de vidéos publicitaires assistées par IA pour petites entreprises.</p>
+                        <div class="timeline-icon"></div> <h3 class="timeline-title" data-en="Freelance Software Developer">Développeur Logiciel Freelance</h3>
+                        <p class="timeline-subtitle" data-en="Self-employed | &lt;span&gt;2023 - Present&lt;/span&gt;">Indépendant | <span>2023 - Présent</span></p>
+                        <p data-en="Design and development of custom web applications for a range of clients. Building business websites, social media visuals and AI-assisted video ads for small businesses.">Conception et développement d'applications web sur mesure pour divers clients. Création de sites vitrines, de visuels pour les réseaux sociaux et de vidéos publicitaires assistées par IA pour petites entreprises.</p>
                     </div>
                     <div class="timeline-item">
-                        <div class="timeline-icon"></div> <h3 class="timeline-title">Support Informatique & Développeur</h3>
-                        <p class="timeline-subtitle">Mutombo Establishment (Entreprise Agricole) | <span>2021 - 2023</span></p>
-                        <p>Assistance technique, maintenance du parc informatique et développement d'outils internes.</p>
-                        <p class="timeline-reference">Référence : Mutombo Rolland (+2438531234002)</p>
+                        <div class="timeline-icon"></div> <h3 class="timeline-title" data-en="IT Support &amp;amp; Developer">Support Informatique & Développeur</h3>
+                        <p class="timeline-subtitle" data-en="Mutombo Establishment (Agricultural company) | &lt;span&gt;2021 - 2023&lt;/span&gt;">Mutombo Establishment (Entreprise Agricole) | <span>2021 - 2023</span></p>
+                        <p data-en="Technical support, maintenance of company computers and development of internal tools.">Assistance technique, maintenance du parc informatique et développement d'outils internes.</p>
+                        <p class="timeline-reference" data-en="Reference: Mutombo Rolland (+2438531234002)">Référence : Mutombo Rolland (+2438531234002)</p>
                     </div>
                      <!-- Education -->
                     <div class="timeline-item">
-                        <div class="timeline-icon"></div> <h3 class="timeline-title">Diplôme en Informatique de Gestion</h3>
+                        <div class="timeline-icon"></div> <h3 class="timeline-title" data-en="Degree in Business Computing">Diplôme en Informatique de Gestion</h3>
                         <p class="timeline-subtitle">UHTGL | <span>2025</span></p>
-                        <p>Formation en programmation, bases de données, réseaux et analyse de systèmes.</p>
-                        <p class="timeline-reference">Référence : Mr Bienfait (+243970708378)</p>
+                        <p data-en="Training in programming, databases, networking and systems analysis.">Formation en programmation, bases de données, réseaux et analyse de systèmes.</p>
+                        <p class="timeline-reference" data-en="Reference: Mr Bienfait (+243970708378)">Référence : Mr Bienfait (+243970708378)</p>
                     </div>
                 </div>
             </section>
             
             <!-- PROJECTS & CERTIFICATIONS SECTION -->
             <section id="projects" class="content-section">
-                <h2 class="section-title">Certifications & Projets</h2>
+                <h2 class="section-title" data-en="Certifications &amp;amp; Projects">Certifications & Projets</h2>
                 <div class="certifications-grid">
-                    <a href="projects/project-management.html" class="card"><i class="fas fa-tasks card-icon"></i><h3>Google Project Management</h3><span class="card-button">Voir le projet interactif</span></a>
-                    <a href="projects/cybersecurity.html" class="card"><i class="fas fa-shield-alt card-icon"></i><h3>Google Cybersecurity</h3><span class="card-button">Voir le projet interactif</span></a>
-                    <a href="projects/full-stack.html" class="card"><i class="fas fa-code card-icon"></i><h3>IBM Full Stack Developer</h3><span class="card-button">Voir le projet interactif</span></a>
-                    <a href="projects/ux-design.html" class="card"><i class="fas fa-drafting-compass card-icon"></i><h3>Google UX Design</h3><span class="card-button">Voir le projet interactif</span></a>
-                    <a href="projects/it-automation.html" class="card"><i class="fab fa-python card-icon"></i><h3>Google IT Automation</h3><span class="card-button">Voir le projet interactif</span></a>
-                    <a href="projects/it-support.html" class="card"><i class="fas fa-headset card-icon"></i><h3>Google IT Support</h3><span class="card-button">Voir le projet interactif</span></a>
-                    <a href="projects/data-analytics.html" class="card"><i class="fas fa-chart-line card-icon"></i><h3>Google Advance Data Analytics</h3><span class="card-button">Voir le projet interactif</span></a>
-                    <a href="projects/data-analytics.html" class="card"><i class="fas fa-chart-pie card-icon"></i><h3>Google Business Intelligence</h3><span class="card-button">Voir le projet interactif</span></a>
+                    <a href="projects/project-management.html" class="card"><i class="fas fa-tasks card-icon"></i><h3>Google Project Management</h3><span class="card-button" data-en="View interactive project">Voir le projet interactif</span></a>
+                    <a href="projects/cybersecurity.html" class="card"><i class="fas fa-shield-alt card-icon"></i><h3>Google Cybersecurity</h3><span class="card-button" data-en="View interactive project">Voir le projet interactif</span></a>
+                    <a href="projects/full-stack.html" class="card"><i class="fas fa-code card-icon"></i><h3>IBM Full Stack Developer</h3><span class="card-button" data-en="View interactive project">Voir le projet interactif</span></a>
+                    <a href="projects/ux-design.html" class="card"><i class="fas fa-drafting-compass card-icon"></i><h3>Google UX Design</h3><span class="card-button" data-en="View interactive project">Voir le projet interactif</span></a>
+                    <a href="projects/it-automation.html" class="card"><i class="fab fa-python card-icon"></i><h3>Google IT Automation</h3><span class="card-button" data-en="View interactive project">Voir le projet interactif</span></a>
+                    <a href="projects/it-support.html" class="card"><i class="fas fa-headset card-icon"></i><h3>Google IT Support</h3><span class="card-button" data-en="View interactive project">Voir le projet interactif</span></a>
+                    <a href="projects/data-analytics.html" class="card"><i class="fas fa-chart-line card-icon"></i><h3>Google Advance Data Analytics</h3><span class="card-button" data-en="View interactive project">Voir le projet interactif</span></a>
+                    <a href="projects/data-analytics.html" class="card"><i class="fas fa-chart-pie card-icon"></i><h3>Google Business Intelligence</h3><span class="card-button" data-en="View interactive project">Voir le projet interactif</span></a>
                 
                 </div>
             </section>
 
             <!-- CONTACT SECTION -->
             <section id="contact" class="content-section">
-                <h2 class="section-title">Contactez-Moi</h2>
-                <p id="contact-intro">Vous avez une question ou une proposition ? N'hésitez pas à m'envoyer un message.</p>
+                <h2 class="section-title" data-en="Contact Me">Contactez-Moi</h2>
+                <p id="contact-intro" data-en="Have a question or a project in mind? Feel free to send me a message.">Vous avez une question ou une proposition ? N'hésitez pas à m'envoyer un message.</p>
                 <form id="contactForm" action="https://api.web3forms.com/submit" method="POST">
                     <input type="hidden" name="access_key" value="37343818-9e62-4fa8-b533-ae3dc4ff25c4">
                     <div class="form-group">
-                        <input type="text" name="name" placeholder="Votre Nom" required>
-                        <input type="email" name="email" placeholder="Votre Email" required>
+                        <input type="text" name="name" placeholder="Votre Nom" data-en-placeholder="Your Name" required>
+                        <input type="email" name="email" placeholder="Votre Email" data-en-placeholder="Your Email" required>
                     </div>
                     <div class="form-group">
-                        <textarea name="message" rows="6" placeholder="Votre Message" required></textarea>
+                        <textarea name="message" rows="6" placeholder="Votre Message" data-en-placeholder="Your Message" required></textarea>
                     </div>
-                    <button type="submit" class="submit-button">Envoyer le Message</button>
+                    <button type="submit" class="submit-button" data-en="Send Message">Envoyer le Message</button>
                     <p id="form-status" style="margin-top: 1rem; text-align: center;"></p>
                 </form>
             </section>
@@ -760,17 +770,17 @@
         <ul class="footer-contact-info">
             <li><i class="fas fa-envelope"></i><a href="mailto:patricksafari840@gmail.com">patricksafari840@gmail.com</a></li>
             <li><i class="fas fa-phone"></i><span>+243 819 405 130</span></li>
-            <li><i class="fas fa-map-marker-alt"></i><span>Ville De Goma, Nord-kivu en RDC</span></li>
+            <li><i class="fas fa-map-marker-alt"></i><span data-en="Goma, North Kivu, DR Congo">Ville De Goma, Nord-kivu en RDC</span></li>
             <li><i class="fab fa-github"></i><a href="https://github.com/PatrickSafari840">Github</a></li>
             <li><i class="fab fa-linkedin"></i> <a href="https://www.linkedin.com/in/patrick-safari-166077255/">LinkedIn</a></li>
             <li><i class="fab fa-instagram"></i> <a href="https://www.instagram.com/PatrickSafariCimana">Instagram</a></li>
             <li><i class="fab fa-facebook"></i><a href="https://www.facebook.com/patricksafari.cimana">Facebook</a></li>
         </ul>
-        <p class="footer-copyright">&copy; <span id="year">2026</span> Patrick safari. Tous droits réservés.</p>
+        <p class="footer-copyright">&copy; <span id="year">2026</span> Patrick safari. <span data-en="All rights reserved.">Tous droits réservés.</span></p>
     </footer>
 
     <!-- WHATSAPP BUTTON -->
-    <a href="https://wa.me/243819405130" class="whatsapp-float" target="_blank" rel="noopener" aria-label="Écrire sur WhatsApp">
+    <a href="https://wa.me/243819405130" class="whatsapp-float" target="_blank" rel="noopener" aria-label="Écrire sur WhatsApp" data-en-aria-label="Chat on WhatsApp">
         <i class="fab fa-whatsapp"></i>
     </a>
 
@@ -786,6 +796,36 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('year').textContent = new Date().getFullYear();
+
+
+            // --- LANGUAGE (EN / FR) ---
+            const T = {
+                fr: { title: "Patrick safari | Développeur Full Stack & Spécialiste IT", sending: "Envoi en cours...", sent: "Message envoyé !", error: "Erreur." },
+                en: { title: "Patrick safari | Full Stack Developer & IT Specialist", sending: "Sending...", sent: "Message sent!", error: "Something went wrong." }
+            };
+            let lang = 'fr';
+            const ATTRS = ['placeholder', 'alt', 'aria-label'];
+            const setLang = (l) => {
+                lang = l === 'en' ? 'en' : 'fr';
+                document.documentElement.lang = lang;
+                document.title = T[lang].title;
+                document.querySelectorAll('[data-en]').forEach(el => {
+                    if (el.dataset.fr === undefined) el.dataset.fr = el.innerHTML;
+                    el.innerHTML = lang === 'en' ? el.dataset.en : el.dataset.fr;
+                });
+                ATTRS.forEach(a => document.querySelectorAll('[data-en-' + a + ']').forEach(el => {
+                    const key = 'fr' + a.replace(/-/g, '');
+                    if (el.dataset[key] === undefined) el.dataset[key] = el.getAttribute(a);
+                    el.setAttribute(a, lang === 'en' ? el.getAttribute('data-en-' + a) : el.dataset[key]);
+                }));
+                document.querySelectorAll('[data-set-lang]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.setLang === lang)));
+                document.getElementById('year').textContent = new Date().getFullYear();
+                try { localStorage.setItem('lang', lang); } catch (e) {}
+            };
+            document.querySelectorAll('[data-set-lang]').forEach(b => b.addEventListener('click', () => setLang(b.dataset.setLang)));
+            let savedLang = null; try { savedLang = localStorage.getItem('lang'); } catch (e) {}
+            const urlLang = new URLSearchParams(location.search).get('lang');
+            setLang(urlLang || savedLang || ((navigator.language || '').toLowerCase().startsWith('fr') ? 'fr' : 'en'));
 
             // --- DARK MODE LOGIC ---
             const themeSwitch = document.getElementById('checkbox');
@@ -836,10 +876,10 @@
             contactForm.addEventListener('submit', function(e) {
                 e.preventDefault();
                 const formData = new FormData(contactForm);
-                formStatus.innerHTML = "Envoi en cours..."; formStatus.style.color = 'gray';
+                formStatus.innerHTML = T[lang].sending; formStatus.style.color = 'gray';
                 fetch(contactForm.action, { method: 'POST', body: formData, headers: { 'Accept': 'application/json' }})
-                .then(r => { if(r.ok) { formStatus.innerHTML = "Message envoyé !"; formStatus.style.color = 'green'; contactForm.reset(); } else { r.json().then(d => { formStatus.innerHTML = d.message || "Erreur."; formStatus.style.color = 'red'; }); }})
-                .catch(err => { formStatus.innerHTML = "Erreur."; formStatus.style.color = 'red'; });
+                .then(r => { if(r.ok) { formStatus.innerHTML = T[lang].sent; formStatus.style.color = 'green'; contactForm.reset(); } else { r.json().then(d => { formStatus.innerHTML = d.message || T[lang].error; formStatus.style.color = 'red'; }); }})
+                .catch(err => { formStatus.innerHTML = T[lang].error; formStatus.style.color = 'red'; });
                 setTimeout(() => { formStatus.innerHTML = ""; }, 6000);
             });
         });
