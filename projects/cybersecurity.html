@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="fr" data-lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>SOC Analyst Toolkit</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Patrick Safari — Google Cybersecurity project: a browser-based SOC toolkit with an SSH log analyzer, password strength auditor, phishing triage drill and file integrity checker.">
+<link rel="icon" href="../your-icon-filename.png" type="image/png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="shared.css">
+<style>
+    /* Layout: night-shift SOC console — deep navy, alert amber, signal red reserved for findings */
+    :root {
+        --bg: #eef1f6; --surface: #ffffff; --fg: #1d2433; --heading: #0b1220; --muted: #5a6478;
+        --line: #d9dfea; --line-strong: #bcc5d6; --accent: #c2410c; --on-accent: #ffffff;
+        --stage: radial-gradient(circle at 50% 45%, #1b2a4a, #0a1222 70%); --code-bg: #0b1220; --code-fg: #d7e0f0;
+        --ok: #15803d; --warn: #b45309; --bad: #dc2626; --scan: #38bdf8;
+        --font-display: 'Sora', 'Segoe UI', system-ui, sans-serif;
+        --font-body: 'Sora', 'Segoe UI', system-ui, sans-serif;
+        --font-mono: 'JetBrains Mono', ui-monospace, Menlo, monospace;
+    }
+    html[data-mode="dark"] {
+        --bg: #070c17; --surface: #0e1627; --fg: #c9d4e8; --heading: #f2f6ff; --muted: #8391ab;
+        --line: #1c2840; --line-strong: #2b3b5c; --accent: #fb923c; --on-accent: #1a0d03;
+        --stage: radial-gradient(circle at 50% 45%, #13213d, #050a14 70%); --code-bg: #050a14; --code-fg: #c9d4e8;
+        --ok: #4ade80; --warn: #fbbf24; --bad: #f87171; --scan: #38bdf8; color-scheme: dark;
+    }
+    body { font-size: 15.5px; }
+    .ps-hero h1 { font-weight: 800; letter-spacing: -0.02em; }
+    .ticker { font-family: var(--font-mono); font-size: 0.78rem; color: var(--muted); border: 1px solid var(--line); border-radius: 10px; padding: 0.6rem 0.8rem; margin-top: 1.25rem; background: var(--surface); min-height: 2.6rem; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+    .ticker b { color: var(--bad); font-weight: 500; }
+    .ticker i { color: var(--ok); font-style: normal; }
+
+    .console { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
+    .findings { display: grid; gap: 0.6rem; }
+    .finding { border: 1px solid var(--line); border-left: 4px solid var(--bad); border-radius: 10px; padding: 0.7rem 0.9rem; background: var(--bg); font-size: 0.88rem; }
+    .finding.warn { border-left-color: var(--warn); }
+    .finding.ok { border-left-color: var(--ok); }
+    .finding code { font-size: 0.8rem; }
+    .timeline { display: flex; align-items: flex-end; gap: 3px; height: 70px; margin: 0.75rem 0; }
+    .timeline span { flex: 1; background: var(--line-strong); border-radius: 2px 2px 0 0; min-height: 2px; }
+    .timeline span.hot { background: var(--bad); }
+
+    .meter { height: 10px; border-radius: 99px; background: var(--line); overflow: hidden; margin: 0.6rem 0; }
+    .meter div { height: 100%; width: 0; border-radius: 99px; transition: width 0.3s ease, background 0.3s; }
+    .checks { list-style: none; display: grid; gap: 0.3rem; font-size: 0.86rem; margin-top: 0.5rem; }
+    .checks li::before { content: '✕'; color: var(--bad); margin-right: 0.5rem; font-family: var(--font-mono); }
+    .checks li.pass::before { content: '✓'; color: var(--ok); }
+
+    .mail { border: 1px solid var(--line-strong); border-radius: 14px; overflow: hidden; background: var(--bg); }
+    .mail header { padding: 0.9rem 1rem; border-bottom: 1px solid var(--line); font-size: 0.86rem; display: grid; gap: 0.2rem; }
+    .mail .body { padding: 1rem; font-size: 0.92rem; display: grid; gap: 0.7rem; }
+    .flag { background: none; border: none; font: inherit; color: inherit; padding: 0 2px; cursor: pointer; border-bottom: 2px dashed transparent; border-radius: 3px; text-align: left; }
+    .flag:hover { border-bottom-color: var(--line-strong); }
+    .flag.found { background: color-mix(in srgb, var(--bad) 18%, transparent); border-bottom-color: var(--bad); }
+    .mail .fake-btn { display: inline-block; background: #1a73e8; color: #fff; padding: 0.45rem 1rem; border-radius: 6px; font-weight: 600; }
+    .score { font-family: var(--font-mono); font-size: 0.9rem; }
+
+    .drop { border: 2px dashed var(--line-strong); border-radius: 14px; padding: 1.5rem; text-align: center; color: var(--muted); font-size: 0.9rem; }
+    .drop.over { border-color: var(--accent); color: var(--accent); }
+    .hash { font-family: var(--font-mono); font-size: 0.78rem; word-break: break-all; background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 0.6rem; }
+
+    @media (max-width: 920px) { .console { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body data-project="gcs">
+
+<section class="ps-hero">
+    <div class="wrap">
+        <div>
+            <span class="ps-eyebrow">Google Cybersecurity · Capstone</span>
+            <h1>
+                <span lang="en">A SOC analyst's toolkit that runs in your browser</span>
+                <span lang="fr">La boîte à outils d'un analyste SOC, dans votre navigateur</span>
+            </h1>
+            <p class="lead">
+                <span lang="en">Four defensive tools I built to practise the daily work of a security analyst: reading logs, judging passwords, triaging phishing and checking file integrity. Nothing you type leaves this page.</span>
+                <span lang="fr">Quatre outils défensifs construits pour pratiquer le quotidien d'un analyste sécurité : lire des journaux, évaluer des mots de passe, trier du phishing et vérifier l'intégrité de fichiers. Rien de ce que vous saisissez ne quitte cette page.</span>
+            </p>
+            <div class="ps-btns">
+                <a class="btn btn-solid" href="#logs"><span lang="en">Analyze a log</span><span lang="fr">Analyser un journal</span></a>
+                <a class="btn btn-ghost" href="https://coursera.org/verify/professional-cert/705DJ3IF51UQ" target="_blank" rel="noopener"><span lang="en">Verify certificate</span><span lang="fr">Vérifier le certificat</span> ↗</a>
+            </div>
+            <div class="ticker" id="ticker" aria-live="off"></div>
+        </div>
+        <div class="ps-stage" id="stage">
+            <span class="stage-label"><span lang="en">3D threat map · blocked attempts</span><span lang="fr">Carte 3D · tentatives bloquées</span></span>
+        </div>
+    </div>
+</section>
+
+<div class="ps-proof">
+    <div class="wrap">
+        <div class="cell"><div class="k">Framework</div><div class="v">NIST CSF</div></div>
+        <div class="cell"><div class="k"><span lang="en">Tools covered</span><span lang="fr">Outils vus</span></div><div class="v">Linux · SQL · Python</div></div>
+        <div class="cell"><div class="k">SIEM</div><div class="v">Splunk · Chronicle</div></div>
+        <div class="cell"><div class="k"><span lang="en">Network</span><span lang="fr">Réseau</span></div><div class="v">tcpdump · Wireshark</div></div>
+    </div>
+</div>
+
+<section class="ps-section" id="logs">
+    <div class="wrap">
+        <span class="kicker"><span lang="en">Tool 1 · Detection</span><span lang="fr">Outil 1 · Détection</span></span>
+        <h2><span lang="en">SSH brute-force detector</span><span lang="fr">Détecteur d'attaque par force brute SSH</span></h2>
+        <p class="intro"><span lang="en">Paste a Linux <code>auth.log</code> or use the sample. The analyzer groups failed logins by IP, applies a threshold rule and writes the firewall response an analyst would propose.</span><span lang="fr">Collez un journal Linux <code>auth.log</code> ou utilisez l'exemple. L'analyseur regroupe les échecs de connexion par IP, applique une règle de seuil et propose la réponse pare-feu qu'un analyste recommanderait.</span></p>
+        <div class="console">
+            <div class="panel stack">
+                <label class="field" for="log-in"><span>auth.log</span>
+                    <textarea id="log-in" rows="13" spellcheck="false"></textarea></label>
+                <div class="grid-2" style="align-items:end">
+                    <label class="field" for="thr"><span lang="en">Alert after N failures in 60 s</span><span lang="fr">Alerte après N échecs en 60 s</span>
+                        <input id="thr" type="number" min="2" max="50" value="5"></label>
+                    <button class="btn btn-solid" id="analyze" type="button"><span lang="en">Analyze</span><span lang="fr">Analyser</span></button>
+                </div>
+            </div>
+            <div class="panel">
+                <h3><span lang="en">Findings</span><span lang="fr">Résultats</span></h3>
+                <p class="sub" id="log-summary"></p>
+                <div class="timeline" id="log-timeline" aria-hidden="true"></div>
+                <div class="table-wrap" style="margin-bottom:1rem"><table><thead><tr><th>IP</th><th><span lang="en">Failed</span><span lang="fr">Échecs</span></th><th><span lang="en">Users tried</span><span lang="fr">Comptes testés</span></th><th><span lang="en">Peak / 60s</span><span lang="fr">Pic / 60s</span></th><th><span lang="en">Verdict</span><span lang="fr">Verdict</span></th></tr></thead><tbody id="log-table"></tbody></table></div>
+                <div class="findings" id="log-findings"></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="ps-section" id="passwords">
+    <div class="wrap">
+        <span class="kicker"><span lang="en">Tool 2 · Policy</span><span lang="fr">Outil 2 · Politique</span></span>
+        <h2><span lang="en">Password strength auditor</span><span lang="fr">Auditeur de robustesse des mots de passe</span></h2>
+        <p class="intro"><span lang="en">Estimates entropy and offline cracking time, and checks the password against a company policy and a list of the most common leaked passwords. Computed locally.</span><span lang="fr">Estime l'entropie et le temps de cassage hors ligne, puis vérifie le mot de passe contre une politique d'entreprise et une liste des mots de passe les plus divulgués. Calcul local.</span></p>
+        <div class="grid-2">
+            <div class="panel">
+                <label class="field" for="pw"><span lang="en">Test a password</span><span lang="fr">Tester un mot de passe</span>
+                    <input id="pw" type="text" autocomplete="off" spellcheck="false" value="Goma2024!" data-ph-en="Type a password" data-ph-fr="Tapez un mot de passe"></label>
+                <div class="meter"><div id="pw-bar"></div></div>
+                <div class="grid-2" style="gap:0.75rem">
+                    <div><div class="note">Entropy</div><div class="out" id="pw-ent"></div></div>
+                    <div><div class="note"><span lang="en">Offline crack (10¹⁰ guesses/s)</span><span lang="fr">Cassage hors ligne (10¹⁰ essais/s)</span></div><div class="out" id="pw-time"></div></div>
+                </div>
+            </div>
+            <div class="panel">
+                <h3><span lang="en">Policy check</span><span lang="fr">Contrôle de politique</span></h3>
+                <ul class="checks" id="pw-checks"></ul>
+                <p class="note" style="margin-top:1rem" id="pw-advice"></p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="ps-section" id="phishing">
+    <div class="wrap">
+        <span class="kicker"><span lang="en">Tool 3 · Triage drill</span><span lang="fr">Outil 3 · Exercice de tri</span></span>
+        <h2><span lang="en">Spot the phishing signs</span><span lang="fr">Repérez les signes de phishing</span></h2>
+        <p class="intro"><span lang="en">This is a training email built for the drill. Click every element you find suspicious, then reveal the analyst report.</span><span lang="fr">Ceci est un e-mail d'entraînement conçu pour l'exercice. Cliquez sur chaque élément suspect, puis affichez le rapport de l'analyste.</span></p>
+        <div class="grid-2">
+            <div class="mail" id="mail"></div>
+            <div class="panel">
+                <div class="score" id="phish-score"></div>
+                <div class="findings" id="phish-report" style="margin-top:1rem"></div>
+                <div class="ps-btns" style="margin-top:1rem">
+                    <button class="btn btn-solid btn-sm" id="phish-reveal" type="button"><span lang="en">Show analyst report</span><span lang="fr">Voir le rapport</span></button>
+                    <button class="btn btn-ghost btn-sm" id="phish-reset" type="button"><span lang="en">Restart</span><span lang="fr">Recommencer</span></button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="ps-section" id="integrity">
+    <div class="wrap">
+        <span class="kicker"><span lang="en">Tool 4 · Integrity</span><span lang="fr">Outil 4 · Intégrité</span></span>
+        <h2><span lang="en">File integrity check with SHA-256</span><span lang="fr">Contrôle d'intégrité par SHA-256</span></h2>
+        <p class="intro"><span lang="en">Drop a file to compute its SHA-256 fingerprint with the browser's Web Crypto API, then compare it with the hash a vendor publishes. A single changed byte gives a completely different hash.</span><span lang="fr">Déposez un fichier pour calculer son empreinte SHA-256 avec l'API Web Crypto du navigateur, puis comparez-la au hash publié par l'éditeur. Un seul octet modifié donne un hash totalement différent.</span></p>
+        <div class="grid-2">
+            <div class="panel stack">
+                <label class="drop" id="drop" for="file"><span lang="en">Drop a file here or tap to choose</span><span lang="fr">Déposez un fichier ici ou touchez pour choisir</span><input id="file" type="file" hidden></label>
+                <label class="field" for="text-in"><span lang="en">…or hash some text</span><span lang="fr">…ou hachez du texte</span><input id="text-in" type="text" value="Patrick Safari"></label>
+            </div>
+            <div class="panel stack">
+                <div><div class="note">SHA-256</div><div class="hash" id="hash-out">–</div></div>
+                <label class="field" for="expected"><span lang="en">Expected hash (paste)</span><span lang="fr">Hash attendu (collez)</span><input id="expected" type="text" spellcheck="false"></label>
+                <div id="hash-verdict" class="out"></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="ps-section">
+    <div class="wrap">
+        <span class="kicker"><span lang="en">Code</span><span lang="fr">Code</span></span>
+        <h2><span lang="en">The same logic in Python</span><span lang="fr">La même logique en Python</span></h2>
+        <p class="intro"><span lang="en">How I would run the log rule on a server, plus the SQL query I would use to pull failed logins from a database of login attempts.</span><span lang="fr">Comment j'exécuterais la règle sur un serveur, et la requête SQL pour extraire les échecs d'une base de tentatives de connexion.</span></p>
+        <div class="codebox">
+            <div class="bar" role="tablist"><button type="button">detect_bruteforce.py</button><button type="button">failed_logins.sql</button><button type="button">allow_list.py</button></div>
+<pre><code>import re
+from collections import defaultdict, deque
+from datetime import datetime
+
+PATTERN = re.compile(r"^(\w+\s+\d+\s[\d:]+).*Failed password for (?:invalid user )?(\S+) from ([\d.]+)")
+THRESHOLD, WINDOW = 5, 60  # failures within 60 seconds
+
+def detect(lines, year=2024):
+    windows = defaultdict(deque)
+    alerts = {}
+    for line in lines:
+        m = PATTERN.search(line)
+        if not m:
+            continue
+        ts = datetime.strptime(f"{year} {m[1]}", "%Y %b %d %H:%M:%S")
+        ip, q = m[3], windows[m[3]]
+        q.append(ts)
+        while (ts - q[0]).total_seconds() > WINDOW:
+            q.popleft()
+        if len(q) >= THRESHOLD:
+            alerts[ip] = max(alerts.get(ip, 0), len(q))
+    return alerts
+
+with open("/var/log/auth.log") as f:
+    for ip, peak in detect(f).items():
+        print(f"ALERT {ip}: {peak} failures/60s -> sudo ufw deny from {ip}")</code></pre>
+<pre hidden><code>-- Failed logins after business hours, grouped by source
+SELECT  source_ip,
+        COUNT(*)                    AS failures,
+        COUNT(DISTINCT username)    AS users_tried,
+        MIN(login_time)             AS first_seen,
+        MAX(login_time)             AS last_seen
+FROM    log_in_attempts
+WHERE   success = FALSE
+  AND   login_time &gt; '18:00'
+GROUP BY source_ip
+HAVING  COUNT(*) &gt;= 5
+ORDER BY failures DESC;</code></pre>
+<pre hidden><code># Remove IP addresses that lost access from the allow list (Google Cybersecurity lab)
+import_file = "allow_list.txt"
+remove_list = ["192.168.97.225", "192.168.158.170", "192.168.201.40"]
+
+with open(import_file, "r") as file:
+    ip_addresses = file.read().split()
+
+ip_addresses = [ip for ip in ip_addresses if ip not in remove_list]
+
+with open(import_file, "w") as file:
+    file.write("\n".join(ip_addresses))</code></pre>
+        </div>
+    </div>
+</section>
+
+<section class="ps-section">
+    <div class="wrap">
+        <span class="kicker"><span lang="en">For recruiters</span><span lang="fr">Pour les recruteurs</span></span>
+        <h2><span lang="en">What this project shows</span><span lang="fr">Ce que ce projet démontre</span></h2>
+        <div class="proves">
+            <div class="prove reveal"><span class="n">01</span><h3><span lang="en">Detection engineering</span><span lang="fr">Ingénierie de détection</span></h3><p><span lang="en">Turning raw logs into a rule with a threshold, a window and a clear response.</span><span lang="fr">Transformer des journaux bruts en règle avec seuil, fenêtre et réponse claire.</span></p></div>
+            <div class="prove reveal"><span class="n">02</span><h3><span lang="en">Security awareness</span><span lang="fr">Sensibilisation</span></h3><p><span lang="en">Password policy and phishing indicators explained in plain words for users.</span><span lang="fr">Politique de mots de passe et indices de phishing expliqués simplement aux utilisateurs.</span></p></div>
+            <div class="prove reveal"><span class="n">03</span><h3><span lang="en">Python and SQL for security</span><span lang="fr">Python et SQL pour la sécurité</span></h3><p><span lang="en">Automating checks with regex, collections, hashing and queries.</span><span lang="fr">Automatiser les contrôles avec regex, collections, hachage et requêtes.</span></p></div>
+        </div>
+        <div class="cert reveal" style="margin-top:2rem">
+            <img src="../images/cybersecurity.jpg" alt="Google Cybersecurity certificate" data-tilt="10" loading="lazy">
+            <div>
+                <h3>Google Cybersecurity</h3>
+                <p><span lang="en">Professional certificate issued through Coursera. The link opens Coursera's own verification page.</span><span lang="fr">Certificat professionnel délivré via Coursera. Le lien ouvre la page de vérification officielle de Coursera.</span></p>
+                <div class="chips" style="margin-bottom:1rem"><span class="chip">NIST CSF</span><span class="chip">SIEM</span><span class="chip">Incident response</span><span class="chip">Linux</span><span class="chip">SQL</span><span class="chip">Python</span><span class="chip">IDS</span></div>
+                <a class="btn btn-solid btn-sm" href="https://coursera.org/verify/professional-cert/705DJ3IF51UQ" target="_blank" rel="noopener"><span lang="en">Verify on Coursera</span><span lang="fr">Vérifier sur Coursera</span> ↗</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="shared.js"></script>
+<script>
+window.pageInit = function () {
+    var t = PS.t;
+
+    /* ---------- Sample log (documentation IP ranges, invented for the exercise) ---------- */
+    var SAMPLE = [];
+    function pad(n) { return (n < 10 ? '0' : '') + n; }
+    function stamp(s) { var h = 9 + Math.floor(s / 3600), m = Math.floor(s % 3600 / 60), sec = s % 60; return 'Mar 14 ' + pad(h) + ':' + pad(m) + ':' + pad(sec); }
+    var s = 0, pid = 4100;
+    function add(ip, user, ok, gap) { s += gap; pid++; SAMPLE.push(stamp(s) + ' srv-web sshd[' + pid + ']: ' + (ok ? 'Accepted password for ' + user : 'Failed password for ' + (user === 'admin' || user === 'oracle' || user === 'test' ? 'invalid user ' : '') + user) + ' from ' + ip + ' port ' + (40000 + pid % 20000) + ' ssh2'); }
+    add('192.0.2.15', 'patrick', true, 4);
+    add('198.51.100.23', 'patrick', false, 60); add('198.51.100.23', 'patrick', true, 9);
+    ['root', 'admin', 'root', 'oracle', 'test', 'root', 'admin', 'root', 'ubuntu', 'root', 'admin', 'root'].forEach(function (u) { add('203.0.113.77', u, false, 3); });
+    add('192.0.2.40', 'grace', true, 120);
+    ['root', 'root', 'admin', 'root'].forEach(function (u) { add('203.0.113.9', u, false, 40); });
+    ['root', 'admin', 'root', 'root', 'test', 'root', 'admin'].forEach(function (u) { add('198.51.100.200', u, false, 6); });
+    add('198.51.100.200', 'root', true, 5);
+    PS.$('#log-in').value = SAMPLE.join('\n');
+
+    var RE = /^(\w+\s+\d+\s[\d:]+).*?(Failed|Accepted) password for (?:invalid user )?(\S+) from ([\d.]+)/;
+    function secs(ts) { var p = ts.split(' ').pop().split(':'); return +p[0] * 3600 + +p[1] * 60 + +p[2]; }
+    function analyze() {
+        var thr = Math.max(2, parseInt(PS.$('#thr').value, 10) || 5);
+        var lines = PS.$('#log-in').value.split('\n'), ips = {}, total = 0, fails = 0, times = [];
+        lines.forEach(function (l) {
+            var m = l.match(RE); if (!m) return;
+            total++;
+            var ip = ips[m[4]] || (ips[m[4]] = { fail: [], users: {}, success: false, okUser: null });
+            var sc = secs(m[1]);
+            if (m[2] === 'Failed') { fails++; ip.fail.push(sc); ip.users[m[3]] = 1; times.push(sc); }
+            else { ip.success = true; ip.okUser = m[3]; ip.okAfterFail = ip.fail.length > 0; }
+        });
+        var rows = Object.keys(ips).map(function (k) {
+            var r = ips[k], peak = 0;
+            r.fail.forEach(function (tt, i) { var c = r.fail.filter(function (x) { return x >= tt && x - tt <= 60; }).length; peak = Math.max(peak, c); });
+            var level = peak >= thr && r.success ? 'bad' : peak >= thr ? 'bad' : r.fail.length >= 3 ? 'warn' : 'ok';
+            return { ip: k, fails: r.fail.length, users: Object.keys(r.users).length, peak: peak, level: level, r: r };
+        }).sort(function (a, b) { return b.peak - a.peak || b.fails - a.fails; });
+        PS.$('#log-table').innerHTML = rows.map(function (r) {
+            var label = r.level === 'bad' ? t('Brute force', 'Force brute') : r.level === 'warn' ? t('Watch', 'Surveiller') : t('Normal', 'Normal');
+            return '<tr><td class="mono">' + r.ip + '</td><td>' + r.fails + '</td><td>' + r.users + '</td><td>' + r.peak + '</td><td><span class="pill ' + r.level + '">' + label + '</span></td></tr>';
+        }).join('') || '<tr><td colspan="5">' + t('No SSH login lines found.', 'Aucune ligne SSH trouvée.') + '</td></tr>';
+        PS.$('#log-summary').textContent = t(total + ' login events, ' + fails + ' failed, ' + rows.length + ' source IPs.', total + ' connexions, ' + fails + ' échecs, ' + rows.length + ' IP sources.');
+        // timeline: failures per minute
+        var tl = PS.$('#log-timeline'); tl.innerHTML = '';
+        if (times.length) {
+            var min = Math.min.apply(null, times), max = Math.max.apply(null, times), buckets = Math.min(40, Math.max(8, Math.ceil((max - min) / 60) + 1)), counts = new Array(buckets).fill(0);
+            times.forEach(function (x) { counts[Math.min(buckets - 1, Math.floor((x - min) / Math.max(60, (max - min + 1) / buckets)))]++; });
+            var top = Math.max.apply(null, counts);
+            tl.innerHTML = counts.map(function (c) { return '<span class="' + (c >= thr ? 'hot' : '') + '" style="height:' + (c / top * 100) + '%"></span>'; }).join('');
+        }
+        var f = [];
+        rows.forEach(function (r) {
+            if (r.level === 'bad' && r.r.success) f.push('<div class="finding"><strong>' + t('Critical', 'Critique') + ' · ' + r.ip + '</strong><br>' + t('Brute force followed by a successful login as <code>' + PS.esc(r.r.okUser) + '</code>. Treat the account as compromised: disable it, rotate keys, review its sessions, then block the IP.', 'Force brute suivie d\'une connexion réussie en tant que <code>' + PS.esc(r.r.okUser) + '</code>. Considérez le compte compromis : désactivez-le, changez les clés, examinez ses sessions, puis bloquez l\'IP.') + '<br><code>sudo ufw deny from ' + r.ip + '</code></div>');
+            else if (r.level === 'bad') f.push('<div class="finding"><strong>' + t('High', 'Élevé') + ' · ' + r.ip + '</strong><br>' + t(r.peak + ' failures in 60 s across ' + r.users + ' usernames. Block the source and confirm no login succeeded.', r.peak + ' échecs en 60 s sur ' + r.users + ' comptes. Bloquez la source et vérifiez qu\'aucune connexion n\'a réussi.') + '<br><code>sudo ufw deny from ' + r.ip + '</code></div>');
+            else if (r.level === 'warn') f.push('<div class="finding warn"><strong>' + t('Medium', 'Moyen') + ' · ' + r.ip + '</strong><br>' + t('Slow, spaced attempts below the threshold. This pattern evades simple rules: add it to a watch list.', 'Tentatives lentes et espacées sous le seuil. Ce schéma échappe aux règles simples : ajoutez-la à une liste de surveillance.') + '</div>');
+        });
+        f.push('<div class="finding ok"><strong>' + t('Recommendation', 'Recommandation') + '</strong><br>' + t('Disable password login (<code>PasswordAuthentication no</code>), use SSH keys, and run fail2ban with this threshold.', 'Désactivez la connexion par mot de passe (<code>PasswordAuthentication no</code>), utilisez des clés SSH et lancez fail2ban avec ce seuil.') + '</div>');
+        PS.$('#log-findings').innerHTML = f.join('');
+    }
+    PS.$('#analyze').addEventListener('click', analyze);
+    PS.$('#thr').addEventListener('change', analyze);
+
+    /* ---------- Password auditor ---------- */
+    var COMMON = ['123456', 'password', '123456789', '12345678', '12345', 'qwerty', 'abc123', 'password1', '111111', 'iloveyou', 'admin', 'welcome', 'monkey', 'dragon', 'football', 'letmein', 'azerty', 'motdepasse', 'soleil', 'bonjour', 'sunshine', 'princess', 'qwerty123', '000000', '1234567890'];
+    function audit() {
+        var pw = PS.$('#pw').value, pool = 0;
+        if (/[a-z]/.test(pw)) pool += 26; if (/[A-Z]/.test(pw)) pool += 26; if (/\d/.test(pw)) pool += 10; if (/[^A-Za-z0-9]/.test(pw)) pool += 33;
+        var ent = pw.length * Math.log2(pool || 1);
+        var low = pw.toLowerCase().replace(/[^a-z0-9]/g, '');
+        var common = COMMON.some(function (c) { return low.indexOf(c) >= 0; });
+        var pattern = /(19|20)\d{2}/.test(pw) || /(.)\1{2,}/.test(pw) || /(abc|123|qwe|azer)/i.test(pw);
+        if (common) ent = Math.min(ent, 12); else if (pattern) ent *= 0.7;
+        var seconds = Math.pow(2, ent) / 2 / 1e10;
+        function human(x) {
+            var u = [[31557600e9, t('billion years', 'milliards d\'années')], [31557600e6, t('million years', 'millions d\'années')], [31557600, t('years', 'ans')], [86400, t('days', 'jours')], [3600, t('hours', 'heures')], [60, t('minutes', 'minutes')], [1, t('seconds', 'secondes')]];
+            for (var i = 0; i < u.length; i++) if (x >= u[i][0]) return PS.fmt(x / u[i][0], 1) + ' ' + u[i][1];
+            return t('instantly', 'instantané');
+        }
+        PS.$('#pw-ent').textContent = PS.fmt(ent, 0) + ' bits';
+        PS.$('#pw-time').textContent = human(seconds);
+        var pct = Math.min(100, ent / 90 * 100), bar = PS.$('#pw-bar');
+        bar.style.width = pct + '%'; bar.style.background = ent < 40 ? 'var(--bad)' : ent < 65 ? 'var(--warn)' : 'var(--ok)';
+        var checks = [
+            [pw.length >= 12, t('At least 12 characters', 'Au moins 12 caractères')],
+            [/[A-Z]/.test(pw) && /[a-z]/.test(pw), t('Upper and lower case', 'Majuscules et minuscules')],
+            [/\d/.test(pw), t('Contains a number', 'Contient un chiffre')],
+            [/[^A-Za-z0-9]/.test(pw), t('Contains a symbol', 'Contient un symbole')],
+            [!common, t('Not in the common leaked list', 'Absent de la liste des mots de passe divulgués')],
+            [!pattern, t('No year, repeated or keyboard pattern', 'Pas d\'année, de répétition ou de suite clavier')]
+        ];
+        PS.$('#pw-checks').innerHTML = checks.map(function (c) { return '<li class="' + (c[0] ? 'pass' : '') + '">' + c[1] + '</li>'; }).join('');
+        PS.$('#pw-advice').textContent = ent >= 65 ? t('Strong. Store it in a password manager and turn on MFA.', 'Robuste. Gardez-le dans un gestionnaire de mots de passe et activez la MFA.')
+            : t('Tip: a passphrase of 4 random words, like "mango-river-lamp-seven", is long and easy to remember.', 'Astuce : une phrase de passe de 4 mots aléatoires, comme « mangue-riviere-lampe-sept », est longue et facile à retenir.');
+    }
+    PS.$('#pw').addEventListener('input', audit);
+
+    /* ---------- Phishing drill ---------- */
+    var FLAGS = [
+        { id: 'from', en: 'Sender domain is "rnicrosoft-support.co", a look-alike of microsoft.com.', fr: 'Le domaine « rnicrosoft-support.co » imite microsoft.com.' },
+        { id: 'urgent', en: 'Urgency and threat: "within 24 hours or your account will be deleted".', fr: 'Urgence et menace : « sous 24 heures sinon votre compte sera supprimé ».' },
+        { id: 'greet', en: 'Generic greeting instead of your name.', fr: 'Salutation générique au lieu de votre nom.' },
+        { id: 'link', en: 'The button points to http://login-verify.top, not a Microsoft domain, and without HTTPS.', fr: 'Le bouton pointe vers http://login-verify.top, pas un domaine Microsoft, et sans HTTPS.' },
+        { id: 'attach', en: 'Unexpected attachment with a double extension: Invoice.pdf.exe.', fr: 'Pièce jointe inattendue à double extension : Facture.pdf.exe.' },
+        { id: 'ask', en: 'Asks you to confirm your password, which IT never does by email.', fr: 'Demande de confirmer votre mot de passe, ce que l\'IT ne fait jamais par e-mail.' }
+    ];
+    var found = {};
+    function renderMail() {
+        PS.$('#mail').innerHTML =
+            '<header><div><strong>' + t('From', 'De') + ':</strong> <button type="button" class="flag" data-flag="from">IT Security &lt;alert@rnicrosoft-support.co&gt;</button></div>' +
+            '<div><strong>' + t('Subject', 'Objet') + ':</strong> ' + t('Unusual sign-in activity', 'Activité de connexion inhabituelle') + '</div>' +
+            '<div><strong>' + t('Attachment', 'Pièce jointe') + ':</strong> <button type="button" class="flag" data-flag="attach">' + t('Invoice.pdf.exe', 'Facture.pdf.exe') + '</button></div></header>' +
+            '<div class="body"><p><button type="button" class="flag" data-flag="greet">' + t('Dear user,', 'Cher utilisateur,') + '</button></p>' +
+            '<p>' + t('We detected a sign-in to your mailbox from a new device. ', 'Nous avons détecté une connexion à votre messagerie depuis un nouvel appareil. ') +
+            '<button type="button" class="flag" data-flag="urgent">' + t('Verify within 24 hours or your account will be deleted.', 'Vérifiez sous 24 heures sinon votre compte sera supprimé.') + '</button></p>' +
+            '<p><button type="button" class="flag" data-flag="ask">' + t('Please confirm your current password on the secure page.', 'Merci de confirmer votre mot de passe actuel sur la page sécurisée.') + '</button></p>' +
+            '<p><button type="button" class="flag" data-flag="link" title="http://login-verify.top/ms"><span class="fake-btn">' + t('Verify my account', 'Vérifier mon compte') + '</span></button></p>' +
+            '<p class="note">' + t('Microsoft Account Team', 'L\'équipe Compte Microsoft') + '</p></div>';
+        PS.$$('[data-flag]').forEach(function (b) {
+            if (found[b.getAttribute('data-flag')]) b.classList.add('found');
+            b.addEventListener('click', function () { found[b.getAttribute('data-flag')] = true; b.classList.add('found'); scorePhish(); });
+        });
+        scorePhish();
+    }
+    var revealed = false;
+    function scorePhish() {
+        var n = Object.keys(found).length;
+        PS.$('#phish-score').textContent = t('Indicators found: ', 'Indices trouvés : ') + n + ' / ' + FLAGS.length;
+        PS.$('#phish-report').innerHTML = FLAGS.filter(function (f) { return revealed || found[f.id]; }).map(function (f) {
+            return '<div class="finding' + (found[f.id] ? '' : ' warn') + '">' + (found[f.id] ? '✓ ' : '○ ') + PS.esc(t(f.en, f.fr)) + '</div>';
+        }).join('') + (revealed ? '<div class="finding ok">' + t('Verdict: phishing. Report with the "Report phishing" button, do not click, and warn the team.', 'Verdict : phishing. Signalez-le avec le bouton « Signaler », ne cliquez pas, et prévenez l\'équipe.') + '</div>' : '');
+    }
+    PS.$('#phish-reveal').addEventListener('click', function () { revealed = true; scorePhish(); });
+    PS.$('#phish-reset').addEventListener('click', function () { revealed = false; found = {}; renderMail(); });
+
+    /* ---------- SHA-256 ---------- */
+    var lastHash = '';
+    async function sha(buf) {
+        var h = await crypto.subtle.digest('SHA-256', buf);
+        return Array.from(new Uint8Array(h)).map(function (b) { return b.toString(16).padStart(2, '0'); }).join('');
+    }
+    function verdict() {
+        var exp = PS.$('#expected').value.trim().toLowerCase(), el = PS.$('#hash-verdict');
+        if (!exp || !lastHash) { el.innerHTML = ''; return; }
+        el.innerHTML = exp === lastHash ? '<span class="pill ok">' + t('Match: file is intact', 'Identique : fichier intact') + '</span>' : '<span class="pill bad">' + t('Mismatch: do not trust this file', 'Différent : ne faites pas confiance à ce fichier') + '</span>';
+    }
+    async function hashText() {
+        if (!window.crypto || !crypto.subtle) { PS.$('#hash-out').textContent = t('Web Crypto needs HTTPS.', 'Web Crypto nécessite HTTPS.'); return; }
+        lastHash = await sha(new TextEncoder().encode(PS.$('#text-in').value));
+        PS.$('#hash-out').textContent = lastHash; verdict();
+    }
+    async function hashFile(file) {
+        if (!file) return;
+        PS.$('#hash-out').textContent = t('Hashing ', 'Calcul ') + file.name + '…';
+        lastHash = await sha(await file.arrayBuffer());
+        PS.$('#hash-out').textContent = file.name + ' — ' + lastHash; verdict();
+    }
+    PS.$('#text-in').addEventListener('input', hashText);
+    PS.$('#expected').addEventListener('input', verdict);
+    PS.$('#file').addEventListener('change', function (e) { hashFile(e.target.files[0]); });
+    var drop = PS.$('#drop');
+    ['dragenter', 'dragover'].forEach(function (ev) { drop.addEventListener(ev, function (e) { e.preventDefault(); drop.classList.add('over'); }); });
+    ['dragleave', 'drop'].forEach(function (ev) { drop.addEventListener(ev, function (e) { e.preventDefault(); drop.classList.remove('over'); }); });
+    drop.addEventListener('drop', function (e) { hashFile(e.dataTransfer.files[0]); });
+
+    /* ---------- Ticker ---------- */
+    var feed = [['203.0.113.77', 'ssh', 1], ['198.51.100.200', 'ssh', 1], ['192.0.2.15', 'vpn', 0], ['203.0.113.9', 'rdp', 1], ['192.0.2.40', 'https', 0]], fi = 0;
+    function tick() {
+        var e = feed[fi++ % feed.length];
+        PS.$('#ticker').innerHTML = e[2] ? '<b>BLOCK</b> ' + e[0] + ' → ' + e[1] + ' · ' + t('rule bruteforce-60s', 'règle bruteforce-60s') : '<i>ALLOW</i> ' + e[0] + ' → ' + e[1] + ' · ' + t('known user', 'utilisateur connu');
+    }
+    tick(); if (!PS.reduceMotion) setInterval(tick, 2200);
+
+    PS.onLang(function () { analyze(); audit(); renderMail(); hashText(); tick(); });
+
+    /* ---------- 3D: globe with attack arcs that get stopped by a shield ---------- */
+    PS.scene(PS.$('#stage'), function (ctx) {
+        var THREE = ctx.THREE, scene = ctx.scene, cam = ctx.camera;
+        cam.position.set(0, 0.6, 7.2); cam.lookAt(0, 0, 0);
+        var world = new THREE.Group(); scene.add(world);
+        var R = 2;
+        // dotted globe
+        var pts = [];
+        for (var i = 0; i < 1400; i++) {
+            var y = 1 - (i / 1399) * 2, r = Math.sqrt(1 - y * y), th = i * 2.399963;
+            pts.push(Math.cos(th) * r * R, y * R, Math.sin(th) * r * R);
+        }
+        var g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.Float32BufferAttribute(pts, 3));
+        var dotMat = new THREE.PointsMaterial({ size: 0.035, color: 0x7aa2ff, transparent: true, opacity: 0.75 });
+        world.add(new THREE.Points(g, dotMat));
+        var shieldMat = new THREE.MeshBasicMaterial({ color: 0x38bdf8, wireframe: true, transparent: true, opacity: 0.12 });
+        var shield = new THREE.Mesh(new THREE.IcosahedronGeometry(R * 1.32, 2), shieldMat); scene.add(shield);
+        function onSphere(lat, lon, rad) { var phi = (90 - lat) * Math.PI / 180, the = (lon + 180) * Math.PI / 180; return new THREE.Vector3(-rad * Math.sin(phi) * Math.cos(the), rad * Math.cos(phi), rad * Math.sin(phi) * Math.sin(the)); }
+        var home = onSphere(-1.7, 29.2, R); // Goma
+        var homeDot = new THREE.Mesh(new THREE.SphereGeometry(0.07, 16, 16), new THREE.MeshBasicMaterial({ color: 0x4ade80 })); homeDot.position.copy(home); world.add(homeDot);
+        var arcs = [];
+        var sources = [[48, 2], [40, -74], [55, 37], [35, 139], [-23, -46], [52, 13], [1, 103], [19, 72]];
+        sources.forEach(function (sxy, k) {
+            var a = onSphere(sxy[0], sxy[1], R);
+            var mid = a.clone().add(home).multiplyScalar(0.5).normalize().multiplyScalar(R * 1.8);
+            var curve = new THREE.QuadraticBezierCurve3(a, mid, home);
+            var geo = new THREE.BufferGeometry().setFromPoints(curve.getPoints(60));
+            var mat = new THREE.LineBasicMaterial({ color: 0xf87171, transparent: true, opacity: 0.0 });
+            var line = new THREE.Line(geo, mat); world.add(line);
+            var head = new THREE.Mesh(new THREE.SphereGeometry(0.05, 10, 10), new THREE.MeshBasicMaterial({ color: 0xfbbf24 })); world.add(head);
+            arcs.push({ curve: curve, line: line, head: head, offset: k * 0.37 });
+        });
+        return function (time) {
+            world.rotation.y = 2.3 + time * 0.12 + ctx.pointer.x * 0.6;
+            world.rotation.x = 0.25 + ctx.pointer.y * 0.25;
+            shield.rotation.y = -time * 0.05;
+            shieldMat.opacity = 0.1 + Math.sin(time * 2) * 0.04;
+            arcs.forEach(function (a) {
+                var p = ((time * 0.35 + a.offset) % 1.4);
+                var stopAt = 0.78; // blocked before reaching home
+                var u = Math.min(p, stopAt);
+                a.head.position.copy(a.curve.getPoint(u));
+                a.head.visible = p < 1.05;
+                a.head.scale.setScalar(p > stopAt ? 1 + (p - stopAt) * 6 : 1);
+                a.head.material.color.setHex(p > stopAt ? 0x38bdf8 : 0xfbbf24);
+                a.line.material.opacity = p < stopAt ? 0.55 : Math.max(0, 0.55 - (p - stopAt) * 2);
+            });
+        };
+    });
+
+    analyze(); audit(); renderMail(); hashText();
+};
+</script>
+</body>
+</html>

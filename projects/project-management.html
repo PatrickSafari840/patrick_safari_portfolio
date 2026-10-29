@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="fr" data-lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Kalehe Farm Project Plan</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Patrick Safari — Google Project Management project: an integrated poultry, pig and fish farm plan for Kalehe (DRC) with an interactive schedule, risk register and break-even simulator.">
+<link rel="icon" href="../your-icon-filename.png" type="image/png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Manrope:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="shared.css">
+<style>
+    /* Layout: field-notebook feel — green fields, harvest amber, schedule as the centrepiece */
+    :root {
+        --bg: #f2f5ef; --surface: #ffffff; --fg: #26302a; --heading: #14211a; --muted: #5d6b62;
+        --line: #dfe6dc; --line-strong: #c3cfbf; --accent: #1f7a4d; --on-accent: #ffffff; --accent-2: #c98306;
+        --stage: linear-gradient(160deg, #e3efe2, #f7f1df); --code-bg: #14211a; --code-fg: #e4efe6;
+        --ok: #1f7a4d; --warn: #b7791f; --bad: #c0392b;
+        --font-display: 'Bricolage Grotesque', 'Segoe UI', system-ui, sans-serif;
+        --font-body: 'Manrope', 'Segoe UI', system-ui, sans-serif;
+        --font-mono: 'DM Mono', ui-monospace, Menlo, monospace;
+    }
+    html[data-mode="dark"] {
+        --bg: #0e1712; --surface: #15211a; --fg: #d6e2d9; --heading: #f1f7f2; --muted: #93a598;
+        --line: #24342a; --line-strong: #345041; --accent: #4cc38a; --on-accent: #08130d; --accent-2: #f0b13c;
+        --stage: linear-gradient(160deg, #13241a, #1f1c10); --code-bg: #0a110d; --code-fg: #d6e2d9;
+        --ok: #4cc38a; --warn: #f0b13c; --bad: #ff7a6b; color-scheme: dark;
+    }
+
+    /* Gantt */
+    .gantt { display: grid; gap: 6px; min-width: 640px; }
+    .g-row { display: grid; grid-template-columns: 210px 1fr; align-items: center; gap: 10px; }
+    .g-name { font-size: 0.86rem; font-weight: 600; color: var(--heading); display: flex; gap: 0.5rem; align-items: center; cursor: pointer; background: none; border: none; text-align: left; font-family: inherit; padding: 0.2rem 0; }
+    .g-name .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--line-strong); flex: none; }
+    .g-row.crit .g-name .dot { background: var(--bad); }
+    .g-row.sel .g-name { color: var(--accent); }
+    .g-track { position: relative; height: 26px; background: repeating-linear-gradient(90deg, transparent 0 calc(100% / var(--months) - 1px), var(--line) calc(100% / var(--months) - 1px) calc(100% / var(--months))); border-radius: 6px; }
+    .g-bar { position: absolute; top: 3px; bottom: 3px; border-radius: 5px; background: var(--accent); transition: left 0.35s ease, width 0.35s ease; display: flex; align-items: center; padding-left: 6px; font-size: 0.7rem; color: var(--on-accent); font-family: var(--font-mono); white-space: nowrap; overflow: hidden; }
+    .g-row.crit .g-bar { background: var(--bad); color: #fff; }
+    .g-bar .slip { position: absolute; right: 0; top: 0; bottom: 0; background: repeating-linear-gradient(45deg, rgba(255,255,255,.35) 0 4px, transparent 4px 8px); }
+    .g-scale { display: grid; grid-template-columns: 210px 1fr; gap: 10px; font-family: var(--font-mono); font-size: 0.68rem; color: var(--muted); }
+    .g-scale .ticks { display: grid; grid-template-columns: repeat(var(--months), 1fr); }
+    .gantt-controls { display: grid; grid-template-columns: 1fr auto; gap: 1rem; align-items: end; margin-top: 1.25rem; }
+    .kpis { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; margin-top: 1rem; }
+    .kpi { border: 1px solid var(--line); border-radius: 12px; padding: 0.8rem 1rem; background: var(--bg); min-width: 0; }
+    .kpi .k { font-size: 0.72rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; font-family: var(--font-mono); }
+    .kpi .v { font-family: var(--font-display); font-size: 1.4rem; font-weight: 700; color: var(--heading); font-variant-numeric: tabular-nums; }
+
+    /* Risk matrix */
+    .risk-wrap { display: grid; grid-template-columns: 1.1fr 1fr; gap: 1.25rem; }
+    .matrix { display: grid; grid-template-columns: 28px repeat(5, 1fr); grid-template-rows: repeat(5, 1fr) 28px; gap: 4px; aspect-ratio: 1.1; }
+    .m-cell { border-radius: 8px; position: relative; display: flex; flex-wrap: wrap; gap: 4px; align-content: center; justify-content: center; padding: 4px; }
+    .m-axis { font-family: var(--font-mono); font-size: 0.68rem; color: var(--muted); display: flex; align-items: center; justify-content: center; }
+    .risk-dot { width: 30px; height: 30px; border-radius: 50%; border: 2px solid var(--surface); background: var(--heading); color: var(--surface); font-family: var(--font-mono); font-size: 0.75rem; font-weight: 600; cursor: pointer; transition: transform 0.15s; }
+    .risk-dot:hover, .risk-dot[aria-pressed="true"] { transform: scale(1.18); background: var(--accent); color: var(--on-accent); }
+    .risk-detail h4 { font-size: 1.1rem; margin-bottom: 0.3rem; }
+    .risk-detail dl { display: grid; grid-template-columns: auto 1fr; gap: 0.35rem 1rem; font-size: 0.9rem; margin-top: 0.75rem; }
+    .risk-detail dt { color: var(--muted); }
+
+    /* Break-even */
+    .sim { display: grid; grid-template-columns: 340px 1fr; gap: 1.25rem; }
+    .sim .controls { display: grid; gap: 0.9rem; }
+    .range-row { display: grid; gap: 0.2rem; }
+    .range-row .top { display: flex; justify-content: space-between; font-size: 0.85rem; font-weight: 600; color: var(--heading); }
+    .range-row .top output { font-family: var(--font-mono); color: var(--accent); font-weight: 500; }
+    .chart-box { position: relative; height: 340px; }
+    .verdict { font-size: 1.05rem; margin-top: 0.75rem; }
+    .verdict strong { color: var(--accent); }
+
+    /* Plan sections */
+    .plan { counter-reset: s; display: grid; grid-template-columns: repeat(5, 1fr); gap: 0.9rem; }
+    .plan article { padding: 1.1rem; border-radius: 14px; border: 1px solid var(--line); background: var(--surface); min-width: 0; }
+    .plan h3 { font-size: 1rem; margin-bottom: 0.35rem; }
+    .plan p { font-size: 0.88rem; color: var(--muted); }
+
+    .no-3d .stage-fallback { display: grid; }
+    .stage-fallback { display: none; position: absolute; inset: 0; place-items: center; font-family: var(--font-display); font-size: 4rem; color: var(--accent); }
+
+    @media (max-width: 920px) { .risk-wrap, .sim { grid-template-columns: 1fr; } .plan { grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 640px) { .kpis { grid-template-columns: 1fr; } .plan { grid-template-columns: 1fr; } .gantt-controls { grid-template-columns: 1fr; } .g-row, .g-scale { grid-template-columns: 150px 1fr; } }
+</style>
+</head>
+<body data-project="gpm">
+
+<section class="ps-hero">
+    <div class="wrap">
+        <div>
+            <span class="ps-eyebrow">Google Project Management · Capstone</span>
+            <h1>
+                <span lang="en">Planning an integrated farm in Kalehe, DRC</span>
+                <span lang="fr">Planifier une ferme intégrée à Kalehe, RDC</span>
+            </h1>
+            <p class="lead">
+                <span lang="en">A full project plan for a poultry, pig and fish farm that feeds the community and creates local jobs. Below you can move the schedule, explore the risk register and test the business case yourself.</span>
+                <span lang="fr">Un plan de projet complet pour une ferme de poules, porcs et poissons qui nourrit la communauté et crée des emplois locaux. Plus bas, vous pouvez décaler le planning, explorer le registre des risques et tester vous-même le modèle financier.</span>
+            </p>
+            <div class="ps-btns">
+                <a class="btn btn-solid" href="#schedule"><span lang="en">Try the schedule</span><span lang="fr">Tester le planning</span></a>
+                <a class="btn btn-ghost" href="https://coursera.org/verify/professional-cert/351UXTQ0NEAH" target="_blank" rel="noopener"><span lang="en">Verify certificate</span><span lang="fr">Vérifier le certificat</span> ↗</a>
+            </div>
+        </div>
+        <div class="ps-stage" id="stage">
+            <div class="stage-fallback">▤</div>
+            <span class="stage-label"><span lang="en">3D schedule · move your mouse</span><span lang="fr">Planning 3D · bougez la souris</span></span>
+        </div>
+    </div>
+</section>
+
+<div class="ps-proof">
+    <div class="wrap">
+        <div class="cell"><div class="k"><span lang="en">Scope</span><span lang="fr">Périmètre</span></div><div class="v"><span lang="en">3 farm units</span><span lang="fr">3 unités d'élevage</span></div></div>
+        <div class="cell"><div class="k"><span lang="en">Phases</span><span lang="fr">Phases</span></div><div class="v">7 <span lang="en">work packages</span><span lang="fr">lots de travail</span></div></div>
+        <div class="cell"><div class="k"><span lang="en">Risks tracked</span><span lang="fr">Risques suivis</span></div><div class="v">6</div></div>
+        <div class="cell"><div class="k"><span lang="en">Direct jobs</span><span lang="fr">Emplois directs</span></div><div class="v">5</div></div>
+    </div>
+</div>
+
+<section class="ps-section" id="plan">
+    <div class="wrap">
+        <span class="kicker"><span lang="en">The plan</span><span lang="fr">Le plan</span></span>
+        <h2><span lang="en">From community need to a working business</span><span lang="fr">Du besoin local à une activité rentable</span></h2>
+        <p class="intro"><span lang="en">Three activities that feed each other: animal waste fertilises the fish ponds and becomes compost, which cuts costs and waste.</span><span lang="fr">Trois activités qui se nourrissent entre elles : les déjections animales fertilisent les étangs et deviennent du compost, ce qui réduit les coûts et les déchets.</span></p>
+        <div class="plan">
+            <article class="reveal"><h3><span lang="en">Executive summary</span><span lang="fr">Résumé exécutif</span></h3><p><span lang="en">Affordable, steady protein for local households, restaurants and markets.</span><span lang="fr">Des protéines abordables et régulières pour les ménages, restaurants et marchés locaux.</span></p></article>
+            <article class="reveal"><h3><span lang="en">Market</span><span lang="fr">Marché</span></h3><p><span lang="en">Strong local demand for eggs, pork and fish; current supply is short and expensive.</span><span lang="fr">Forte demande locale en œufs, porc et poisson ; l'offre actuelle est insuffisante et chère.</span></p></article>
+            <article class="reveal"><h3><span lang="en">Operations</span><span lang="fr">Opérations</span></h3><p><span lang="en">500 laying hens, 10 sows and 2 boars, 3 tilapia ponds.</span><span lang="fr">500 poules pondeuses, 10 truies et 2 verrats, 3 étangs de tilapias.</span></p></article>
+            <article class="reveal"><h3><span lang="en">Finance</span><span lang="fr">Finances</span></h3><p><span lang="en">Start-up and running costs, 3-year revenue projection and break-even point.</span><span lang="fr">Coûts de démarrage et d'exploitation, projection sur 3 ans et seuil de rentabilité.</span></p></article>
+            <article class="reveal"><h3><span lang="en">Impact</span><span lang="fr">Impact</span></h3><p><span lang="en">5 direct jobs, better nutrition, and a compost system for farm waste.</span><span lang="fr">5 emplois directs, meilleure nutrition et un système de compost pour les déchets.</span></p></article>
+        </div>
+    </div>
+</section>
+
+<section class="ps-section" id="schedule">
+    <div class="wrap">
+        <span class="kicker"><span lang="en">Interactive · Schedule</span><span lang="fr">Interactif · Planning</span></span>
+        <h2><span lang="en">Gantt chart with live critical path</span><span lang="fr">Diagramme de Gantt avec chemin critique en direct</span></h2>
+        <p class="intro"><span lang="en">Pick a task and add a delay. The schedule recalculates dependencies, and red tasks are the ones that move the end date.</span><span lang="fr">Choisissez une tâche et ajoutez un retard. Le planning recalcule les dépendances ; les tâches en rouge sont celles qui décalent la date de fin.</span></p>
+        <div class="panel">
+            <div class="table-wrap" style="border:none;overflow-x:auto"><div id="gantt"></div></div>
+            <div class="gantt-controls">
+                <div class="range-row">
+                    <div class="top"><label for="delay"><span lang="en">Delay on</span><span lang="fr">Retard sur</span> <span id="delay-task"></span></label><output id="delay-out" for="delay">0</output></div>
+                    <input type="range" id="delay" min="0" max="4" step="0.5" value="0">
+                </div>
+                <button class="btn btn-ghost btn-sm" id="gantt-reset" type="button"><span lang="en">Reset</span><span lang="fr">Réinitialiser</span></button>
+            </div>
+            <div class="kpis">
+                <div class="kpi"><div class="k"><span lang="en">First sales</span><span lang="fr">Premières ventes</span></div><div class="v" id="k-sales">–</div></div>
+                <div class="kpi"><div class="k"><span lang="en">Critical path</span><span lang="fr">Chemin critique</span></div><div class="v" id="k-path" style="font-size:1rem">–</div></div>
+                <div class="kpi"><div class="k"><span lang="en">Slack on selected task</span><span lang="fr">Marge sur la tâche</span></div><div class="v" id="k-slack">–</div></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="ps-section" id="risks">
+    <div class="wrap">
+        <span class="kicker"><span lang="en">Interactive · Risk register</span><span lang="fr">Interactif · Registre des risques</span></span>
+        <h2><span lang="en">Likelihood × impact, with a plan for each</span><span lang="fr">Probabilité × impact, avec un plan pour chacun</span></h2>
+        <p class="intro"><span lang="en">Each risk has an owner, a trigger to watch and a response. Select a dot to read it.</span><span lang="fr">Chaque risque a un responsable, un signal d'alerte et une réponse. Sélectionnez un point pour le lire.</span></p>
+        <div class="risk-wrap">
+            <div class="panel"><div class="matrix" id="matrix" aria-label="Risk matrix"></div></div>
+            <div class="panel risk-detail" id="risk-detail" aria-live="polite"></div>
+        </div>
+    </div>
+</section>
+
+<section class="ps-section" id="finance">
+    <div class="wrap">
+        <span class="kicker"><span lang="en">Interactive · Business case</span><span lang="fr">Interactif · Modèle financier</span></span>
+        <h2><span lang="en">When does the farm pay back?</span><span lang="fr">Quand la ferme est-elle rentable ?</span></h2>
+        <p class="intro"><span lang="en">Change the planning assumptions and watch cumulative cash over 36 months. Values are planning assumptions in US dollars, not audited results.</span><span lang="fr">Modifiez les hypothèses et observez la trésorerie cumulée sur 36 mois. Les valeurs sont des hypothèses de planification en dollars US, pas des résultats audités.</span></p>
+        <div class="panel sim">
+            <div class="controls" id="sim-controls"></div>
+            <div>
+                <div class="chart-box"><canvas id="cash-chart" aria-label="Cumulative cash chart"></canvas></div>
+                <p class="verdict" id="verdict"></p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="ps-section">
+    <div class="wrap">
+        <span class="kicker"><span lang="en">For recruiters</span><span lang="fr">Pour les recruteurs</span></span>
+        <h2><span lang="en">What this project shows</span><span lang="fr">Ce que ce projet démontre</span></h2>
+        <div class="proves">
+            <div class="prove reveal"><span class="n">01</span><h3><span lang="en">Scope and schedule</span><span lang="fr">Périmètre et planning</span></h3><p><span lang="en">Work breakdown, dependencies and critical path analysis.</span><span lang="fr">Découpage du travail, dépendances et analyse du chemin critique.</span></p></div>
+            <div class="prove reveal"><span class="n">02</span><h3><span lang="en">Risk management</span><span lang="fr">Gestion des risques</span></h3><p><span lang="en">Risk register with probability, impact, owner and response.</span><span lang="fr">Registre avec probabilité, impact, responsable et réponse.</span></p></div>
+            <div class="prove reveal"><span class="n">03</span><h3><span lang="en">Budget and business case</span><span lang="fr">Budget et rentabilité</span></h3><p><span lang="en">Cost model, cash flow and break-even for decision makers.</span><span lang="fr">Modèle de coûts, trésorerie et seuil de rentabilité pour décider.</span></p></div>
+        </div>
+        <div class="cert reveal" style="margin-top:2rem">
+            <img src="../images/project_management.jpg" alt="Google Project Management certificate" data-tilt="10" loading="lazy">
+            <div>
+                <h3>Google Project Management</h3>
+                <p><span lang="en">Professional certificate issued through Coursera. The link opens Coursera's own verification page.</span><span lang="fr">Certificat professionnel délivré via Coursera. Le lien ouvre la page de vérification officielle de Coursera.</span></p>
+                <div class="chips" style="margin-bottom:1rem"><span class="chip">Agile & Scrum</span><span class="chip">WBS</span><span class="chip">Gantt</span><span class="chip">RACI</span><span class="chip">Risk register</span><span class="chip">Budgeting</span></div>
+                <a class="btn btn-solid btn-sm" href="https://coursera.org/verify/professional-cert/351UXTQ0NEAH" target="_blank" rel="noopener"><span lang="en">Verify on Coursera</span><span lang="fr">Vérifier sur Coursera</span> ↗</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="shared.js"></script>
+<script>
+window.pageInit = function () {
+    var t = PS.t;
+
+    /* ---------- Schedule data ---------- */
+    var TASKS = [
+        { id: 'A', en: 'Market study & needs', fr: 'Étude de marché & besoins', dur: 1, deps: [] },
+        { id: 'B', en: 'Funding & permits', fr: 'Financement & autorisations', dur: 2, deps: ['A'] },
+        { id: 'C', en: 'Build hen house', fr: 'Construire le poulailler', dur: 2, deps: ['B'] },
+        { id: 'D', en: 'Dig fish ponds', fr: 'Aménager les étangs', dur: 3, deps: ['B'] },
+        { id: 'E', en: 'Build pigsty', fr: 'Construire la porcherie', dur: 2.5, deps: ['B'] },
+        { id: 'F', en: 'Buy animals & fingerlings', fr: 'Achat animaux & alevins', dur: 1, deps: ['C', 'D', 'E'] },
+        { id: 'G', en: 'Staff training', fr: 'Formation du personnel', dur: 1, deps: ['C'] },
+        { id: 'H', en: 'Production starts', fr: 'Démarrage production', dur: 2, deps: ['F', 'G'] }
+    ];
+    var MONTHS = 12;
+    var extra = {}; var selected = 'D';
+
+    function schedule() {
+        var es = {}, ef = {};
+        TASKS.forEach(function (tk) {
+            var start = 0; tk.deps.forEach(function (d) { start = Math.max(start, ef[d]); });
+            es[tk.id] = start; ef[tk.id] = start + tk.dur + (extra[tk.id] || 0);
+        });
+        var end = Math.max.apply(null, TASKS.map(function (tk) { return ef[tk.id]; }));
+        var lf = {}, ls = {};
+        for (var i = TASKS.length - 1; i >= 0; i--) {
+            var tk = TASKS[i];
+            var succ = TASKS.filter(function (x) { return x.deps.indexOf(tk.id) >= 0; });
+            lf[tk.id] = succ.length ? Math.min.apply(null, succ.map(function (s) { return ls[s.id]; })) : end;
+            ls[tk.id] = lf[tk.id] - tk.dur - (extra[tk.id] || 0);
+        }
+        return { es: es, ef: ef, ls: ls, end: end };
+    }
+
+    function renderGantt() {
+        var s = schedule();
+        var g = PS.$('#gantt');
+        var html = '<div class="gantt" style="--months:' + MONTHS + '">';
+        html += '<div class="g-scale"><span></span><div class="ticks">';
+        for (var m = 1; m <= MONTHS; m++) html += '<span>' + t('M', 'M') + m + '</span>';
+        html += '</div></div>';
+        TASKS.forEach(function (tk) {
+            var slack = s.ls[tk.id] - s.es[tk.id];
+            var crit = Math.abs(slack) < 0.01;
+            var dur = tk.dur + (extra[tk.id] || 0);
+            var left = s.es[tk.id] / MONTHS * 100, width = dur / MONTHS * 100;
+            var slipW = (extra[tk.id] || 0) / dur * 100;
+            html += '<div class="g-row' + (crit ? ' crit' : '') + (tk.id === selected ? ' sel' : '') + '">' +
+                '<button type="button" class="g-name" data-task="' + tk.id + '"><span class="dot"></span>' + tk.id + ' · ' + PS.esc(t(tk.en, tk.fr)) + '</button>' +
+                '<div class="g-track"><div class="g-bar" style="left:' + left + '%;width:' + Math.min(width, 100 - left) + '%">' + PS.fmt(dur, dur % 1 ? 1 : 0) + t(' mo', ' mois') +
+                (slipW ? '<span class="slip" style="width:' + slipW + '%"></span>' : '') + '</div></div></div>';
+        });
+        html += '</div>';
+        g.innerHTML = html;
+        PS.$$('[data-task]', g).forEach(function (b) {
+            b.addEventListener('click', function () {
+                selected = b.getAttribute('data-task');
+                PS.$('#delay').value = extra[selected] || 0;
+                renderGantt();
+            });
+        });
+        var crits = TASKS.filter(function (tk) { return Math.abs(s.ls[tk.id] - s.es[tk.id]) < 0.01; }).map(function (tk) { return tk.id; });
+        PS.$('#k-sales').textContent = t('Month ', 'Mois ') + PS.fmt(s.es.H + 1, s.es.H % 1 ? 1 : 0);
+        PS.$('#k-path').textContent = crits.join(' → ');
+        var sl = s.ls[selected] - s.es[selected];
+        PS.$('#k-slack').textContent = PS.fmt(Math.max(0, sl), sl % 1 ? 1 : 0) + t(' mo', ' mois');
+        var sel = TASKS.filter(function (x) { return x.id === selected; })[0];
+        PS.$('#delay-task').textContent = sel.id + ' · ' + t(sel.en, sel.fr);
+        PS.$('#delay-out').textContent = '+' + PS.fmt(extra[selected] || 0, (extra[selected] || 0) % 1 ? 1 : 0) + t(' mo', ' mois');
+        if (window.__ganttBars) window.__ganttBars(s);
+    }
+    PS.$('#delay').addEventListener('input', function (e) { extra[selected] = parseFloat(e.target.value); renderGantt(); });
+    PS.$('#gantt-reset').addEventListener('click', function () { extra = {}; PS.$('#delay').value = 0; renderGantt(); });
+
+    /* ---------- Risk register ---------- */
+    var RISKS = [
+        { n: 1, p: 3, i: 5, en: 'Avian disease outbreak', fr: 'Épidémie aviaire', owner: { en: 'Farm manager', fr: 'Gérant de ferme' }, trigger: { en: 'Drop in laying rate over 3 days', fr: 'Baisse de ponte sur 3 jours' }, resp: { en: 'Vaccination calendar, quarantine pen, vet on call.', fr: 'Calendrier de vaccination, enclos de quarantaine, vétérinaire joignable.' } },
+        { n: 2, p: 4, i: 3, en: 'Feed price increase', fr: 'Hausse du prix des aliments', owner: { en: 'Purchasing', fr: 'Achats' }, trigger: { en: 'Supplier price up more than 10%', fr: 'Prix fournisseur en hausse de plus de 10 %' }, resp: { en: 'Buy 3 months ahead, grow maize on site, compare 2 suppliers.', fr: 'Stock de 3 mois, culture de maïs sur place, 2 fournisseurs comparés.' } },
+        { n: 3, p: 3, i: 4, en: 'Funding delay', fr: 'Retard de financement', owner: { en: 'Project lead', fr: 'Chef de projet' }, trigger: { en: 'No answer from lender after 4 weeks', fr: 'Pas de réponse du bailleur après 4 semaines' }, resp: { en: 'Phase the build: hen house first, ponds second.', fr: 'Construire par phases : poulailler d\'abord, étangs ensuite.' } },
+        { n: 4, p: 2, i: 4, en: 'Pond flooding in rainy season', fr: 'Inondation des étangs en saison des pluies', owner: { en: 'Site supervisor', fr: 'Chef de chantier' }, trigger: { en: 'Heavy rain forecast', fr: 'Fortes pluies annoncées' }, resp: { en: 'Overflow channels and raised banks in the design.', fr: 'Canaux de trop-plein et digues surélevées dès la conception.' } },
+        { n: 5, p: 3, i: 3, en: 'Theft of animals', fr: 'Vol d\'animaux', owner: { en: 'Security', fr: 'Sécurité' }, trigger: { en: 'Stock count mismatch', fr: 'Écart d\'inventaire' }, resp: { en: 'Fencing, night guard, daily stock count.', fr: 'Clôture, gardien de nuit, inventaire quotidien.' } },
+        { n: 6, p: 2, i: 3, en: 'Lower demand than expected', fr: 'Demande plus faible que prévu', owner: { en: 'Sales', fr: 'Ventes' }, trigger: { en: 'Unsold stock 2 weeks in a row', fr: 'Invendus 2 semaines de suite' }, resp: { en: 'Contracts with restaurants and schools before launch.', fr: 'Contrats avec restaurants et écoles avant le lancement.' } }
+    ];
+    var selRisk = 1;
+    function heat(p, i) {
+        var s = p * i;
+        var mix = s >= 15 ? 'var(--bad)' : s >= 8 ? 'var(--warn)' : 'var(--ok)';
+        return 'background: color-mix(in srgb, ' + mix + ' ' + (10 + s * 2) + '%, transparent)';
+    }
+    function renderMatrix() {
+        var m = PS.$('#matrix'), h = '';
+        for (var p = 5; p >= 1; p--) {
+            h += '<div class="m-axis">' + p + '</div>';
+            for (var i = 1; i <= 5; i++) {
+                var here = RISKS.filter(function (r) { return r.p === p && r.i === i; });
+                h += '<div class="m-cell" style="' + heat(p, i) + '">' + here.map(function (r) {
+                    return '<button type="button" class="risk-dot" data-risk="' + r.n + '" aria-pressed="' + (r.n === selRisk) + '" aria-label="' + PS.esc(t(r.en, r.fr)) + '">R' + r.n + '</button>';
+                }).join('') + '</div>';
+            }
+        }
+        h += '<div class="m-axis"></div>';
+        for (var j = 1; j <= 5; j++) h += '<div class="m-axis">' + j + '</div>';
+        m.innerHTML = h;
+        PS.$$('[data-risk]', m).forEach(function (b) { b.addEventListener('click', function () { selRisk = +b.getAttribute('data-risk'); renderMatrix(); }); });
+        var r = RISKS[selRisk - 1], score = r.p * r.i;
+        var level = score >= 15 ? ['bad', t('High', 'Élevé')] : score >= 8 ? ['warn', t('Medium', 'Moyen')] : ['ok', t('Low', 'Faible')];
+        PS.$('#risk-detail').innerHTML =
+            '<span class="kicker">R' + r.n + ' · <span class="pill ' + level[0] + '">' + level[1] + ' · ' + score + '/25</span></span>' +
+            '<h4>' + PS.esc(t(r.en, r.fr)) + '</h4>' +
+            '<p class="note">' + t('Vertical axis: likelihood (1–5). Horizontal axis: impact (1–5).', 'Axe vertical : probabilité (1–5). Axe horizontal : impact (1–5).') + '</p>' +
+            '<dl><dt>' + t('Owner', 'Responsable') + '</dt><dd>' + PS.esc(t(r.owner.en, r.owner.fr)) + '</dd>' +
+            '<dt>' + t('Trigger', 'Signal') + '</dt><dd>' + PS.esc(t(r.trigger.en, r.trigger.fr)) + '</dd>' +
+            '<dt>' + t('Response', 'Réponse') + '</dt><dd>' + PS.esc(t(r.resp.en, r.resp.fr)) + '</dd></dl>';
+    }
+
+    /* ---------- Break-even model ---------- */
+    var P = [
+        { k: 'capex', en: 'Start-up cost', fr: 'Coût de démarrage', min: 8000, max: 40000, step: 500, v: 16000, unit: '$' },
+        { k: 'hens', en: 'Laying hens', fr: 'Poules pondeuses', min: 100, max: 1500, step: 50, v: 500, unit: '' },
+        { k: 'egg', en: 'Egg price', fr: 'Prix de l\'œuf', min: 0.08, max: 0.3, step: 0.01, v: 0.16, unit: '$' },
+        { k: 'sows', en: 'Sows', fr: 'Truies', min: 0, max: 30, step: 1, v: 10, unit: '' },
+        { k: 'pig', en: 'Pig sale price', fr: 'Prix de vente du porc', min: 60, max: 200, step: 5, v: 120, unit: '$' },
+        { k: 'ponds', en: 'Fish ponds', fr: 'Étangs', min: 0, max: 8, step: 1, v: 3, unit: '' },
+        { k: 'fixed', en: 'Staff & fixed costs / month', fr: 'Salaires & frais fixes / mois', min: 400, max: 3000, step: 50, v: 900, unit: '$' }
+    ];
+    var vals = {}; P.forEach(function (p) { vals[p.k] = p.v; });
+    function model() {
+        var cash = [], c = -vals.capex, be = null;
+        for (var m = 1; m <= 36; m++) {
+            var rev = 0, cost = vals.fixed;
+            // eggs: point-of-lay hens, 80% lay rate, feed 0.12 kg/day at $0.45/kg
+            rev += vals.hens * 0.8 * 30 * vals.egg; cost += vals.hens * 0.12 * 30 * 0.45;
+            // pigs: 16 piglets per sow per year, sold after 6 months, feed $9 per pig per month
+            var herd = Math.min(m, 6) * vals.sows * 16 / 12;
+            cost += herd * 9 + vals.sows * 12;
+            if (m > 6) rev += vals.sows * 16 / 12 * vals.pig;
+            // fish: 500 kg per pond every 6 months at $3/kg, feed $40 per pond per month
+            cost += vals.ponds * 40;
+            if (m > 6 && m % 6 === 1) rev += vals.ponds * 500 * 3;
+            c += rev - cost; cash.push(Math.round(c));
+            if (be === null && c >= 0) be = m;
+        }
+        return { cash: cash, be: be };
+    }
+    var chart;
+    function renderSim() {
+        var r = model();
+        var accent = PS.css('--accent'), bad = PS.css('--bad'), muted = PS.css('--muted'), line = PS.css('--line');
+        var data = { labels: r.cash.map(function (_, i) { return i + 1; }), datasets: [{ data: r.cash, borderColor: accent, borderWidth: 2.5, pointRadius: 0, tension: 0.25, fill: { target: { value: 0 }, above: accent + '33', below: bad + '2a' } }] };
+        if (window.Chart) {
+            if (!chart) {
+                chart = new Chart(PS.$('#cash-chart'), {
+                    type: 'line', data: data,
+                    options: { responsive: true, maintainAspectRatio: false, animation: { duration: PS.reduceMotion ? 0 : 400 },
+                        plugins: { legend: { display: false }, tooltip: { callbacks: { title: function (it) { return t('Month ', 'Mois ') + it[0].label; }, label: function (it) { return '$' + PS.fmt(it.raw); } } } },
+                        scales: { x: { grid: { display: false }, ticks: { color: muted, maxTicksLimit: 12 }, title: { display: true, text: t('Month', 'Mois'), color: muted } },
+                                  y: { grid: { color: line }, ticks: { color: muted, callback: function (v) { return '$' + PS.fmt(v / 1000) + 'k'; } } } } }
+                });
+            } else {
+                chart.data = data;
+                chart.options.scales.x.ticks.color = muted; chart.options.scales.y.ticks.color = muted; chart.options.scales.y.grid.color = line;
+                chart.options.scales.x.title.text = t('Month', 'Mois'); chart.options.scales.x.title.color = muted;
+                chart.update();
+            }
+        }
+        PS.$('#verdict').innerHTML = r.be
+            ? t('With these assumptions the farm breaks even in <strong>month ' + r.be + '</strong>.', 'Avec ces hypothèses, la ferme atteint l\'équilibre au <strong>mois ' + r.be + '</strong>.')
+            : t('With these assumptions the farm does <strong>not</strong> break even within 36 months.', 'Avec ces hypothèses, la ferme <strong>n\'atteint pas</strong> l\'équilibre en 36 mois.');
+    }
+    function renderControls() {
+        PS.$('#sim-controls').innerHTML = P.map(function (p) {
+            var shown = (p.unit === '$' ? '$' : '') + PS.fmt(vals[p.k], p.step < 1 ? 2 : 0);
+            return '<div class="range-row"><div class="top"><label for="r-' + p.k + '">' + PS.esc(t(p.en, p.fr)) + '</label><output id="o-' + p.k + '">' + shown + '</output></div>' +
+                '<input type="range" id="r-' + p.k + '" min="' + p.min + '" max="' + p.max + '" step="' + p.step + '" value="' + vals[p.k] + '"></div>';
+        }).join('');
+        P.forEach(function (p) {
+            PS.$('#r-' + p.k).addEventListener('input', function (e) {
+                vals[p.k] = parseFloat(e.target.value);
+                PS.$('#o-' + p.k).textContent = (p.unit === '$' ? '$' : '') + PS.fmt(vals[p.k], p.step < 1 ? 2 : 0);
+                renderSim();
+            });
+        });
+    }
+
+    PS.onLang(function () { renderGantt(); renderMatrix(); renderControls(); renderSim(); });
+    PS.onMode(function () { if (chart) renderSim(); });
+
+    /* ---------- 3D hero: schedule bars rising over a field grid ---------- */
+    PS.scene(PS.$('#stage'), function (ctx) {
+        var THREE = ctx.THREE, scene = ctx.scene, cam = ctx.camera;
+        cam.position.set(9, 8.5, 12); cam.lookAt(0, 0.5, 0);
+        scene.add(new THREE.AmbientLight(0xffffff, 0.65));
+        var sun = new THREE.DirectionalLight(0xffffff, 0.85); sun.position.set(6, 12, 8); scene.add(sun);
+        var group = new THREE.Group(); scene.add(group);
+        var gridMat = new THREE.LineBasicMaterial({ transparent: true, opacity: 0.35 });
+        var grid = new THREE.GridHelper(14, 14); grid.material = gridMat; group.add(grid);
+        var bars = [];
+        TASKS.forEach(function (tk, i) {
+            var mat = new THREE.MeshStandardMaterial({ roughness: 0.55, metalness: 0.05 });
+            var mesh = new THREE.Mesh(new THREE.BoxGeometry(1, 0.7, 0.8), mat);
+            group.add(mesh); bars.push({ mesh: mesh, row: i, target: { x: 0, w: 1 }, cur: { x: 0, w: 0.01 } });
+        });
+        function colors() {
+            gridMat.color = ctx.color('--muted');
+            bars.forEach(function (b) { b.mesh.material.color = ctx.color(b.crit ? '--bad' : '--accent'); });
+        }
+        window.__ganttBars = function (s) {
+            bars.forEach(function (b, i) {
+                var tk = TASKS[i]; var dur = tk.dur + (extra[tk.id] || 0);
+                b.target.x = s.es[tk.id] + dur / 2 - MONTHS / 2; b.target.w = dur;
+                b.crit = Math.abs(s.ls[tk.id] - s.es[tk.id]) < 0.01;
+            });
+            colors();
+        };
+        PS.onMode(colors);
+        return function (time, dt) {
+            bars.forEach(function (b, i) {
+                var k = PS.reduceMotion ? 1 : Math.min(1, dt * 4 + (time < 2 ? 0 : 0));
+                var appear = PS.reduceMotion ? 1 : Math.min(1, Math.max(0, (time - i * 0.15) * 1.5));
+                b.cur.x += (b.target.x - b.cur.x) * (PS.reduceMotion ? 1 : Math.max(k, 0.06));
+                b.cur.w += (b.target.w * appear - b.cur.w) * (PS.reduceMotion ? 1 : 0.08);
+                b.mesh.scale.x = Math.max(0.01, b.cur.w);
+                b.mesh.position.set(b.cur.x, 0.35 + Math.sin(time * 1.4 + i) * 0.04, (i - TASKS.length / 2) * 1.05 + 0.5);
+            });
+            group.rotation.y = -0.35 + ctx.pointer.x * 0.35 + (PS.reduceMotion ? 0 : Math.sin(time * 0.25) * 0.08);
+            group.rotation.x = ctx.pointer.y * 0.12;
+        };
+    });
+
+    renderGantt(); renderMatrix(); renderControls(); renderSim();
+};
+</script>
+</body>
+</html>

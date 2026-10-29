@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="fr" data-lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Help Desk Playbook</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Patrick Safari — Google IT Support project: a guided troubleshooting assistant, an OSI-layer diagnostic map and a ticket triage queue with priorities and SLAs.">
+<link rel="icon" href="../your-icon-filename.png" type="image/png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700;800&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="shared.css">
+<style>
+    /* Layout: help desk wall — slate, signal orange for action, status lights as the recurring motif */
+    :root {
+        --bg: #f5f6f8; --surface: #ffffff; --fg: #252a33; --heading: #12161d; --muted: #5f6774;
+        --line: #e1e4ea; --line-strong: #c7ccd6; --accent: #e8590c; --on-accent: #ffffff;
+        --stage: linear-gradient(170deg, #e9edf3, #fff0e6); --code-bg: #12161d; --code-fg: #e9edf3;
+        --ok: #2b8a3e; --warn: #c27c0e; --bad: #c92a2a;
+        --font-display: 'Rubik', 'Segoe UI', system-ui, sans-serif;
+        --font-body: 'Rubik', 'Segoe UI', system-ui, sans-serif;
+        --font-mono: 'Roboto Mono', ui-monospace, Menlo, monospace;
+    }
+    html[data-mode="dark"] {
+        --bg: #0f1216; --surface: #171b21; --fg: #d5dae2; --heading: #f6f8fb; --muted: #949cab;
+        --line: #252b34; --line-strong: #363e4a; --accent: #ff8a3d; --on-accent: #1f0d02;
+        --stage: linear-gradient(170deg, #161b23, #2a1608); --code-bg: #0a0c10; --code-fg: #d5dae2;
+        --ok: #51cf66; --warn: #fcc419; --bad: #ff6b6b; color-scheme: dark;
+    }
+    .ps-hero h1 { font-weight: 800; letter-spacing: -0.02em; }
+    .assistant { display: grid; grid-template-columns: 1.2fr 1fr; gap: 1.25rem; }
+    .chat { display: flex; flex-direction: column; height: 520px; }
+    .msgs { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 0.6rem; padding: 0.25rem; }
+    .msg { max-width: 88%; padding: 0.7rem 0.9rem; border-radius: 14px; font-size: 0.92rem; }
+    .msg.bot { background: var(--bg); border: 1px solid var(--line); border-bottom-left-radius: 4px; }
+    .msg.me { align-self: flex-end; background: var(--accent); color: var(--on-accent); border-bottom-right-radius: 4px; }
+    .msg code { display: block; margin-top: 0.4rem; background: var(--code-bg); color: var(--code-fg); padding: 0.45rem 0.6rem; border-radius: 6px; font-size: 0.8rem; white-space: pre-wrap; }
+    .choices { display: flex; flex-wrap: wrap; gap: 0.45rem; padding-top: 0.75rem; border-top: 1px solid var(--line); }
+    .choices button { font: inherit; font-size: 0.86rem; padding: 0.45rem 0.85rem; border-radius: 999px; border: 1px solid var(--line-strong); background: var(--surface); color: var(--fg); cursor: pointer; }
+    .choices button:hover { border-color: var(--accent); color: var(--accent); }
+    .os { display: inline-flex; gap: 0.25rem; padding: 3px; border: 1px solid var(--line-strong); border-radius: 10px; }
+    .os button { font: inherit; font-size: 0.82rem; border: none; border-radius: 7px; padding: 0.35rem 0.7rem; background: transparent; color: var(--fg); cursor: pointer; }
+    .os button[aria-pressed="true"] { background: var(--heading); color: var(--surface); }
+    .path { list-style: none; display: grid; gap: 0.4rem; font-size: 0.88rem; }
+    .path li { display: grid; grid-template-columns: 22px 1fr; gap: 0.5rem; }
+    .path li::before { content: attr(data-n); width: 22px; height: 22px; border-radius: 50%; background: var(--line); display: grid; place-items: center; font-size: 0.72rem; font-family: var(--font-mono); }
+
+    .osi { display: grid; grid-template-columns: 300px 1fr; gap: 1.25rem; }
+    .layers { display: grid; gap: 6px; perspective: 900px; }
+    .layer { font: inherit; text-align: left; display: grid; grid-template-columns: 34px 1fr auto; align-items: center; gap: 0.6rem; padding: 0.65rem 0.9rem; border-radius: 10px; border: 1px solid var(--line-strong); background: var(--surface); color: var(--fg); cursor: pointer; transition: transform 0.25s ease, background 0.2s; transform-origin: left center; }
+    .layer b { font-family: var(--font-mono); color: var(--muted); }
+    .layer[aria-pressed="true"] { background: var(--accent); color: var(--on-accent); border-color: var(--accent); transform: translateX(12px) rotateY(-8deg); }
+    .layer[aria-pressed="true"] b { color: var(--on-accent); }
+    .led { width: 10px; height: 10px; border-radius: 50%; background: var(--ok); box-shadow: 0 0 8px var(--ok); }
+    .led.off { background: var(--bad); box-shadow: 0 0 8px var(--bad); }
+
+    .queue { display: grid; gap: 0.6rem; }
+    .ticket { display: grid; grid-template-columns: 6px 1fr auto; gap: 0.9rem; align-items: center; padding: 0.8rem 1rem 0.8rem 0; border-radius: 12px; border: 1px solid var(--line); background: var(--surface); overflow: hidden; }
+    .ticket .stripe { align-self: stretch; }
+    .ticket h4 { font-family: var(--font-body); font-size: 0.95rem; font-weight: 600; }
+    .ticket .meta { font-size: 0.8rem; color: var(--muted); }
+    .ticket .ctrl { display: flex; gap: 0.4rem; align-items: center; flex-wrap: wrap; justify-content: flex-end; }
+    .ticket select { width: auto; font-size: 0.8rem; padding: 0.3rem 0.4rem; }
+    .sla { font-family: var(--font-mono); font-size: 0.8rem; min-width: 70px; text-align: right; }
+    .p1 { background: var(--bad); } .p2 { background: var(--accent); } .p3 { background: var(--warn); } .p4 { background: var(--ok); }
+    .triage { grid-template-columns: 1.6fr 1fr; }
+    .layers { padding-right: 14px; }
+    .matrix-mini { display: grid; grid-template-columns: auto repeat(3, 1fr); gap: 4px; font-size: 0.78rem; text-align: center; }
+    .matrix-mini div { padding: 0.45rem; border-radius: 6px; }
+    .matrix-mini .h { color: var(--muted); font-family: var(--font-mono); }
+    @media (max-width: 920px) { .assistant, .osi, .triage { grid-template-columns: 1fr; } .chat { height: 460px; } }
+    @media (max-width: 640px) { .ticket { grid-template-columns: 6px 1fr; } .ticket .ctrl { grid-column: 2; justify-content: flex-start; } .sla { text-align: left; } }
+</style>
+</head>
+<body data-project="gits">
+
+<section class="ps-hero">
+    <div class="wrap">
+        <div>
+            <span class="ps-eyebrow">Google IT Support · Capstone</span>
+            <h1>
+                <span lang="en">A help desk playbook you can actually use</span>
+                <span lang="fr">Un guide de support informatique réellement utilisable</span>
+            </h1>
+            <p class="lead">
+                <span lang="en">The way I troubleshoot, turned into tools: a guided assistant for common problems on Windows, macOS and Linux, a layer-by-layer network diagnostic, and a ticket queue that sets priorities and deadlines.</span>
+                <span lang="fr">Ma méthode de dépannage transformée en outils : un assistant guidé pour les problèmes courants sur Windows, macOS et Linux, un diagnostic réseau couche par couche et une file de tickets qui fixe priorités et délais.</span>
+            </p>
+            <div class="ps-btns">
+                <a class="btn btn-solid" href="#assistant"><span lang="en">Report a problem</span><span lang="fr">Signaler un problème</span></a>
+                <a class="btn btn-ghost" href="https://coursera.org/verify/professional-cert/L4ZFS6SSKHE6" target="_blank" rel="noopener"><span lang="en">Verify certificate</span><span lang="fr">Vérifier le certificat</span> ↗</a>
+            </div>
+        </div>
+        <div class="ps-stage" id="stage">
+            <span class="stage-label"><span lang="en">3D · server rack status</span><span lang="fr">3D · état de la baie serveur</span></span>
+        </div>
+    </div>
+</section>
+
+<div class="ps-proof">
+    <div class="wrap">
+        <div class="cell"><div class="k"><span lang="en">Systems</span><span lang="fr">Systèmes</span></div><div class="v">Windows · macOS · Linux</div></div>
+        <div class="cell"><div class="k"><span lang="en">Networking</span><span lang="fr">Réseau</span></div><div class="v">TCP/IP · DNS · DHCP</div></div>
+        <div class="cell"><div class="k"><span lang="en">Admin</span><span lang="fr">Administration</span></div><div class="v">Active Directory</div></div>
+        <div class="cell"><div class="k"><span lang="en">Experience</span><span lang="fr">Expérience</span></div><div class="v"><span lang="en">2 years IT support</span><span lang="fr">2 ans de support IT</span></div></div>
+    </div>
+</div>
+
+<section class="ps-section" id="assistant">
+    <div class="wrap">
+        <span class="kicker"><span lang="en">Tool 1 · Guided troubleshooting</span><span lang="fr">Outil 1 · Dépannage guidé</span></span>
+        <h2><span lang="en">Tell the assistant what's wrong</span><span lang="fr">Dites à l'assistant ce qui ne va pas</span></h2>
+        <p class="intro"><span lang="en">It follows the method from the course: gather information, reproduce, isolate the cause, fix, then document. Commands change with the operating system.</span><span lang="fr">Il suit la méthode du cours : collecter les informations, reproduire, isoler la cause, corriger, puis documenter. Les commandes changent selon le système.</span></p>
+        <div class="assistant">
+            <div class="panel chat">
+                <div style="display:flex;justify-content:space-between;align-items:center;gap:1rem;margin-bottom:0.75rem;flex-wrap:wrap">
+                    <strong><span lang="en">Support assistant</span><span lang="fr">Assistant support</span></strong>
+                    <div class="os" role="group" aria-label="Operating system"><button type="button" data-os="win">Windows</button><button type="button" data-os="mac">macOS</button><button type="button" data-os="linux">Linux</button></div>
+                </div>
+                <div class="msgs" id="msgs" aria-live="polite"></div>
+                <div class="choices" id="choices"></div>
+            </div>
+            <div class="panel">
+                <h3><span lang="en">Ticket notes (auto-written)</span><span lang="fr">Notes du ticket (écrites automatiquement)</span></h3>
+                <p class="sub"><span lang="en">Good documentation means the next technician doesn't start from zero.</span><span lang="fr">Une bonne documentation évite au technicien suivant de repartir de zéro.</span></p>
+                <ol class="path" id="notes"></ol>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="ps-section" id="osi">
+    <div class="wrap">
+        <span class="kicker"><span lang="en">Tool 2 · Network diagnostic</span><span lang="fr">Outil 2 · Diagnostic réseau</span></span>
+        <h2><span lang="en">Find the broken layer</span><span lang="fr">Trouver la couche défaillante</span></h2>
+        <p class="intro"><span lang="en">Work up the TCP/IP model from the cable to the application. Select a layer to see the symptoms, the test and the usual fix.</span><span lang="fr">Remontez le modèle TCP/IP du câble jusqu'à l'application. Sélectionnez une couche pour voir les symptômes, le test et la correction habituelle.</span></p>
+        <div class="osi">
+            <div class="layers" id="layers"></div>
+            <div class="panel" id="layer-detail" aria-live="polite"></div>
+        </div>
+    </div>
+</section>
+
+<section class="ps-section" id="triage">
+    <div class="wrap">
+        <span class="kicker"><span lang="en">Tool 3 · Ticket triage</span><span lang="fr">Outil 3 · Tri des tickets</span></span>
+        <h2><span lang="en">Priority = impact × urgency</span><span lang="fr">Priorité = impact × urgence</span></h2>
+        <p class="intro"><span lang="en">Change a ticket's impact or urgency and the queue re-sorts with its new deadline. This is the ITIL-style matrix I use to decide what to fix first.</span><span lang="fr">Changez l'impact ou l'urgence d'un ticket : la file se réorganise avec son nouveau délai. C'est la matrice de type ITIL que j'utilise pour décider quoi traiter en premier.</span></p>
+        <div class="grid-2 triage">
+            <div class="queue" id="queue"></div>
+            <div class="panel">
+                <h3><span lang="en">Priority matrix</span><span lang="fr">Matrice de priorité</span></h3>
+                <div class="matrix-mini" id="pm"></div>
+                <p class="note" style="margin-top:0.8rem" id="sla-legend"></p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="ps-section">
+    <div class="wrap">
+        <span class="kicker"><span lang="en">For recruiters</span><span lang="fr">Pour les recruteurs</span></span>
+        <h2><span lang="en">What this project shows</span><span lang="fr">Ce que ce projet démontre</span></h2>
+        <div class="proves">
+            <div class="prove reveal"><span class="n">01</span><h3><span lang="en">Structured troubleshooting</span><span lang="fr">Dépannage structuré</span></h3><p><span lang="en">A repeatable method across three operating systems.</span><span lang="fr">Une méthode reproductible sur trois systèmes d'exploitation.</span></p></div>
+            <div class="prove reveal"><span class="n">02</span><h3><span lang="en">Networking fundamentals</span><span lang="fr">Bases du réseau</span></h3><p><span lang="en">Diagnosing by layer with ping, ipconfig, nslookup and traceroute.</span><span lang="fr">Diagnostic par couche avec ping, ipconfig, nslookup et traceroute.</span></p></div>
+            <div class="prove reveal"><span class="n">03</span><h3><span lang="en">Customer service</span><span lang="fr">Service client</span></h3><p><span lang="en">Clear priorities, deadlines and documentation for every ticket.</span><span lang="fr">Priorités, délais et documentation clairs pour chaque ticket.</span></p></div>
+        </div>
+        <div class="cert reveal" style="margin-top:2rem">
+            <img src="../images/it_support.jpg" alt="Google IT Support certificate" data-tilt="10" loading="lazy">
+            <div>
+                <h3>Google IT Support</h3>
+                <p><span lang="en">Professional certificate issued through Coursera. The link opens Coursera's own verification page.</span><span lang="fr">Certificat professionnel délivré via Coursera. Le lien ouvre la page de vérification officielle de Coursera.</span></p>
+                <div class="chips" style="margin-bottom:1rem"><span class="chip">Troubleshooting</span><span class="chip">Networking</span><span class="chip">Operating systems</span><span class="chip">System administration</span><span class="chip">IT security</span><span class="chip">Customer support</span></div>
+                <a class="btn btn-solid btn-sm" href="https://coursera.org/verify/professional-cert/L4ZFS6SSKHE6" target="_blank" rel="noopener"><span lang="en">Verify on Coursera</span><span lang="fr">Vérifier sur Coursera</span> ↗</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="shared.js"></script>
+<script>
+window.pageInit = function () {
+    var t = PS.t;
+    var os = 'win';
+
+    /* ---------- Decision tree ---------- */
+    function cmd(o) { return o[os] || o.all; }
+    var TREE = {
+        start: { q: ['Hi! What is the problem?', 'Bonjour ! Quel est le problème ?'], opts: [['net', 'No internet', 'Pas d\'internet'], ['slow', 'Computer is slow', 'Ordinateur lent'], ['print', 'Printer not working', 'Imprimante en panne'], ['login', 'Can\'t sign in', 'Impossible de se connecter']] },
+        net: { q: ['Do other devices on the same Wi-Fi or network work?', 'Les autres appareils sur le même Wi-Fi fonctionnent-ils ?'], note: ['Scope: one device or the whole network?', 'Portée : un appareil ou tout le réseau ?'], opts: [['net_one', 'Yes, only mine fails', 'Oui, seul le mien échoue'], ['net_all', 'No, nobody has internet', 'Non, personne n\'a internet']] },
+        net_all: { q: ['Then the problem is upstream. Restart the router and modem, wait 2 minutes, and check the ISP status page. If it\'s still down, call the ISP with the modem\'s status lights.', 'Le problème est en amont. Redémarrez routeur et modem, attendez 2 minutes et consultez la page d\'état du fournisseur. Si ça ne revient pas, appelez le FAI en indiquant les voyants du modem.'], note: ['Whole network down → router/ISP. Escalated to ISP.', 'Tout le réseau en panne → routeur/FAI. Escaladé au FAI.'], end: true },
+        net_one: { q: ['Let\'s check your IP address. Run this and tell me what you see:', 'Vérifions votre adresse IP. Lancez ceci et dites-moi le résultat :'], code: { win: 'ipconfig /all', mac: 'ifconfig en0 | grep inet', linux: 'ip addr show' }, note: ['Checked IP configuration.', 'Configuration IP vérifiée.'], opts: [['ip_169', 'Address starts with 169.254', 'Adresse en 169.254'], ['ip_ok', 'Normal address (e.g. 192.168.x.x)', 'Adresse normale (ex. 192.168.x.x)']] },
+        ip_169: { q: ['169.254 means DHCP failed: the device never got an address. Renew it:', '169.254 signifie que le DHCP a échoué : l\'appareil n\'a pas reçu d\'adresse. Renouvelez-la :'], code: { win: 'ipconfig /release\nipconfig /renew', mac: 'sudo ipconfig set en0 DHCP', linux: 'sudo dhclient -r && sudo dhclient' }, note: ['Cause: DHCP lease failure. Fix: renewed lease.', 'Cause : échec du bail DHCP. Correction : bail renouvelé.'], opts: [['solved', 'It works now', 'Ça marche'], ['net_all', 'Still no address', 'Toujours pas d\'adresse']] },
+        ip_ok: { q: ['Good. Now test the connection without DNS, then with DNS:', 'Bien. Testez la connexion sans DNS, puis avec DNS :'], code: { all: 'ping 8.8.8.8\nnslookup google.com' }, note: ['Tested ICMP to 8.8.8.8 and DNS lookup.', 'Test ICMP vers 8.8.8.8 et résolution DNS.'], opts: [['dns', 'Ping works, nslookup fails', 'Ping OK, nslookup échoue'], ['gw', 'Ping 8.8.8.8 fails too', 'Ping 8.8.8.8 échoue aussi']] },
+        dns: { q: ['It\'s DNS. Set a public DNS server (1.1.1.1 or 8.8.8.8) and flush the cache:', 'C\'est le DNS. Configurez un DNS public (1.1.1.1 ou 8.8.8.8) et videz le cache :'], code: { win: 'ipconfig /flushdns', mac: 'sudo dscacheutil -flushcache; sudo killall -HUP mDNSResponder', linux: 'resolvectl flush-caches' }, note: ['Cause: DNS resolution. Fix: changed DNS, flushed cache.', 'Cause : résolution DNS. Correction : DNS changé, cache vidé.'], opts: [['solved', 'Fixed!', 'Réglé !']] },
+        gw: { q: ['Check the gateway and firewall. Ping your router; if that fails, check the cable or Wi-Fi driver. If it works, a firewall or VPN may block traffic.', 'Vérifiez la passerelle et le pare-feu. Pinguez le routeur ; si ça échoue, contrôlez le câble ou le pilote Wi-Fi. Si ça marche, un pare-feu ou un VPN bloque peut-être le trafic.'], code: { win: 'ping 192.168.1.1\ntracert 8.8.8.8', mac: 'ping 192.168.1.1\ntraceroute 8.8.8.8', linux: 'ping 192.168.1.1\ntraceroute 8.8.8.8' }, note: ['Isolated to local link/gateway.', 'Isolé au lien local / à la passerelle.'], opts: [['solved', 'Found it', 'Trouvé'], ['escalate', 'Still stuck', 'Toujours bloqué']] },
+        slow: { q: ['Let\'s see what uses the resources. Open:', 'Voyons ce qui consomme les ressources. Ouvrez :'], code: { win: 'Ctrl + Shift + Esc   (Task Manager)', mac: 'Activity Monitor  (or: top -o cpu)', linux: 'htop' }, note: ['Opened resource monitor.', 'Moniteur de ressources ouvert.'], opts: [['cpu', 'One app uses lots of CPU/RAM', 'Une app consomme beaucoup'], ['disk', 'Disk is almost full', 'Disque presque plein'], ['nothing', 'Nothing stands out', 'Rien de particulier']] },
+        cpu: { q: ['End that process, then check startup apps so it doesn\'t come back. If it\'s unknown, run an antivirus scan.', 'Arrêtez ce processus, puis vérifiez les applications au démarrage. S\'il est inconnu, lancez une analyse antivirus.'], note: ['Cause: runaway process. Fix: ended it, cleaned startup.', 'Cause : processus emballé. Correction : arrêté, démarrage nettoyé.'], opts: [['solved', 'Much faster', 'Bien plus rapide']] },
+        disk: { q: ['Free space: empty temp files and old downloads, and uninstall unused apps. Keep at least 15% free.', 'Libérez de l\'espace : fichiers temporaires, anciens téléchargements, applications inutiles. Gardez au moins 15 % libre.'], code: { win: 'cleanmgr', mac: 'du -sh ~/Downloads ~/Library/Caches', linux: 'sudo apt autoremove && du -sh ~/* | sort -h' }, note: ['Cause: low disk space. Fix: cleanup.', 'Cause : disque saturé. Correction : nettoyage.'], opts: [['solved', 'Done', 'Fait']] },
+        nothing: { q: ['Then check for pending updates and restart. A long uptime and a full update queue often slow machines down. If it\'s still slow, it may be failing hardware (check disk health).', 'Vérifiez les mises à jour en attente et redémarrez. Une longue durée sans redémarrage ralentit souvent. Si c\'est toujours lent, le matériel est peut-être en cause (santé du disque).'], code: { win: 'wmic diskdrive get status', mac: 'diskutil verifyVolume /', linux: 'sudo smartctl -H /dev/sda' }, note: ['Updates + restart, checked disk health.', 'Mises à jour + redémarrage, santé du disque vérifiée.'], opts: [['solved', 'Better now', 'Mieux'], ['escalate', 'Still slow', 'Toujours lent']] },
+        print: { q: ['Is the printer showing an error light or message?', 'L\'imprimante affiche-t-elle un voyant ou un message d\'erreur ?'], opts: [['p_err', 'Yes (paper, toner…)', 'Oui (papier, toner…)'], ['p_queue', 'No, jobs just stay in the queue', 'Non, les travaux restent en file']] },
+        p_err: { q: ['Fix the physical issue first: paper jam, empty tray or toner. Then turn it off and on.', 'Réglez d\'abord le problème physique : bourrage, bac vide ou toner. Puis éteignez et rallumez.'], note: ['Physical fault cleared.', 'Défaut physique corrigé.'], opts: [['solved', 'Printing again', 'Ça imprime']] },
+        p_queue: { q: ['Clear the stuck queue and restart the print service:', 'Videz la file bloquée et redémarrez le service d\'impression :'], code: { win: 'net stop spooler\ndel %systemroot%\\System32\\spool\\PRINTERS\\* /Q\nnet start spooler', mac: 'cancel -a -\nsudo launchctl stop org.cups.cupsd', linux: 'cancel -a\nsudo systemctl restart cups' }, note: ['Cause: stuck spooler. Fix: cleared queue, restarted service.', 'Cause : spouleur bloqué. Correction : file vidée, service relancé.'], opts: [['solved', 'Fixed', 'Réglé']] },
+        login: { q: ['What does the message say?', 'Que dit le message ?'], opts: [['l_pw', 'Wrong password', 'Mot de passe incorrect'], ['l_lock', 'Account locked', 'Compte verrouillé']] },
+        l_pw: { q: ['Check Caps Lock and the keyboard layout (AZERTY vs QWERTY is a classic). Then verify the user\'s identity before resetting the password.', 'Vérifiez Verr. Maj et la disposition du clavier (AZERTY/QWERTY est un classique). Puis vérifiez l\'identité avant de réinitialiser.'], code: { win: 'net user jdoe *          (local)\n# or Active Directory Users and Computers → Reset Password', mac: 'sudo passwd jdoe', linux: 'sudo passwd jdoe' }, note: ['Identity verified, password reset, user must change at next login.', 'Identité vérifiée, mot de passe réinitialisé, à changer à la prochaine connexion.'], opts: [['solved', 'User is in', 'Utilisateur connecté']] },
+        l_lock: { q: ['Too many failed attempts locked the account. Verify identity, unlock it, and check the logs in case it was an attack rather than a typo.', 'Trop d\'échecs ont verrouillé le compte. Vérifiez l\'identité, déverrouillez et consultez les journaux : attaque ou simple erreur ?'], code: { win: 'Unlock-ADAccount -Identity jdoe', mac: 'sudo pwpolicy -u jdoe -enableuser', linux: 'sudo faillock --user jdoe --reset' }, note: ['Account unlocked, failed-login source checked.', 'Compte déverrouillé, source des échecs vérifiée.'], opts: [['solved', 'Unlocked', 'Déverrouillé']] },
+        solved: { q: ['Great! I\'ll close the ticket with these notes. Anything else?', 'Parfait ! Je ferme le ticket avec ces notes. Autre chose ?'], note: ['Resolved and confirmed with the user.', 'Résolu et confirmé avec l\'utilisateur.'], opts: [['start', 'New problem', 'Nouveau problème']] },
+        escalate: { q: ['I\'ll escalate to tier 2 with everything we tried, so you won\'t have to repeat it.', 'J\'escalade au niveau 2 avec tout ce qui a été essayé, pour que vous n\'ayez pas à tout répéter.'], note: ['Escalated to tier 2 with full notes.', 'Escaladé au niveau 2 avec notes complètes.'], opts: [['start', 'New problem', 'Nouveau problème']] }
+    };
+    var history = [], notes = [];
+    function go(id, label) {
+        if (label) history.push({ me: true, text: label });
+        if (id === 'start') notes = [];
+        var n = TREE[id];
+        history.push({ me: false, node: id });
+        if (n.note) notes.push(n.note);
+        renderChat();
+    }
+    function renderChat() {
+        var box = PS.$('#msgs');
+        box.innerHTML = history.map(function (h) {
+            if (h.me) return '<div class="msg me">' + PS.esc(h.text) + '</div>';
+            var n = TREE[h.node];
+            return '<div class="msg bot">' + PS.esc(t(n.q[0], n.q[1])) + (n.code ? '<code>' + PS.esc(cmd(n.code)) + '</code>' : '') + '</div>';
+        }).join('');
+        box.scrollTop = box.scrollHeight;
+        var cur = TREE[history[history.length - 1].node];
+        PS.$('#choices').innerHTML = (cur.opts || [['start', 'Start over', 'Recommencer']]).map(function (o) { return '<button type="button" data-go="' + o[0] + '">' + PS.esc(t(o[1], o[2])) + '</button>'; }).join('');
+        PS.$$('[data-go]').forEach(function (b) { b.addEventListener('click', function () { go(b.getAttribute('data-go'), b.textContent); }); });
+        PS.$('#notes').innerHTML = notes.length ? notes.map(function (x, i) { return '<li data-n="' + (i + 1) + '">' + PS.esc(t(x[0], x[1])) + '</li>'; }).join('') : '<li data-n="·">' + t('Notes appear as you go.', 'Les notes apparaissent au fil de l\'échange.') + '</li>';
+        PS.$$('[data-os]').forEach(function (b) { b.setAttribute('aria-pressed', b.getAttribute('data-os') === os); });
+    }
+    PS.$$('[data-os]').forEach(function (b) { b.addEventListener('click', function () { os = b.getAttribute('data-os'); renderChat(); }); });
+    if (/Mac/i.test(navigator.platform)) os = 'mac'; else if (/Linux/i.test(navigator.platform)) os = 'linux';
+
+    /* ---------- OSI / TCP-IP ---------- */
+    var LAYERS = [
+        { n: 5, en: 'Application', fr: 'Application', sym: ['Website loads for others but not this app; certificate or login errors.', 'Le site marche pour d\'autres mais pas cette app ; erreurs de certificat ou de connexion.'], test: 'curl -I https://example.com', fix: ['Clear browser cache, check proxy settings, update the app, check the service status.', 'Vider le cache, vérifier le proxy, mettre à jour l\'app, vérifier l\'état du service.'] },
+        { n: 4, en: 'Transport', fr: 'Transport', sym: ['Ping works but the service port is unreachable.', 'Le ping marche mais le port du service est injoignable.'], test: 'Test-NetConnection example.com -Port 443   |   nc -zv example.com 443', fix: ['Open the port in the firewall or check the service is listening.', 'Ouvrir le port dans le pare-feu ou vérifier que le service écoute.'] },
+        { n: 3, en: 'Network', fr: 'Réseau', sym: ['No IP, 169.254 address, wrong gateway or DNS not resolving.', 'Pas d\'IP, adresse 169.254, mauvaise passerelle ou DNS qui ne résout pas.'], test: 'ipconfig /all · ping 8.8.8.8 · nslookup example.com · tracert 8.8.8.8', fix: ['Renew DHCP, fix gateway/DNS settings, check routing.', 'Renouveler le DHCP, corriger passerelle/DNS, vérifier le routage.'] },
+        { n: 2, en: 'Data link', fr: 'Liaison', sym: ['Connected to Wi-Fi with no traffic, MAC filtering, wrong VLAN.', 'Connecté au Wi-Fi sans trafic, filtrage MAC, mauvais VLAN.'], test: 'arp -a · check switch port / Wi-Fi association', fix: ['Reconnect to the network, update the network driver, check the switch port.', 'Se reconnecter, mettre à jour le pilote réseau, vérifier le port du switch.'] },
+        { n: 1, en: 'Physical', fr: 'Physique', sym: ['No link light, cable unplugged or damaged, Wi-Fi turned off.', 'Pas de voyant de liaison, câble débranché ou abîmé, Wi-Fi désactivé.'], test: ['Look at the port LEDs, swap the cable, toggle airplane mode', 'Regarder les voyants du port, changer le câble, basculer le mode avion'], fix: ['Replace the cable, try another port, turn Wi-Fi on.', 'Remplacer le câble, essayer un autre port, activer le Wi-Fi.'] }
+    ];
+    var selLayer = 3;
+    function renderLayers() {
+        PS.$('#layers').innerHTML = LAYERS.map(function (l) {
+            return '<button type="button" class="layer" data-l="' + l.n + '" aria-pressed="' + (l.n === selLayer) + '"><b>L' + l.n + '</b><span>' + PS.esc(t(l.en, l.fr)) + '</span><span class="led' + (l.n === selLayer ? ' off' : '') + '"></span></button>';
+        }).join('');
+        PS.$$('[data-l]').forEach(function (b) { b.addEventListener('click', function () { selLayer = +b.getAttribute('data-l'); renderLayers(); if (window.__rackFault) window.__rackFault(selLayer); }); });
+        var l = LAYERS.filter(function (x) { return x.n === selLayer; })[0];
+        PS.$('#layer-detail').innerHTML = '<span class="kicker">TCP/IP · L' + l.n + '</span><h3 style="font-size:1.4rem">' + PS.esc(t(l.en, l.fr)) + '</h3>' +
+            '<p style="margin:0.8rem 0"><strong>' + t('Symptoms', 'Symptômes') + ':</strong> ' + PS.esc(t(l.sym[0], l.sym[1])) + '</p>' +
+            '<p><strong>' + t('Test', 'Test') + ':</strong></p><div class="codebox" style="margin:0.4rem 0 0.9rem"><pre><code>' + PS.esc(Array.isArray(l.test) ? t(l.test[0], l.test[1]) : l.test) + '</code></pre></div>' +
+            '<p><strong>' + t('Usual fix', 'Correction habituelle') + ':</strong> ' + PS.esc(t(l.fix[0], l.fix[1])) + '</p>' +
+            '<p class="note" style="margin-top:1rem">' + t('Rule of thumb: start at the bottom. A green layer means every layer under it works.', 'Règle simple : commencez par le bas. Une couche verte signifie que toutes celles du dessous fonctionnent.') + '</p>';
+    }
+
+    /* ---------- Ticket triage ---------- */
+    var TICKETS = [
+        { id: 1042, en: 'Accounting server unreachable', fr: 'Serveur de comptabilité injoignable', who: 'Finance · 12 users', imp: 1, urg: 1 },
+        { id: 1043, en: 'New laptop setup for intern', fr: 'Configuration d\'un portable pour un stagiaire', who: 'HR · 1 user', imp: 3, urg: 3 },
+        { id: 1044, en: 'Printer on floor 2 jammed', fr: 'Imprimante du 2e étage bloquée', who: 'Sales · 8 users', imp: 2, urg: 2 },
+        { id: 1045, en: 'CEO cannot open email on phone', fr: 'Le directeur n\'ouvre plus ses e-mails sur mobile', who: 'Direction · 1 user', imp: 3, urg: 1 },
+        { id: 1046, en: 'Request: install Adobe Reader', fr: 'Demande : installer Adobe Reader', who: 'Ops · 1 user', imp: 3, urg: 3 }
+    ];
+    var PRI = [[1, 2, 3], [2, 3, 4], [3, 4, 4]]; // [impact-1][urgency-1]
+    var SLA = { 1: 1, 2: 4, 3: 8, 4: 24 };
+    var opened = Date.now();
+    function prio(tk) { return PRI[tk.imp - 1][tk.urg - 1]; }
+    function renderQueue() {
+        var lv = [t('High', 'Élevé'), t('Medium', 'Moyen'), t('Low', 'Faible')];
+        var sorted = TICKETS.slice().sort(function (a, b) { return prio(a) - prio(b) || a.id - b.id; });
+        PS.$('#queue').innerHTML = sorted.map(function (tk) {
+            var p = prio(tk);
+            return '<div class="ticket"><span class="stripe p' + p + '"></span><div><h4>#' + tk.id + ' · ' + PS.esc(t(tk.en, tk.fr)) + '</h4><div class="meta">' + PS.esc(tk.who) + ' · <strong>P' + p + '</strong></div></div>' +
+                '<div class="ctrl"><label class="note">' + t('Impact', 'Impact') + ' <select data-k="imp" data-id="' + tk.id + '">' + lv.map(function (x, i) { return '<option value="' + (i + 1) + '"' + (tk.imp === i + 1 ? ' selected' : '') + '>' + x + '</option>'; }).join('') + '</select></label>' +
+                '<label class="note">' + t('Urgency', 'Urgence') + ' <select data-k="urg" data-id="' + tk.id + '">' + lv.map(function (x, i) { return '<option value="' + (i + 1) + '"' + (tk.urg === i + 1 ? ' selected' : '') + '>' + x + '</option>'; }).join('') + '</select></label>' +
+                '<span class="sla" data-sla="' + p + '"></span></div></div>';
+        }).join('');
+        PS.$$('#queue select').forEach(function (s) { s.addEventListener('change', function () { var tk = TICKETS.filter(function (x) { return x.id === +s.getAttribute('data-id'); })[0]; tk[s.getAttribute('data-k')] = +s.value; renderQueue(); }); });
+        tickSla();
+        var hdr = '<div class="h"></div><div class="h">' + t('Urg. high', 'Urg. haute') + '</div><div class="h">' + t('med', 'moy.') + '</div><div class="h">' + t('low', 'basse') + '</div>';
+        PS.$('#pm').innerHTML = hdr + [0, 1, 2].map(function (i) { return '<div class="h">' + t('Impact ', 'Impact ') + lv[i].toLowerCase() + '</div>' + [0, 1, 2].map(function (u) { var p = PRI[i][u]; return '<div class="p' + p + '" style="color:#fff;font-weight:600">P' + p + '</div>'; }).join(''); }).join('');
+        PS.$('#sla-legend').textContent = t('Resolution targets: P1 1 h · P2 4 h · P3 8 h · P4 24 h.', 'Délais de résolution : P1 1 h · P2 4 h · P3 8 h · P4 24 h.');
+    }
+    function tickSla() {
+        PS.$$('[data-sla]').forEach(function (el) {
+            var left = SLA[+el.getAttribute('data-sla')] * 3600 - (Date.now() - opened) / 1000;
+            var h = Math.floor(left / 3600), m = Math.floor(left % 3600 / 60), s = Math.floor(left % 60);
+            el.textContent = (h ? h + 'h ' : '') + String(m).padStart(2, '0') + 'm ' + String(s).padStart(2, '0') + 's';
+        });
+    }
+    setInterval(tickSla, 1000);
+
+    PS.onLang(function () { renderChat(); renderLayers(); renderQueue(); });
+    go('start'); renderLayers(); renderQueue();
+
+    /* ---------- 3D: server rack with status LEDs ---------- */
+    PS.scene(PS.$('#stage'), function (ctx) {
+        var THREE = ctx.THREE, scene = ctx.scene, cam = ctx.camera;
+        cam.position.set(4.5, 2.6, 7.5); cam.lookAt(0, 0, 0);
+        scene.add(new THREE.AmbientLight(0xffffff, 0.6));
+        var dl = new THREE.DirectionalLight(0xffffff, 0.7); dl.position.set(5, 6, 6); scene.add(dl);
+        var rack = new THREE.Group(); scene.add(rack);
+        var frameMat = new THREE.MeshStandardMaterial({ roughness: 0.5, metalness: 0.3 });
+        var frame = new THREE.Mesh(new THREE.BoxGeometry(2.6, 5, 1.8), frameMat);
+        frame.material.transparent = true; frame.material.opacity = 0.18; rack.add(frame);
+        var edges = new THREE.LineSegments(new THREE.EdgesGeometry(frame.geometry), new THREE.LineBasicMaterial()); rack.add(edges);
+        var units = [], leds = [];
+        for (var i = 0; i < 5; i++) {
+            var u = new THREE.Mesh(new THREE.BoxGeometry(2.3, 0.7, 1.6), new THREE.MeshStandardMaterial({ roughness: 0.6, metalness: 0.2 }));
+            u.position.y = 1.9 - i * 0.95; rack.add(u); units.push(u);
+            for (var k = 0; k < 4; k++) {
+                var led = new THREE.Mesh(new THREE.SphereGeometry(0.06, 10, 10), new THREE.MeshBasicMaterial());
+                led.position.set(-0.85 + k * 0.22, u.position.y, 0.82); rack.add(led); leds.push({ m: led, unit: i, k: k });
+            }
+            var slot = new THREE.Mesh(new THREE.BoxGeometry(1.1, 0.08, 0.02), new THREE.MeshBasicMaterial({ color: 0x222222 }));
+            slot.position.set(0.45, u.position.y, 0.81); rack.add(slot);
+        }
+        var fault = 3; // layer number → unit index (L5 top … L1 bottom)
+        window.__rackFault = function (n) { fault = n; };
+        var cOk, cBad, cWarn;
+        function color() {
+            frameMat.color = ctx.color('--muted'); edges.material.color = ctx.color('--accent');
+            units.forEach(function (u) { u.material.color = ctx.color('--surface'); });
+            cOk = ctx.color('--ok'); cBad = ctx.color('--bad'); cWarn = ctx.color('--warn');
+        }
+        color(); PS.onMode(color);
+        return function (time) {
+            rack.rotation.y = -0.35 + Math.sin(time * 0.35) * 0.25 + ctx.pointer.x * 0.5;
+            rack.rotation.x = ctx.pointer.y * 0.15;
+            leds.forEach(function (l) {
+                var faulty = 5 - l.unit === fault;
+                var blink = Math.sin(time * (faulty ? 9 : 3 + l.k) + l.k * 1.7) > (faulty ? 0 : 0.2);
+                l.m.material.color = faulty ? (blink ? cBad : cWarn) : (blink ? cOk : cOk.clone().multiplyScalar(0.35));
+            });
+            units.forEach(function (u, i) { u.position.x = 5 - i === fault ? Math.sin(time * 3) * 0.04 + 0.12 : 0; });
+        };
+    });
+};
+</script>
+</body>
+</html>

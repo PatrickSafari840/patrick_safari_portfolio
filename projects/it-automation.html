@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="fr" data-lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Python Automation Lab</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Patrick Safari — Google IT Automation with Python project: real Python running in the browser to turn system logs into an error report, plus a regex lab and a bulk-rename planner.">
+<link rel="icon" href="../your-icon-filename.png" type="image/png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="shared.css">
+<style>
+    /* Layout: an engineer's workbench — Python blue and yellow, editor and output side by side */
+    :root {
+        --bg: #f3f6fa; --surface: #ffffff; --fg: #1f2a37; --heading: #0f1b2b; --muted: #5b6b80;
+        --line: #dde5ef; --line-strong: #c2cfdf; --accent: #2f6db2; --on-accent: #ffffff; --py-yellow: #f5c400;
+        --stage: linear-gradient(160deg, #e5eef9, #fff7d6); --code-bg: #0f1b2b; --code-fg: #e6edf6;
+        --ok: #1a7f4b; --warn: #a56a00; --bad: #c62828;
+        --font-display: 'Lexend', 'Segoe UI', system-ui, sans-serif;
+        --font-body: 'Lexend', 'Segoe UI', system-ui, sans-serif;
+        --font-mono: 'Fira Code', ui-monospace, Menlo, monospace;
+    }
+    html[data-mode="dark"] {
+        --bg: #0b1320; --surface: #111c2d; --fg: #d3deec; --heading: #f3f7fc; --muted: #8fa2bb;
+        --line: #1d2b42; --line-strong: #2c3f5e; --accent: #6ea8ff; --on-accent: #08142a; --py-yellow: #ffd43b;
+        --stage: linear-gradient(160deg, #0f2140, #2a2405); --code-bg: #070d17; --code-fg: #d3deec;
+        --ok: #4fd18b; --warn: #ffcf5c; --bad: #ff7b7b; color-scheme: dark;
+    }
+    body { font-size: 15.5px; font-weight: 400; }
+    .ps-hero h1 { font-weight: 700; letter-spacing: -0.02em; }
+    .ps-hero h1 .y { box-shadow: inset 0 -0.35em 0 color-mix(in srgb, var(--py-yellow) 70%, transparent); }
+    .ide { display: grid; grid-template-columns: 1.15fr 1fr; gap: 1px; background: var(--line-strong); border: 1px solid var(--line-strong); border-radius: 14px; overflow: hidden; }
+    .ide > div { background: var(--surface); min-width: 0; display: flex; flex-direction: column; }
+    .ide .tabs { display: flex; gap: 0.25rem; padding: 0.5rem; border-bottom: 1px solid var(--line); align-items: center; flex-wrap: wrap; }
+    .ide .tabs button { font: inherit; font-family: var(--font-mono); font-size: 0.78rem; border: none; background: transparent; color: var(--muted); padding: 0.35rem 0.7rem; border-radius: 6px; cursor: pointer; }
+    .ide .tabs button[aria-selected="true"] { background: var(--bg); color: var(--heading); }
+    .ide .tabs .spacer { flex: 1; }
+    .ide .tabs .btn-solid { background: var(--accent); color: var(--on-accent); font-family: var(--font-body); font-size: 0.85rem; padding: 0.45rem 0.9rem; }
+    .ide .tabs .btn-ghost { font-family: var(--font-body); font-size: 0.8rem; border: 1px solid var(--line-strong); color: var(--fg); }
+    .ide textarea { border: none; border-radius: 0; flex: 1; min-height: 380px; background: var(--code-bg); color: var(--code-fg); padding: 1rem; tab-size: 4; font-size: 0.8rem; }
+    .console-out { flex: 1; min-height: 200px; max-height: 420px; overflow: auto; background: var(--code-bg); color: var(--code-fg); font-family: var(--font-mono); font-size: 0.78rem; padding: 1rem; white-space: pre-wrap; }
+    .console-out .err { color: var(--bad); }
+    .console-out .sys { color: var(--py-yellow); }
+    .status { display: flex; align-items: center; gap: 0.5rem; font-size: 0.82rem; color: var(--muted); padding: 0.6rem 1rem; border-top: 1px solid var(--line); }
+    .status .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--line-strong); }
+    .status.ready .dot { background: var(--ok); }
+    .status.busy .dot { background: var(--py-yellow); animation: pulse 1s infinite; }
+    @keyframes pulse { 50% { opacity: 0.3; } }
+    .report { padding: 1rem; border-top: 1px solid var(--line); display: grid; gap: 0.5rem; }
+    .bars { display: grid; gap: 0.35rem; }
+    .bars .b { display: grid; grid-template-columns: 110px 1fr 40px; gap: 0.5rem; align-items: center; font-size: 0.8rem; font-family: var(--font-mono); }
+    .bars .b div { height: 12px; border-radius: 3px; background: var(--accent); }
+    .regex-out { font-family: var(--font-mono); font-size: 0.8rem; line-height: 1.8; background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: 0.8rem; overflow-x: auto; white-space: pre; }
+    .regex-out mark { background: color-mix(in srgb, var(--py-yellow) 55%, transparent); color: inherit; border-radius: 3px; padding: 0 1px; }
+    .groups td { font-family: var(--font-mono); font-size: 0.78rem; }
+    .rename td:last-child { color: var(--ok); }
+    @media (prefers-reduced-motion: reduce) { .status.busy .dot { animation: none; } }
+    @media (max-width: 920px) { .ide { grid-template-columns: 1fr; } .ide textarea { min-height: 300px; } }
+</style>
+</head>
+<body data-project="gitp">
+
+<section class="ps-hero">
+    <div class="wrap">
+        <div>
+            <span class="ps-eyebrow">Google IT Automation with Python</span>
+            <h1>
+                <span lang="en">Turning hours of log reading into <span class="y">one script</span></span>
+                <span lang="fr">Transformer des heures de lecture de logs en <span class="y">un seul script</span></span>
+            </h1>
+            <p class="lead">
+                <span lang="en">The script below reads system logs, counts errors per service and per user, and writes a CSV report. It is real Python, running in your browser with Pyodide. Edit it and run it.</span>
+                <span lang="fr">Le script ci-dessous lit des journaux système, compte les erreurs par service et par utilisateur, puis écrit un rapport CSV. C'est du vrai Python, exécuté dans votre navigateur avec Pyodide. Modifiez-le et lancez-le.</span>
+            </p>
+            <div class="ps-btns">
+                <a class="btn btn-solid" href="#lab"><span lang="en">Run the script</span><span lang="fr">Lancer le script</span></a>
+                <a class="btn btn-ghost" href="https://coursera.org/verify/professional-cert/GMEVP24UVGP8" target="_blank" rel="noopener" id="cert-top"><span lang="en">Verify certificate</span><span lang="fr">Vérifier le certificat</span> ↗</a>
+            </div>
+        </div>
+        <div class="ps-stage" id="stage">
+            <span class="stage-label"><span lang="en">3D · raw files in, sorted reports out</span><span lang="fr">3D · fichiers bruts en entrée, rapports triés en sortie</span></span>
+        </div>
+    </div>
+</section>
+
+<div class="ps-proof">
+    <div class="wrap">
+        <div class="cell"><div class="k"><span lang="en">Language</span><span lang="fr">Langage</span></div><div class="v">Python 3</div></div>
+        <div class="cell"><div class="k">Modules</div><div class="v">re · csv · os · collections</div></div>
+        <div class="cell"><div class="k"><span lang="en">Also covered</span><span lang="fr">Aussi vu</span></div><div class="v">Git · Bash · GCP</div></div>
+        <div class="cell"><div class="k"><span lang="en">Runs on</span><span lang="fr">Exécuté avec</span></div><div class="v">Pyodide (WebAssembly)</div></div>
+    </div>
+</div>
+
+<section class="ps-section" id="lab">
+    <div class="wrap">
+        <span class="kicker"><span lang="en">Live Python</span><span lang="fr">Python en direct</span></span>
+        <h2><span lang="en">Log → error report, in one click</span><span lang="fr">Journal → rapport d'erreurs, en un clic</span></h2>
+        <p class="intro"><span lang="en">The first run downloads the Python runtime (about 10 MB), then it is instant. The log is the course's "ticky" format: a sample from an internal ticketing service.</span><span lang="fr">Le premier lancement télécharge l'environnement Python (environ 10 Mo), ensuite c'est instantané. Le journal suit le format « ticky » du cours : un exemple d'un service interne de tickets.</span></p>
+        <div class="ide">
+            <div>
+                <div class="tabs" role="tablist">
+                    <button type="button" data-tab="code" aria-selected="true">report.py</button>
+                    <button type="button" data-tab="log" aria-selected="false">syslog.log</button>
+                    <span class="spacer"></span>
+                    <button type="button" class="btn btn-solid btn-sm" id="run" style="font-family:var(--font-body)">▶ <span lang="en">Run</span><span lang="fr">Exécuter</span></button>
+                </div>
+                <label for="code" style="position:absolute;left:-9999px">Python code</label>
+                <textarea id="code" spellcheck="false"></textarea>
+                <label for="log" style="position:absolute;left:-9999px">Log file</label>
+                <textarea id="log" spellcheck="false" hidden></textarea>
+            </div>
+            <div>
+                <div class="tabs"><button type="button" aria-selected="true">Console</button><span class="spacer"></span><button type="button" id="reset" class="btn btn-ghost btn-sm" style="font-family:var(--font-body)"><span lang="en">Reset code</span><span lang="fr">Réinitialiser</span></button></div>
+                <div class="console-out" id="out" aria-live="polite"></div>
+                <div class="report" id="report" hidden>
+                    <strong><span lang="en">Errors by type</span><span lang="fr">Erreurs par type</span></strong>
+                    <div class="bars" id="bars"></div>
+                </div>
+                <div class="status" id="status"><span class="dot"></span><span id="status-t"></span></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="ps-section" id="regex">
+    <div class="wrap">
+        <span class="kicker"><span lang="en">Tool · Regular expressions</span><span lang="fr">Outil · Expressions régulières</span></span>
+        <h2><span lang="en">Regex lab</span><span lang="fr">Labo regex</span></h2>
+        <p class="intro"><span lang="en">The pattern the script uses, live. Change it and see the matches and capture groups update.</span><span lang="fr">Le motif utilisé par le script, en direct. Modifiez-le et voyez les correspondances et groupes se mettre à jour.</span></p>
+        <div class="grid-2">
+            <div class="panel stack">
+                <label class="field" for="re"><span lang="en">Pattern</span><span lang="fr">Motif</span><input id="re" type="text" spellcheck="false" style="font-family:var(--font-mono)"></label>
+                <div class="chips" id="presets"></div>
+                <div class="regex-out" id="re-out"></div>
+            </div>
+            <div class="panel">
+                <h3><span lang="en">Capture groups</span><span lang="fr">Groupes capturés</span></h3>
+                <p class="sub" id="re-count"></p>
+                <div class="table-wrap"><table class="groups"><thead><tr><th>#</th><th>1</th><th>2</th><th>3</th></tr></thead><tbody id="re-groups"></tbody></table></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="ps-section" id="rename">
+    <div class="wrap">
+        <span class="kicker"><span lang="en">Tool · File operations</span><span lang="fr">Outil · Opérations sur fichiers</span></span>
+        <h2><span lang="en">Bulk rename planner (dry run)</span><span lang="fr">Planificateur de renommage (simulation)</span></h2>
+        <p class="intro"><span lang="en">Before an <code>os.rename()</code> loop touches real files, I always print a dry run. Paste a file list and choose the naming rule.</span><span lang="fr">Avant qu'une boucle <code>os.rename()</code> touche de vrais fichiers, j'affiche toujours une simulation. Collez une liste de fichiers et choisissez la règle.</span></p>
+        <div class="grid-2">
+            <div class="panel stack">
+                <label class="field" for="files"><span lang="en">Files</span><span lang="fr">Fichiers</span><textarea id="files" rows="7" spellcheck="false">IMG_2041.JPG
+IMG_2042.JPG
+scan final (2).PDF
+Rapport Mars.docx
+photo profil.png
+IMG_2043.jpeg</textarea></label>
+                <div class="grid-2">
+                    <label class="field" for="prefix"><span lang="en">Prefix</span><span lang="fr">Préfixe</span><input id="prefix" type="text" value="goma_site"></label>
+                    <label class="field" for="rule"><span lang="en">Rule</span><span lang="fr">Règle</span><select id="rule"><option value="seq">prefix_001.ext</option><option value="slug">clean-name.ext</option><option value="date">YYYY-MM-DD_name.ext</option></select></label>
+                </div>
+            </div>
+            <div class="panel">
+                <div class="table-wrap"><table class="rename"><thead><tr><th><span lang="en">Before</span><span lang="fr">Avant</span></th><th><span lang="en">After</span><span lang="fr">Après</span></th></tr></thead><tbody id="rename-out"></tbody></table></div>
+                <p class="note" style="margin-top:0.75rem" id="rename-note"></p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="ps-section">
+    <div class="wrap">
+        <span class="kicker"><span lang="en">More scripts</span><span lang="fr">Autres scripts</span></span>
+        <h2><span lang="en">Automation I built during the certificate</span><span lang="fr">Automatisations réalisées pendant la certification</span></h2>
+        <div class="codebox">
+            <div class="bar" role="tablist"><button type="button">images.py</button><button type="button">rename.py</button><button type="button">health_check.py</button></div>
+<pre><code>#!/usr/bin/env python3
+"""Resize, rotate and convert every image in a folder (Pillow)."""
+import os
+from PIL import Image
+
+SRC, DST = "images/", "/opt/icons/"
+os.makedirs(DST, exist_ok=True)
+
+for name in os.listdir(SRC):
+    if name.startswith("."):
+        continue
+    with Image.open(os.path.join(SRC, name)) as im:
+        im = im.rotate(-90).resize((128, 128)).convert("RGB")
+        im.save(os.path.join(DST, os.path.splitext(name)[0] + ".jpeg"), "JPEG")
+        print(f"converted {name}")</code></pre>
+<pre hidden><code>import os
+
+def rename_files(directory, prefix):
+    """Give every file in a folder a clean, numbered name."""
+    files = sorted(f for f in os.listdir(directory) if os.path.isfile(os.path.join(directory, f)))
+    for count, filename in enumerate(files, start=1):
+        ext = os.path.splitext(filename)[1].lower()
+        new_name = f"{prefix}_{count:03d}{ext}"
+        os.rename(os.path.join(directory, filename), os.path.join(directory, new_name))
+        print(f"{filename} -&gt; {new_name}")</code></pre>
+<pre hidden><code>#!/usr/bin/env python3
+"""Alert when the server is running low on resources."""
+import shutil, socket, psutil
+
+def check():
+    problems = []
+    if psutil.cpu_percent(interval=1) &gt; 80:
+        problems.append("CPU usage is over 80%")
+    if shutil.disk_usage("/").free / shutil.disk_usage("/").total &lt; 0.2:
+        problems.append("Available disk space is less than 20%")
+    if psutil.virtual_memory().available &lt; 500 * 1024 * 1024:
+        problems.append("Available memory is less than 500MB")
+    if socket.gethostbyname("localhost") != "127.0.0.1":
+        problems.append("localhost cannot be resolved to 127.0.0.1")
+    return problems
+
+for p in check():
+    print("Error -", p)   # in production this sends an email alert</code></pre>
+        </div>
+    </div>
+</section>
+
+<section class="ps-section">
+    <div class="wrap">
+        <span class="kicker"><span lang="en">For recruiters</span><span lang="fr">Pour les recruteurs</span></span>
+        <h2><span lang="en">What this project shows</span><span lang="fr">Ce que ce projet démontre</span></h2>
+        <div class="proves">
+            <div class="prove reveal"><span class="n">01</span><h3><span lang="en">Python for operations</span><span lang="fr">Python pour l'exploitation</span></h3><p><span lang="en">Parsing logs, building reports and handling files safely.</span><span lang="fr">Analyser des journaux, produire des rapports et manipuler des fichiers en sécurité.</span></p></div>
+            <div class="prove reveal"><span class="n">02</span><h3><span lang="en">Regular expressions</span><span lang="fr">Expressions régulières</span></h3><p><span lang="en">Extracting structured data from messy text.</span><span lang="fr">Extraire des données structurées d'un texte brut.</span></p></div>
+            <div class="prove reveal"><span class="n">03</span><h3><span lang="en">Safe automation habits</span><span lang="fr">Automatisation prudente</span></h3><p><span lang="en">Dry runs, clear output and monitoring before acting.</span><span lang="fr">Simulations, sorties claires et supervision avant d'agir.</span></p></div>
+        </div>
+        <div class="cert reveal" style="margin-top:2rem">
+            <img src="../images/it_automation_with_python.jpg" alt="Google IT Automation with Python certificate" data-tilt="10" loading="lazy">
+            <div>
+                <h3>Google IT Automation with Python</h3>
+                <p><span lang="en">Professional certificate issued through Coursera. The link opens Coursera's own verification page.</span><span lang="fr">Certificat professionnel délivré via Coursera. Le lien ouvre la page de vérification officielle de Coursera.</span></p>
+                <div class="chips" style="margin-bottom:1rem"><span class="chip">Python</span><span class="chip">Regex</span><span class="chip">Git & GitHub</span><span class="chip">Bash</span><span class="chip">Configuration management</span><span class="chip">Cloud</span></div>
+                <a class="btn btn-solid btn-sm" href="https://coursera.org/verify/professional-cert/GMEVP24UVGP8" target="_blank" rel="noopener" id="cert-link"><span lang="en">Verify on Coursera</span><span lang="fr">Vérifier sur Coursera</span> ↗</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="shared.js"></script>
+<script>
+window.pageInit = function () {
+    var t = PS.t;
+
+    /* ---------- Sample log ---------- */
+    var users = ['grace', 'patrick', 'amani', 'jules', 'neema', 'kito'];
+    var errors = ['Timeout while retrieving information', 'The ticket was modified while updating', 'Connection to DB failed', 'Tried to add information to closed ticket', 'Permission denied while closing ticket', 'Ticket doesn\'t exist'];
+    var infos = ['Created ticket', 'Closed ticket', 'Commented on ticket'];
+    var seed = 7; function rnd() { seed = (seed * 16807) % 2147483647; return (seed - 1) / 2147483646; }
+    var lines = [];
+    for (var i = 0; i < 60; i++) {
+        var u = users[Math.floor(rnd() * users.length)], h = 8 + Math.floor(i / 6), m = Math.floor(rnd() * 60);
+        var ts = 'Jan 31 ' + String(h).padStart(2, '0') + ':' + String(m).padStart(2, '0') + ':' + String(Math.floor(rnd() * 60)).padStart(2, '0') + ' ubuntu.local ticky: ';
+        if (rnd() < 0.45) lines.push(ts + 'ERROR ' + errors[Math.floor(rnd() * errors.length)] + ' (' + u + ')');
+        else lines.push(ts + 'INFO ' + infos[Math.floor(rnd() * infos.length)] + ' [#' + (3000 + Math.floor(rnd() * 900)) + '] (' + u + ')');
+    }
+    var CODE = [
+        '#!/usr/bin/env python3',
+        '"""Build error and per-user statistics from a ticky log (Google IT Automation capstone)."""',
+        'import re, csv, io',
+        'from collections import Counter, defaultdict',
+        '',
+        'PATTERN = re.compile(r"ticky: (INFO|ERROR) ([\\w\' ]+?)(?: \\[#\\d+\\])? \\((\\w+)\\)")',
+        '',
+        'errors = Counter()',
+        'per_user = defaultdict(lambda: {"INFO": 0, "ERROR": 0})',
+        '',
+        'for line in LOG.splitlines():          # LOG is the syslog.log tab',
+        '    match = PATTERN.search(line)',
+        '    if not match:',
+        '        continue',
+        '    level, message, user = match.groups()',
+        '    per_user[user][level] += 1',
+        '    if level == "ERROR":',
+        '        errors[message.strip()] += 1',
+        '',
+        'print("Top errors")',
+        'for message, count in errors.most_common():',
+        '    print(f"  {count:&gt;3}  {message}")',
+        '',
+        'out = io.StringIO()',
+        'writer = csv.writer(out)',
+        'writer.writerow(["Username", "INFO", "ERROR"])',
+        'for user in sorted(per_user):',
+        '    writer.writerow([user, per_user[user]["INFO"], per_user[user]["ERROR"]])',
+        '',
+        'print("\\nuser_statistics.csv")',
+        'print(out.getvalue())',
+        'RESULT = dict(errors)                    # sent back to the page for the chart'
+    ].join('\n').replace(/&gt;/g, '>');
+    var codeEl = PS.$('#code'), logEl = PS.$('#log');
+    codeEl.value = CODE; logEl.value = lines.join('\n');
+    PS.$$('[data-tab]').forEach(function (b) {
+        b.addEventListener('click', function () {
+            PS.$$('[data-tab]').forEach(function (x) { x.setAttribute('aria-selected', x === b); });
+            codeEl.hidden = b.getAttribute('data-tab') !== 'code'; logEl.hidden = !codeEl.hidden;
+        });
+    });
+    codeEl.addEventListener('keydown', function (e) {
+        if (e.key === 'Tab') { e.preventDefault(); var s = codeEl.selectionStart; codeEl.value = codeEl.value.slice(0, s) + '    ' + codeEl.value.slice(codeEl.selectionEnd); codeEl.selectionStart = codeEl.selectionEnd = s + 4; }
+    });
+    PS.$('#reset').addEventListener('click', function () { codeEl.value = CODE; });
+
+    var out = PS.$('#out');
+    function print(text, cls) { var s = document.createElement('span'); if (cls) s.className = cls; s.textContent = text + '\n'; out.appendChild(s); out.scrollTop = out.scrollHeight; }
+    var statusEl = PS.$('#status'), state = 'idle';
+    function setStatus(s) { state = s; statusEl.className = 'status ' + (s === 'ready' ? 'ready' : s === 'loading' || s === 'running' ? 'busy' : ''); renderStatus(); }
+    function renderStatus() {
+        PS.$('#status-t').textContent = { idle: t('Python not loaded yet. Press Run.', 'Python pas encore chargé. Appuyez sur Exécuter.'), loading: t('Downloading Python runtime…', 'Téléchargement de Python…'), running: t('Running…', 'Exécution…'), ready: t('Python 3 ready', 'Python 3 prêt'), error: t('Could not load Python. Check your connection.', 'Impossible de charger Python. Vérifiez la connexion.') }[state];
+    }
+    var pyodide = null;
+    function loadScript(src) { return new Promise(function (res, rej) { var s = document.createElement('script'); s.src = src; s.onload = res; s.onerror = rej; document.head.appendChild(s); }); }
+    async function ensurePy() {
+        if (pyodide) return pyodide;
+        setStatus('loading');
+        await loadScript('https://cdn.jsdelivr.net/pyodide/v0.26.4/full/pyodide.js');
+        pyodide = await loadPyodide({ indexURL: 'https://cdn.jsdelivr.net/pyodide/v0.26.4/full/' });
+        pyodide.setStdout({ batched: function (s) { print(s); } });
+        pyodide.setStderr({ batched: function (s) { print(s, 'err'); } });
+        return pyodide;
+    }
+    PS.$('#run').addEventListener('click', async function () {
+        var btn = this; btn.disabled = true; out.textContent = '';
+        try {
+            var py = await ensurePy();
+            setStatus('running'); print('$ python3 report.py', 'sys');
+            py.globals.set('LOG', logEl.value);
+            var t0 = performance.now();
+            await py.runPythonAsync(codeEl.value);
+            print(t('Finished in ', 'Terminé en ') + Math.round(performance.now() - t0) + ' ms', 'sys');
+            var res = py.globals.get('RESULT');
+            if (res && res.toJs) { drawBars(res.toJs({ dict_converter: Object.fromEntries })); res.destroy && res.destroy(); }
+            setStatus('ready');
+            if (window.__burst) window.__burst();
+        } catch (err) {
+            print(String(err && err.message || err), 'err');
+            setStatus(pyodide ? 'ready' : 'error');
+        }
+        btn.disabled = false;
+    });
+    function drawBars(obj) {
+        var entries = Object.entries(obj).sort(function (a, b) { return b[1] - a[1]; });
+        if (!entries.length) return;
+        var max = entries[0][1];
+        PS.$('#bars').innerHTML = entries.map(function (e) { return '<div class="b"><span title="' + PS.esc(e[0]) + '" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + PS.esc(e[0]) + '</span><div style="width:' + (e[1] / max * 100) + '%"></div><span>' + e[1] + '</span></div>'; }).join('');
+        PS.$('#report').hidden = false;
+    }
+
+    /* ---------- Regex lab ---------- */
+    var PRESETS = [
+        ['ticky', 'ticky: (INFO|ERROR) ([\\w\' ]+?)(?: \\[#\\d+\\])? \\((\\w+)\\)'],
+        [t('Errors only', 'Erreurs seules'), 'ERROR ([\\w\' ]+) \\((\\w+)\\)'],
+        [t('Time', 'Heure'), '(\\d{2}):(\\d{2}):(\\d{2})'],
+        ['Ticket #', '\\[#(\\d+)\\]']
+    ];
+    var reEl = PS.$('#re'); reEl.value = PRESETS[0][1];
+    function renderPresets() {
+        PRESETS[1][0] = t('Errors only', 'Erreurs seules'); PRESETS[2][0] = t('Time', 'Heure');
+        PS.$('#presets').innerHTML = PRESETS.map(function (p, i) { return '<button type="button" class="chip" data-p="' + i + '" style="cursor:pointer">' + PS.esc(p[0]) + '</button>'; }).join('');
+        PS.$$('[data-p]').forEach(function (b) { b.addEventListener('click', function () { reEl.value = PRESETS[+b.getAttribute('data-p')][1]; regex(); }); });
+    }
+    function regex() {
+        var sample = lines.slice(0, 12), re;
+        try { re = new RegExp(reEl.value, 'g'); reEl.style.borderColor = ''; }
+        catch (e) { reEl.style.borderColor = 'var(--bad)'; PS.$('#re-count').textContent = t('Invalid pattern: ', 'Motif invalide : ') + e.message; return; }
+        var rows = [], count = 0;
+        PS.$('#re-out').innerHTML = sample.map(function (l) {
+            var html = '', last = 0, m; re.lastIndex = 0;
+            while ((m = re.exec(l)) && m[0] !== '') { count++; html += PS.esc(l.slice(last, m.index)) + '<mark>' + PS.esc(m[0]) + '</mark>'; last = m.index + m[0].length; if (rows.length < 8) rows.push(m.slice(1, 4)); }
+            return html + PS.esc(l.slice(last));
+        }).join('\n');
+        PS.$('#re-count').textContent = t(count + ' matches in 12 lines', count + ' correspondances sur 12 lignes');
+        PS.$('#re-groups').innerHTML = rows.map(function (g, i) { return '<tr><td>' + (i + 1) + '</td>' + [0, 1, 2].map(function (k) { return '<td>' + PS.esc(g[k] == null ? '' : g[k]) + '</td>'; }).join('') + '</tr>'; }).join('');
+    }
+    reEl.addEventListener('input', regex);
+
+    /* ---------- Rename planner ---------- */
+    function slug(s) { return s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/\(\d+\)/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''); }
+    function plan() {
+        var files = PS.$('#files').value.split('\n').map(function (s) { return s.trim(); }).filter(Boolean).sort();
+        var prefix = slug(PS.$('#prefix').value) || 'file', rule = PS.$('#rule').value, today = new Date().toISOString().slice(0, 10), seen = {}, clash = 0;
+        var rows = files.map(function (f, i) {
+            var dot = f.lastIndexOf('.'), base = dot > 0 ? f.slice(0, dot) : f, ext = dot > 0 ? f.slice(dot).toLowerCase().replace('.jpeg', '.jpg') : '';
+            var n = rule === 'seq' ? prefix + '_' + String(i + 1).padStart(3, '0') + ext : rule === 'slug' ? slug(base) + ext : today + '_' + slug(base) + ext;
+            if (seen[n]) { clash++; n = n.replace(ext, '') + '-' + (seen[n]++) + ext; } else seen[n] = 1;
+            return '<tr><td>' + PS.esc(f) + '</td><td>' + PS.esc(n) + '</td></tr>';
+        });
+        PS.$('#rename-out').innerHTML = rows.join('');
+        PS.$('#rename-note').textContent = t(files.length + ' files planned, ' + clash + ' name clashes resolved. Nothing was renamed.', files.length + ' fichiers prévus, ' + clash + ' conflits de noms résolus. Rien n\'a été renommé.');
+    }
+    ['files', 'prefix', 'rule'].forEach(function (id) { PS.$('#' + id).addEventListener('input', plan); });
+
+    PS.onLang(function () { renderStatus(); renderPresets(); regex(); plan(); });
+    renderStatus(); renderPresets(); regex(); plan();
+    print(t('# Press Run to execute report.py on syslog.log', '# Appuyez sur Exécuter pour lancer report.py sur syslog.log'), 'sys');
+
+    /* ---------- 3D: conveyor of files passing through a gear ---------- */
+    PS.scene(PS.$('#stage'), function (ctx) {
+        var THREE = ctx.THREE, scene = ctx.scene, cam = ctx.camera;
+        cam.position.set(0, 3.2, 9.5); cam.lookAt(0, 0, 0);
+        scene.add(new THREE.AmbientLight(0xffffff, 0.7));
+        var dl = new THREE.DirectionalLight(0xffffff, 0.7); dl.position.set(3, 6, 5); scene.add(dl);
+        var g = new THREE.Group(); scene.add(g);
+        var gearMat = new THREE.MeshStandardMaterial({ metalness: 0.4, roughness: 0.35 });
+        var gear = new THREE.Group();
+        gear.add(new THREE.Mesh(new THREE.TorusGeometry(1.1, 0.28, 16, 48), gearMat));
+        for (var k = 0; k < 12; k++) { var tooth = new THREE.Mesh(new THREE.BoxGeometry(0.34, 0.5, 0.42), gearMat); var a = k / 12 * Math.PI * 2; tooth.position.set(Math.cos(a) * 1.45, Math.sin(a) * 1.45, 0); tooth.rotation.z = a; gear.add(tooth); }
+        gear.position.y = 1.2; g.add(gear);
+        var belt = new THREE.Mesh(new THREE.BoxGeometry(11, 0.12, 1.4), new THREE.MeshStandardMaterial({ roughness: 0.9 })); belt.position.y = -0.4; g.add(belt);
+        var files = [];
+        for (var i = 0; i < 9; i++) {
+            var m = new THREE.Mesh(new THREE.BoxGeometry(0.55, 0.72, 0.08), new THREE.MeshStandardMaterial({ roughness: 0.6 }));
+            m.userData.off = i / 9; g.add(m); files.push(m);
+        }
+        var cIn, cOut;
+        function color() {
+            gearMat.color = ctx.color('--py-yellow'); belt.material.color = ctx.color('--line-strong');
+            cIn = ctx.color('--muted'); cOut = ctx.color('--accent');
+        }
+        color(); PS.onMode(color);
+        var speed = 1;
+        window.__burst = function () { speed = 4; };
+        var acc = 0;
+        return function (time, dt) {
+            speed += (1 - speed) * Math.min(1, dt * 0.8);
+            acc += dt * speed;
+            gear.rotation.z = -acc * 0.9;
+            files.forEach(function (f) {
+                var u = (f.userData.off + acc * 0.08) % 1, x = -5 + u * 10;
+                f.position.set(x, 0.05, 0);
+                f.rotation.y = x > 0 ? Math.min(1, x) * Math.PI / 2 : 0;
+                f.material.color = x > 0 ? cOut : cIn;
+                f.scale.y = x > 0 ? 0.7 : 1;
+            });
+            g.rotation.y = ctx.pointer.x * 0.5 - 0.15;
+            g.rotation.x = ctx.pointer.y * 0.15 + 0.1;
+        };
+    });
+};
+</script>
+</body>
+</html>

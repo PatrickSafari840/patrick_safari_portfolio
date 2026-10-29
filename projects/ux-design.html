@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="fr" data-lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Table Libre Case Study</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Patrick Safari — Google UX Design case study: Table Libre, a restaurant booking app for finding a free table right now. Research, personas, wireframes, usability testing and an accessibility checker.">
+<link rel="icon" href="../your-icon-filename.png" type="image/png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;800&family=Outfit:wght@400;500;600&family=Fragment+Mono&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="shared.css">
+<style>
+    /* Layout: playful product case study — coral + deep teal, floating phone screens as the hero */
+    :root {
+        --bg: #fbf7f4; --surface: #ffffff; --fg: #2b2b33; --heading: #15151c; --muted: #6a6a76;
+        --line: #ece4de; --line-strong: #d9ccc3; --accent: #e5483b; --on-accent: #ffffff; --accent-2: #0f766e;
+        --stage: linear-gradient(140deg, #ffe3dc, #d9f2ee); --code-bg: #15151c; --code-fg: #f3efe9;
+        --ok: #0f766e; --warn: #b7791f; --bad: #c81e1e;
+        --font-display: 'Unbounded', 'Segoe UI', system-ui, sans-serif;
+        --font-body: 'Outfit', 'Segoe UI', system-ui, sans-serif;
+        --font-mono: 'Fragment Mono', ui-monospace, Menlo, monospace;
+    }
+    html[data-mode="dark"] {
+        --bg: #131218; --surface: #1c1b23; --fg: #dcd9e3; --heading: #fbf9ff; --muted: #9b98a8;
+        --line: #2a2833; --line-strong: #3b3846; --accent: #ff6f61; --on-accent: #1f0806; --accent-2: #2dd4bf;
+        --stage: linear-gradient(140deg, #3a1d1a, #0f2b28); --code-bg: #0c0b10; --code-fg: #dcd9e3;
+        --ok: #2dd4bf; --warn: #f6c453; --bad: #ff8a80; color-scheme: dark;
+    }
+    .ps-hero h1 { font-weight: 800; letter-spacing: -0.03em; font-size: clamp(2rem, 4.6vw, 3.3rem); }
+    .ps-section h2 { font-weight: 700; letter-spacing: -0.02em; }
+    .btn { border-radius: 999px; }
+
+    /* Hero phones (CSS 3D) */
+    .phones { position: absolute; inset: 0; perspective: 1100px; display: grid; place-items: center; }
+    .phones .rig { position: relative; width: 62%; aspect-ratio: 1; transform-style: preserve-3d; transition: transform 0.25s ease-out; }
+    .phone { position: absolute; width: 46%; aspect-ratio: 9 / 18.5; border-radius: 26px; background: #15151c; padding: 7px; box-shadow: 0 30px 60px rgba(0,0,0,.25); }
+    .phone .scr { width: 100%; height: 100%; border-radius: 20px; overflow: hidden; background: #fff; color: #15151c; font-family: var(--font-body); font-size: 9px; display: flex; flex-direction: column; }
+    .phone.p1 { left: 0; top: 10%; transform: translateZ(-60px) rotateY(18deg); }
+    .phone.p2 { left: 27%; top: 0; transform: translateZ(70px); z-index: 2; }
+    .phone.p3 { right: 0; top: 12%; transform: translateZ(-60px) rotateY(-18deg); }
+    .scr .top { background: #e5483b; color: #fff; padding: 12px 10px 10px; font-weight: 600; }
+    .scr .top b { display: block; font-family: var(--font-display); font-size: 11px; }
+    .scr .item { display: grid; grid-template-columns: 26px 1fr auto; gap: 6px; align-items: center; padding: 7px 9px; border-bottom: 1px solid #eee; }
+    .scr .item i { width: 26px; height: 26px; border-radius: 8px; background: #ffe3dc; }
+    .scr .item em { font-style: normal; color: #0f766e; font-weight: 600; }
+    .scr .cta { margin: auto 9px 10px; background: #0f766e; color: #fff; text-align: center; padding: 9px; border-radius: 10px; font-weight: 600; }
+    .scr .map { flex: 1; background: radial-gradient(circle at 30% 40%, #e5483b 0 5px, transparent 6px), radial-gradient(circle at 65% 60%, #0f766e 0 5px, transparent 6px), radial-gradient(circle at 50% 25%, #0f766e 0 5px, transparent 6px), repeating-linear-gradient(35deg, #eef3f2 0 12px, #e2ebe9 12px 13px); }
+    .scr .slots { display: flex; gap: 5px; padding: 8px; flex-wrap: wrap; }
+    .scr .slots span { border: 1px solid #ddd; border-radius: 6px; padding: 4px 6px; }
+    .scr .slots span.on { background: #0f766e; color: #fff; border-color: #0f766e; }
+
+    /* Process */
+    .process { display: grid; grid-template-columns: repeat(5, 1fr); gap: 0.9rem; counter-reset: st; }
+    .step { position: relative; padding: 1.2rem; border-radius: 20px; background: var(--surface); border: 1px solid var(--line); min-width: 0; }
+    .step::before { counter-increment: st; content: counter(st); font-family: var(--font-display); font-size: 2rem; font-weight: 800; color: var(--accent); line-height: 1; display: block; margin-bottom: 0.6rem; }
+    .step h3 { font-size: 0.95rem; margin-bottom: 0.35rem; }
+    .step p { font-size: 0.88rem; color: var(--muted); }
+
+    .personas { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
+    .persona { display: grid; grid-template-columns: 72px 1fr; gap: 1rem; padding: 1.4rem; border-radius: 22px; background: var(--surface); border: 1px solid var(--line); }
+    .avatar { width: 72px; height: 72px; border-radius: 50%; display: grid; place-items: center; font-family: var(--font-display); font-size: 1.6rem; color: #fff; }
+    .persona h3 { font-size: 1.05rem; }
+    .persona .quote { font-style: italic; margin: 0.4rem 0; }
+    .persona ul { padding-left: 1.1rem; color: var(--muted); font-size: 0.9rem; }
+
+    /* Usability fix demo */
+    .fix { display: grid; grid-template-columns: 300px 1fr; gap: 1.5rem; align-items: center; }
+    .mini { width: 100%; max-width: 300px; aspect-ratio: 9 / 16; border-radius: 30px; background: #15151c; padding: 9px; margin: 0 auto; }
+    .mini .scr { font-size: 12px; position: relative; height: 100%; border-radius: 22px; overflow: hidden; background: #fff; color: #15151c; display: flex; flex-direction: column; }
+    .mini .card { margin: 10px; border: 1px solid #eee; border-radius: 12px; padding: 10px; display: grid; gap: 6px; }
+    .mini .book { align-self: end; justify-self: end; border: none; font-family: var(--font-body); font-weight: 600; cursor: pointer; transition: all 0.35s ease; }
+    .mini.before .book { font-size: 9px; padding: 3px 6px; border-radius: 4px; background: #e9e9ec; color: #6a6a76; }
+    .mini.after .book { font-size: 14px; padding: 12px; border-radius: 12px; background: #0f766e; color: #fff; justify-self: stretch; }
+    .toggle { display: inline-flex; border: 1px solid var(--line-strong); border-radius: 999px; padding: 3px; gap: 3px; margin-bottom: 1rem; }
+    .toggle button { font: inherit; font-weight: 600; border: none; border-radius: 999px; padding: 0.45rem 1rem; cursor: pointer; background: transparent; color: var(--fg); }
+    .toggle button[aria-pressed="true"] { background: var(--accent); color: var(--on-accent); }
+    .metric { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; margin-top: 1rem; }
+    .metric div { border-radius: 16px; background: var(--bg); border: 1px solid var(--line); padding: 0.8rem; }
+    .metric b { font-family: var(--font-display); font-size: 1.25rem; display: block; color: var(--heading); }
+    .metric span { font-size: 0.8rem; color: var(--muted); }
+
+    /* Contrast checker */
+    .contrast { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
+    .swatch-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+    .colorpick { display: grid; grid-template-columns: 46px 1fr; gap: 0.5rem; align-items: center; }
+    .colorpick input[type=color] { width: 46px; height: 42px; padding: 2px; border-radius: 10px; }
+    .preview { border-radius: 18px; padding: 1.5rem; display: grid; gap: 0.5rem; border: 1px solid var(--line); }
+    .preview .big { font-family: var(--font-display); font-size: 1.5rem; font-weight: 700; }
+    .ratio { font-family: var(--font-display); font-size: 2.2rem; font-weight: 800; color: var(--heading); }
+    .wcag { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin-top: 0.75rem; font-size: 0.88rem; }
+
+    .tokens { display: grid; grid-template-columns: repeat(6, 1fr); gap: 0.75rem; }
+    .tok { border-radius: 16px; overflow: hidden; border: 1px solid var(--line); background: var(--surface); }
+    .tok div { height: 70px; }
+    .tok p { padding: 0.5rem 0.7rem; font-family: var(--font-mono); font-size: 0.72rem; }
+    .showcase { display: grid; grid-template-columns: 1fr auto; gap: 1.5rem; align-items: center; padding: 2rem; border-radius: 28px; background: var(--stage); border: 1px solid var(--line); }
+    .showcase h3 { font-size: 1.4rem; }
+
+    @media (max-width: 920px) { .ps-stage { aspect-ratio: 1 / 0.95; } .process { grid-template-columns: 1fr 1fr; } .fix, .contrast { grid-template-columns: 1fr; } .tokens { grid-template-columns: repeat(3, 1fr); } .personas { grid-template-columns: 1fr; } }
+    @media (max-width: 640px) { .process { grid-template-columns: 1fr; } .showcase { grid-template-columns: 1fr; } .persona { grid-template-columns: 1fr; } .metric { grid-template-columns: 1fr; } .phones .rig { width: 84%; } }
+</style>
+</head>
+<body data-project="gux">
+
+<section class="ps-hero">
+    <div class="wrap">
+        <div>
+            <span class="ps-eyebrow">Google UX Design · Case study</span>
+            <h1>
+                <span lang="en">Table Libre: find a free table, right now</span>
+                <span lang="fr">Table Libre : trouver une table libre, maintenant</span>
+            </h1>
+            <p class="lead">
+                <span lang="en">A restaurant booking app designed around one frustration people kept telling me: it is hard to know which restaurant has a table available now. This page walks through the process and lets you try the design decisions.</span>
+                <span lang="fr">Une application de réservation pensée autour d'une frustration souvent exprimée : il est difficile de savoir quel restaurant a une table disponible tout de suite. Cette page retrace le processus et vous laisse tester les choix de design.</span>
+            </p>
+            <div class="ps-btns">
+                <a class="btn btn-solid" href="#test"><span lang="en">Try the usability fix</span><span lang="fr">Tester la correction</span></a>
+                <a class="btn btn-ghost" href="https://coursera.org/verify/professional-cert/6R8451VM3CQ5" target="_blank" rel="noopener"><span lang="en">Verify certificate</span><span lang="fr">Vérifier le certificat</span> ↗</a>
+            </div>
+        </div>
+        <div class="ps-stage" id="stage">
+            <div class="phones"><div class="rig" id="rig">
+                <div class="phone p1"><div class="scr"><div class="top"><b>Table Libre</b><span lang="en">Near you</span><span lang="fr">Près de vous</span></div><div class="map"></div><div class="cta"><span lang="en">3 free now</span><span lang="fr">3 libres maintenant</span></div></div></div>
+                <div class="phone p2"><div class="scr"><div class="top"><b>Table Libre</b><span lang="en">Free now · 2 people</span><span lang="fr">Libre maintenant · 2 pers.</span></div>
+                    <div class="item"><i></i><span>Chez Maman<br><small>350 m</small></span><em>19:30</em></div>
+                    <div class="item"><i></i><span>Le Lac<br><small>800 m</small></span><em>19:45</em></div>
+                    <div class="item"><i></i><span>Kivu Grill<br><small>1.2 km</small></span><em>20:00</em></div>
+                    <div class="cta"><span lang="en">Book in 1 tap</span><span lang="fr">Réserver en 1 geste</span></div></div></div>
+                <div class="phone p3"><div class="scr"><div class="top"><b>Chez Maman</b>⭐ 4.6</div><div class="slots"><span>19:00</span><span class="on">19:30</span><span>20:00</span><span>20:30</span></div><div class="cta"><span lang="en">Confirm</span><span lang="fr">Confirmer</span></div></div></div>
+            </div></div>
+            <span class="stage-label"><span lang="en">3D prototype · move your mouse</span><span lang="fr">Prototype 3D · bougez la souris</span></span>
+        </div>
+    </div>
+</section>
+
+<div class="ps-proof">
+    <div class="wrap">
+        <div class="cell"><div class="k"><span lang="en">Role</span><span lang="fr">Rôle</span></div><div class="v">UX researcher & designer</div></div>
+        <div class="cell"><div class="k"><span lang="en">Research</span><span lang="fr">Recherche</span></div><div class="v"><span lang="en">5 interviews · 30+ survey replies</span><span lang="fr">5 entretiens · 30+ réponses</span></div></div>
+        <div class="cell"><div class="k"><span lang="en">Testing</span><span lang="fr">Tests</span></div><div class="v"><span lang="en">3 moderated sessions</span><span lang="fr">3 sessions modérées</span></div></div>
+        <div class="cell"><div class="k"><span lang="en">Tools</span><span lang="fr">Outils</span></div><div class="v">Figma · Paper · HTML/CSS</div></div>
+    </div>
+</div>
+
+<section class="ps-section">
+    <div class="wrap">
+        <span class="kicker"><span lang="en">Process</span><span lang="fr">Processus</span></span>
+        <h2><span lang="en">Design thinking, step by step</span><span lang="fr">Le design thinking, étape par étape</span></h2>
+        <div class="process">
+            <article class="step reveal"><h3><span lang="en">Empathize</span><span lang="fr">Empathie</span></h3><p><span lang="en">5 user interviews and a survey with 30+ answers about booking habits.</span><span lang="fr">5 entretiens et un sondage de 30+ réponses sur les habitudes de réservation.</span></p></article>
+            <article class="step reveal"><h3><span lang="en">Define</span><span lang="fr">Définir</span></h3><p><span lang="en">Key pain point: no quick way to see real-time availability nearby.</span><span lang="fr">Point clé : aucun moyen rapide de voir la disponibilité en temps réel à proximité.</span></p></article>
+            <article class="step reveal"><h3><span lang="en">Ideate</span><span lang="fr">Idéer</span></h3><p><span lang="en">Paper wireframes of several home screens, all putting "free now" first.</span><span lang="fr">Wireframes papier de plusieurs écrans d'accueil, tous centrés sur « libre maintenant ».</span></p></article>
+            <article class="step reveal"><h3><span lang="en">Prototype</span><span lang="fr">Prototyper</span></h3><p><span lang="en">High-fidelity interactive prototype in Figma.</span><span lang="fr">Prototype interactif haute fidélité dans Figma.</span></p></article>
+            <article class="step reveal"><h3><span lang="en">Test</span><span lang="fr">Tester</span></h3><p><span lang="en">3 usability tests showed the "Book" button was too small. Fixed and retested.</span><span lang="fr">3 tests d'utilisabilité : le bouton « Réserver » était trop petit. Corrigé puis retesté.</span></p></article>
+        </div>
+    </div>
+</section>
+
+<section class="ps-section">
+    <div class="wrap">
+        <span class="kicker">Personas</span>
+        <h2><span lang="en">Two people, two ways of eating out</span><span lang="fr">Deux personnes, deux façons de sortir</span></h2>
+        <div class="personas">
+            <div class="persona reveal" data-tilt="5"><div class="avatar" style="background:#0f766e">C</div><div>
+                <h3><span lang="en">Clara, the planner</span><span lang="fr">Clara, la planificatrice</span></h3>
+                <p class="quote"><span lang="en">"I book days ahead and I want a reminder."</span><span lang="fr">« Je réserve plusieurs jours avant et je veux un rappel. »</span></p>
+                <ul><li><span lang="en">Needs: reliable confirmation, reminders</span><span lang="fr">Besoins : confirmation fiable, rappels</span></li><li><span lang="en">Frustration: calls that are never answered</span><span lang="fr">Frustration : appels sans réponse</span></li></ul></div></div>
+            <div class="persona reveal" data-tilt="5"><div class="avatar" style="background:#e5483b">M</div><div>
+                <h3><span lang="en">Marc, the spontaneous one</span><span lang="fr">Marc, le spontané</span></h3>
+                <p class="quote"><span lang="en">"As a busy user, I want to see at a glance which restaurants near me have a free table now."</span><span lang="fr">« En tant qu'utilisateur pressé, je veux voir d'un coup d'œil les restaurants proches avec une table libre maintenant. »</span></p>
+                <ul><li><span lang="en">Needs: speed, distance, one-tap booking</span><span lang="fr">Besoins : rapidité, distance, réservation en un geste</span></li><li><span lang="en">Frustration: walking to full restaurants</span><span lang="fr">Frustration : marcher jusqu'à un restaurant complet</span></li></ul></div></div>
+        </div>
+    </div>
+</section>
+
+<section class="ps-section" id="test">
+    <div class="wrap">
+        <span class="kicker"><span lang="en">Interactive · Usability test</span><span lang="fr">Interactif · Test d'utilisabilité</span></span>
+        <h2><span lang="en">The fix that came out of testing</span><span lang="fr">La correction née des tests</span></h2>
+        <p class="intro"><span lang="en">Switch between the tested version and the fixed one, then tap "Book" in each. The page measures the button against touch-target guidelines and times how long your tap takes.</span><span lang="fr">Passez de la version testée à la version corrigée, puis touchez « Réserver » dans chacune. La page compare le bouton aux recommandations de taille tactile et chronomètre votre geste.</span></p>
+        <div class="panel fix">
+            <div class="mini before" id="mini"><div class="scr">
+                <div class="top" style="font-size:13px"><b style="font-size:14px">Chez Maman</b>⭐ 4.6 · 350 m</div>
+                <div class="card"><strong>19:30 · 2 <span lang="en">people</span><span lang="fr">pers.</span></strong><span style="color:#6a6a76"><span lang="en">Terrace table, free now</span><span lang="fr">Table en terrasse, libre maintenant</span></span><button class="book" id="book" type="button"><span lang="en">Book</span><span lang="fr">Réserver</span></button></div>
+                <div class="card" style="opacity:.6"><strong>20:00 · 4 <span lang="en">people</span><span lang="fr">pers.</span></strong><span style="color:#6a6a76"><span lang="en">Inside</span><span lang="fr">Intérieur</span></span></div>
+            </div></div>
+            <div>
+                <div class="toggle" role="group" aria-label="Version"><button type="button" data-v="before" aria-pressed="true"><span lang="en">Tested version</span><span lang="fr">Version testée</span></button><button type="button" data-v="after" aria-pressed="false"><span lang="en">After the fix</span><span lang="fr">Après correction</span></button></div>
+                <p id="fix-text"></p>
+                <div class="metric">
+                    <div><b id="m-size">–</b><span><span lang="en">Button height (min 44 px)</span><span lang="fr">Hauteur du bouton (min 44 px)</span></span></div>
+                    <div><b id="m-contrast">–</b><span><span lang="en">Text contrast</span><span lang="fr">Contraste du texte</span></span></div>
+                    <div><b id="m-time">–</b><span><span lang="en">Your time to tap</span><span lang="fr">Votre temps de réaction</span></span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="ps-section" id="contrast">
+    <div class="wrap">
+        <span class="kicker"><span lang="en">Tool · Accessibility</span><span lang="fr">Outil · Accessibilité</span></span>
+        <h2><span lang="en">WCAG contrast checker</span><span lang="fr">Vérificateur de contraste WCAG</span></h2>
+        <p class="intro"><span lang="en">The tool I used to check every color pair in the app. It computes relative luminance the way WCAG 2.1 defines it.</span><span lang="fr">L'outil utilisé pour vérifier chaque paire de couleurs de l'app. Il calcule la luminance relative selon la définition WCAG 2.1.</span></p>
+        <div class="contrast">
+            <div class="panel stack">
+                <div class="swatch-row">
+                    <label class="field" for="fg-c"><span lang="en">Text</span><span lang="fr">Texte</span><span class="colorpick"><input type="color" id="fg-c" value="#ffffff"><input type="text" id="fg-t" value="#ffffff" spellcheck="false"></span></label>
+                    <label class="field" for="bg-c"><span lang="en">Background</span><span lang="fr">Fond</span><span class="colorpick"><input type="color" id="bg-c" value="#e5483b"><input type="text" id="bg-t" value="#e5483b" spellcheck="false"></span></label>
+                </div>
+                <div><div class="ratio" id="ratio">–</div><div class="wcag" id="wcag"></div></div>
+                <button class="btn btn-ghost btn-sm" type="button" id="suggest"><span lang="en">Suggest a passing text color</span><span lang="fr">Proposer une couleur conforme</span></button>
+            </div>
+            <div class="preview" id="preview"><span class="big">Table Libre</span><span><span lang="en">Book a table in one tap. Normal text at 16 px.</span><span lang="fr">Réservez une table en un geste. Texte normal à 16 px.</span></span><small><span lang="en">Small print at 12 px</span><span lang="fr">Petits caractères à 12 px</span></small></div>
+        </div>
+    </div>
+</section>
+
+<section class="ps-section">
+    <div class="wrap">
+        <span class="kicker"><span lang="en">Design system</span><span lang="fr">Système de design</span></span>
+        <h2><span lang="en">Tokens used across the screens</span><span lang="fr">Les tokens utilisés sur tous les écrans</span></h2>
+        <div class="tokens">
+            <div class="tok"><div style="background:#e5483b"></div><p>brand/coral<br>#E5483B</p></div>
+            <div class="tok"><div style="background:#0f766e"></div><p>action/teal<br>#0F766E</p></div>
+            <div class="tok"><div style="background:#15151c"></div><p>ink/900<br>#15151C</p></div>
+            <div class="tok"><div style="background:#6a6a76"></div><p>ink/500<br>#6A6A76</p></div>
+            <div class="tok"><div style="background:#ffe3dc"></div><p>coral/50<br>#FFE3DC</p></div>
+            <div class="tok"><div style="background:#fbf7f4"></div><p>paper<br>#FBF7F4</p></div>
+        </div>
+        <div class="showcase reveal" style="margin-top:2rem">
+            <div><h3><span lang="en">Bonus: 10 visual styles coded in HTML/CSS</span><span lang="fr">Bonus : 10 styles visuels codés en HTML/CSS</span></h3><p class="note" style="font-size:1rem;margin-top:.4rem"><span lang="en">From minimalist to brutalist, each with the UX reasoning and the CSS technique behind it.</span><span lang="fr">Du minimalisme au brutalisme, chacun avec le raisonnement UX et la technique CSS associée.</span></p></div>
+            <a class="btn btn-solid" href="../ux_design.html"><span lang="en">Open the showcase</span><span lang="fr">Voir la galerie</span> →</a>
+        </div>
+    </div>
+</section>
+
+<section class="ps-section">
+    <div class="wrap">
+        <span class="kicker"><span lang="en">For recruiters</span><span lang="fr">Pour les recruteurs</span></span>
+        <h2><span lang="en">What this project shows</span><span lang="fr">Ce que ce projet démontre</span></h2>
+        <div class="proves">
+            <div class="prove reveal"><span class="n">01</span><h3><span lang="en">User research</span><span lang="fr">Recherche utilisateur</span></h3><p><span lang="en">Interviews, surveys, personas and user stories.</span><span lang="fr">Entretiens, sondages, personas et user stories.</span></p></div>
+            <div class="prove reveal"><span class="n">02</span><h3><span lang="en">Test, learn, iterate</span><span lang="fr">Tester, apprendre, itérer</span></h3><p><span lang="en">Usability testing that changed the design.</span><span lang="fr">Des tests d'utilisabilité qui ont changé le design.</span></p></div>
+            <div class="prove reveal"><span class="n">03</span><h3><span lang="en">Accessible by default</span><span lang="fr">Accessible par défaut</span></h3><p><span lang="en">Touch targets and WCAG contrast checked on every screen.</span><span lang="fr">Cibles tactiles et contraste WCAG vérifiés sur chaque écran.</span></p></div>
+        </div>
+        <div class="cert reveal" style="margin-top:2rem">
+            <img src="../images/ux_design.jpg" alt="Google UX Design certificate" data-tilt="10" loading="lazy">
+            <div>
+                <h3>Google UX Design</h3>
+                <p><span lang="en">Professional certificate issued through Coursera. The link opens Coursera's own verification page.</span><span lang="fr">Certificat professionnel délivré via Coursera. Le lien ouvre la page de vérification officielle de Coursera.</span></p>
+                <div class="chips" style="margin-bottom:1rem"><span class="chip">Figma</span><span class="chip">User research</span><span class="chip">Wireframing</span><span class="chip">Prototyping</span><span class="chip">Usability testing</span><span class="chip">Accessibility</span></div>
+                <a class="btn btn-solid btn-sm" href="https://coursera.org/verify/professional-cert/6R8451VM3CQ5" target="_blank" rel="noopener"><span lang="en">Verify on Coursera</span><span lang="fr">Vérifier sur Coursera</span> ↗</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script src="shared.js"></script>
+<script>
+window.pageInit = function () {
+    var t = PS.t;
+
+    /* Hero rig follows the pointer and floats */
+    var rig = PS.$('#rig'), stage = PS.$('#stage'), px = 0, py = 0;
+    stage.addEventListener('pointermove', function (e) { var r = stage.getBoundingClientRect(); px = (e.clientX - r.left) / r.width - 0.5; py = (e.clientY - r.top) / r.height - 0.5; });
+    stage.addEventListener('pointerleave', function () { px = 0; py = 0; });
+    if (!PS.reduceMotion) (function loop(ts) {
+        var f = Math.sin(ts / 1400) * 6;
+        rig.style.transform = 'rotateY(' + (px * 30 - 8) + 'deg) rotateX(' + (-py * 20 + 8) + 'deg) translateY(' + f + 'px)';
+        requestAnimationFrame(loop);
+    })(0);
+    else rig.style.transform = 'rotateY(-8deg) rotateX(8deg)';
+
+    /* Contrast maths (WCAG 2.1) */
+    function hex(h) { h = h.replace('#', ''); if (h.length === 3) h = h.split('').map(function (c) { return c + c; }).join(''); var n = parseInt(h, 16); return isNaN(n) || h.length !== 6 ? null : [n >> 16 & 255, n >> 8 & 255, n & 255]; }
+    function lum(rgb) { return rgb.map(function (v) { v /= 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); }).reduce(function (a, v, i) { return a + v * [0.2126, 0.7152, 0.0722][i]; }, 0); }
+    function ratio(a, b) { var l1 = lum(a), l2 = lum(b); return (Math.max(l1, l2) + 0.05) / (Math.min(l1, l2) + 0.05); }
+
+    /* Usability fix */
+    var version = 'before', shownAt = performance.now();
+    function renderFix() {
+        var mini = PS.$('#mini'); mini.className = 'mini ' + version;
+        PS.$$('[data-v]').forEach(function (b) { b.setAttribute('aria-pressed', b.getAttribute('data-v') === version); });
+        var btn = PS.$('#book');
+        requestAnimationFrame(function () {
+            setTimeout(function () {
+                var h = Math.round(btn.getBoundingClientRect().height);
+                PS.$('#m-size').innerHTML = h + ' px <span class="pill ' + (h >= 44 ? 'ok' : 'bad') + '">' + (h >= 44 ? 'OK' : t('Too small', 'Trop petit')) + '</span>';
+                var cs = getComputedStyle(btn), rgb = function (s) { return s.match(/\d+/g).slice(0, 3).map(Number); };
+                var r = ratio(rgb(cs.color), rgb(cs.backgroundColor));
+                PS.$('#m-contrast').innerHTML = PS.fmt(r, 1) + ':1 <span class="pill ' + (r >= 4.5 ? 'ok' : 'bad') + '">' + (r >= 4.5 ? 'AA' : t('Fail', 'Échec')) + '</span>';
+            }, 380);
+        });
+        PS.$('#fix-text').innerHTML = version === 'before'
+            ? t('In testing, 3 of 3 participants hesitated or missed the small grey "Book" link. It looked like secondary text, not the main action.', 'En test, les 3 participants ont hésité ou raté le petit lien gris « Réserver ». Il ressemblait à du texte secondaire, pas à l\'action principale.')
+            : t('The fix: a full-width button in the action color, 48 px tall, with strong contrast. In the retest, participants found and used it right away.', 'La correction : un bouton pleine largeur dans la couleur d\'action, 48 px de haut, bien contrasté. Au nouveau test, les participants l\'ont trouvé et utilisé tout de suite.');
+        PS.$('#m-time').textContent = '–';
+        shownAt = performance.now();
+    }
+    PS.$$('[data-v]').forEach(function (b) { b.addEventListener('click', function () { version = b.getAttribute('data-v'); renderFix(); }); });
+    PS.$('#book').addEventListener('click', function () { PS.$('#m-time').textContent = PS.fmt((performance.now() - shownAt) / 1000, 1) + ' s'; });
+
+    /* Contrast checker */
+    function sync(src, dst) { var v = src.value.trim(); if (!/^#/.test(v)) v = '#' + v; if (hex(v)) { dst.value = v.length === 4 ? '#' + v.slice(1).split('').map(function (c) { return c + c; }).join('') : v; check(); } }
+    function check() {
+        var f = hex(PS.$('#fg-t').value), b = hex(PS.$('#bg-t').value);
+        if (!f || !b) return;
+        var r = ratio(f, b);
+        PS.$('#ratio').textContent = PS.fmt(r, 2) + ' : 1';
+        var rows = [['AA ' + t('normal text', 'texte normal'), 4.5], ['AA ' + t('large text', 'grand texte'), 3], ['AAA ' + t('normal text', 'texte normal'), 7], ['AAA ' + t('large text', 'grand texte'), 4.5]];
+        PS.$('#wcag').innerHTML = rows.map(function (x) { return '<span>' + x[0] + '</span><span class="pill ' + (r >= x[1] ? 'ok">' + t('Pass', 'Conforme') : 'bad">' + t('Fail', 'Échec')) + '</span>'; }).join('');
+        var p = PS.$('#preview'); p.style.color = PS.$('#fg-t').value; p.style.background = PS.$('#bg-t').value;
+    }
+    ['fg', 'bg'].forEach(function (k) {
+        PS.$('#' + k + '-c').addEventListener('input', function () { PS.$('#' + k + '-t').value = PS.$('#' + k + '-c').value; check(); });
+        PS.$('#' + k + '-t').addEventListener('input', function () { sync(PS.$('#' + k + '-t'), PS.$('#' + k + '-c')); });
+    });
+    PS.$('#suggest').addEventListener('click', function () {
+        var b = hex(PS.$('#bg-t').value), f = hex(PS.$('#fg-t').value);
+        var dark = lum(b) > 0.18, best = f.slice();
+        for (var i = 0; i < 100 && ratio(best, b) < 4.5; i++) best = best.map(function (v) { return Math.max(0, Math.min(255, Math.round(v + (dark ? -6 : 6)))); });
+        var h = '#' + best.map(function (v) { return v.toString(16).padStart(2, '0'); }).join('');
+        PS.$('#fg-t').value = h; PS.$('#fg-c').value = h; check();
+    });
+
+    PS.onLang(function () { renderFix(); check(); });
+    renderFix(); check();
+};
+</script>
+</body>
+</html>

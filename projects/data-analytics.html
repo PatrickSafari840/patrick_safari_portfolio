@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="fr" data-lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Congolese Franc Dashboard</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Patrick Safari — Google Advanced Data Analytics and Business Intelligence project: how the Congolese franc moved against the US dollar from 2012 to 2024 compared with six other currencies, using World Bank data.">
+<link rel="icon" href="../your-icon-filename.png" type="image/png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&family=Martian+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="shared.css">
+<style>
+    /* Layout: BI dashboard — ink slate, one teal for the franc, muted greys for comparison currencies */
+    :root {
+        --bg: #f4f6f7; --surface: #ffffff; --fg: #23292f; --heading: #101418; --muted: #5d6873;
+        --line: #e0e5e9; --line-strong: #c5ced5; --accent: #0e7c86; --on-accent: #ffffff; --cdf: #0e7c86;
+        --stage: linear-gradient(170deg, #e5f1f2, #f4f6f7); --code-bg: #101418; --code-fg: #e6ecef;
+        --ok: #2f855a; --warn: #b7791f; --bad: #c53030;
+        --s1: #d97706; --s2: #7c3aed; --s3: #64748b; --s4: #db2777; --s5: #2563eb; --s6: #65a30d; --s7: #0891b2;
+        --font-display: 'Figtree', 'Segoe UI', system-ui, sans-serif;
+        --font-body: 'Figtree', 'Segoe UI', system-ui, sans-serif;
+        --font-mono: 'Martian Mono', ui-monospace, Menlo, monospace;
+    }
+    html[data-mode="dark"] {
+        --bg: #0d1114; --surface: #151b20; --fg: #d5dde3; --heading: #f4f8fa; --muted: #92a0ab;
+        --line: #232c33; --line-strong: #34414b; --accent: #2cc4cf; --on-accent: #04191b; --cdf: #2cc4cf;
+        --stage: linear-gradient(170deg, #0f2326, #0d1114); --code-bg: #080b0d; --code-fg: #d5dde3;
+        --ok: #68d391; --warn: #f6ad55; --bad: #fc8181;
+        --s1: #fbbf24; --s2: #a78bfa; --s3: #94a3b8; --s4: #f472b6; --s5: #60a5fa; --s6: #a3e635; --s7: #22d3ee; color-scheme: dark;
+    }
+    .ps-hero h1 { font-weight: 800; letter-spacing: -0.025em; }
+    .tiles { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; }
+    .tile { padding: 1.1rem 1.2rem; border-radius: 14px; background: var(--surface); border: 1px solid var(--line); min-width: 0; }
+    .tile .k { font-size: 0.78rem; color: var(--muted); }
+    .tile .v { font-size: 2rem; font-weight: 800; color: var(--heading); font-variant-numeric: tabular-nums; line-height: 1.1; margin: 0.25rem 0; }
+    .tile .v.cdf { color: var(--cdf); }
+    .tile .d { font-size: 0.8rem; color: var(--muted); }
+    .dash { display: grid; grid-template-columns: 240px 1fr; gap: 1.25rem; }
+    .toggles { display: grid; gap: 0.4rem; }
+    .toggles label { display: grid; grid-template-columns: 18px 14px 1fr auto; gap: 0.5rem; align-items: center; font-size: 0.88rem; padding: 0.35rem 0.5rem; border-radius: 8px; cursor: pointer; }
+    .toggles label:hover { background: var(--bg); }
+    .toggles input { width: 16px; height: 16px; accent-color: var(--accent); }
+    .toggles .sw { width: 14px; height: 4px; border-radius: 2px; }
+    .toggles .ch { font-family: var(--font-mono); font-size: 0.72rem; color: var(--muted); }
+    .seg { display: inline-flex; border: 1px solid var(--line-strong); border-radius: 10px; padding: 3px; gap: 2px; }
+    .seg button { font: inherit; font-size: 0.82rem; padding: 0.35rem 0.75rem; border: none; border-radius: 7px; background: transparent; color: var(--fg); cursor: pointer; }
+    .seg button[aria-pressed="true"] { background: var(--heading); color: var(--surface); }
+    .chart-lg { position: relative; height: 380px; }
+    .chart-md { position: relative; height: 280px; }
+    .live-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.75rem; }
+    .live { border: 1px solid var(--line); border-radius: 12px; padding: 0.75rem 0.9rem; background: var(--bg); min-width: 0; }
+    .live .c { font-family: var(--font-mono); font-size: 0.75rem; color: var(--muted); }
+    .live .r { font-size: 1.25rem; font-weight: 700; font-variant-numeric: tabular-nums; color: var(--heading); }
+    .savings { grid-template-columns: 300px 1fr; }
+    .insight { border-left: 3px solid var(--cdf); padding-left: 1rem; }
+    .insight h3 { font-size: 1.05rem; margin-bottom: 0.3rem; }
+    .insight p { color: var(--muted); font-size: 0.93rem; }
+    .src { font-size: 0.82rem; color: var(--muted); }
+    .heat td { text-align: right; }
+    .heat td:first-child, .heat th:first-child { text-align: left; }
+    @media (max-width: 920px) { .tiles, .live-row { grid-template-columns: 1fr 1fr; } .dash, .savings { grid-template-columns: 1fr; } .toggles { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 640px) { .tiles { grid-template-columns: 1fr; } .chart-lg { height: 320px; } }
+</style>
+</head>
+<body data-project="gda-gbi">
+
+<section class="ps-hero">
+    <div class="wrap">
+        <div>
+            <span class="ps-eyebrow">Google Advanced Data Analytics + Business Intelligence</span>
+            <h1>
+                <span lang="en">What happened to the Congolese franc?</span>
+                <span lang="fr">Qu'est-il arrivé au franc congolais ?</span>
+            </h1>
+            <p class="lead">
+                <span lang="en">A dashboard comparing how many units of each currency one US dollar bought from 2012 to 2024, built on official World Bank data. The franc tells a very different story from its neighbours.</span>
+                <span lang="fr">Un tableau de bord qui compare combien d'unités de chaque devise un dollar US achetait de 2012 à 2024, à partir des données officielles de la Banque mondiale. Le franc raconte une histoire très différente de ses voisins.</span>
+            </p>
+            <div class="ps-btns">
+                <a class="btn btn-solid" href="#dashboard"><span lang="en">Open the dashboard</span><span lang="fr">Ouvrir le tableau de bord</span></a>
+                <a class="btn btn-ghost" href="https://coursera.org/verify/professional-cert/LCGH3RERGP7B" target="_blank" rel="noopener">Data Analytics ↗</a>
+                <a class="btn btn-ghost" href="https://coursera.org/verify/professional-cert/YDNCH3ULLKRU" target="_blank" rel="noopener">Business Intelligence ↗</a>
+            </div>
+        </div>
+        <div class="ps-stage" id="stage">
+            <span class="stage-label" id="stage-label"></span>
+        </div>
+    </div>
+</section>
+
+<section class="ps-section" style="padding-block:2rem">
+    <div class="wrap">
+        <div class="tiles" id="tiles"></div>
+    </div>
+</section>
+
+<section class="ps-section" id="dashboard">
+    <div class="wrap">
+        <span class="kicker"><span lang="en">Dashboard</span><span lang="fr">Tableau de bord</span></span>
+        <h2><span lang="en">Dollar strength, indexed to 2012</span><span lang="fr">Force du dollar, indexée sur 2012</span></h2>
+        <p class="intro"><span lang="en">Index = units per US dollar ÷ the 2012 value × 100. Above 100 means the currency lost value against the dollar. Switch to raw rates or yearly change, and toggle currencies.</span><span lang="fr">Indice = unités par dollar ÷ valeur de 2012 × 100. Au-dessus de 100, la devise a perdu de la valeur face au dollar. Passez aux taux bruts ou à la variation annuelle, et activez les devises.</span></p>
+        <div class="panel dash">
+            <div class="toggles" id="toggles"></div>
+            <div>
+                <div style="display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin-bottom:0.75rem">
+                    <div class="seg" role="group" aria-label="View" id="views"></div>
+                    <span class="src">Source: World Bank, PA.NUS.FCRF</span>
+                </div>
+                <div class="chart-lg"><canvas id="main-chart" aria-label="Exchange rate chart"></canvas></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="ps-section">
+    <div class="wrap">
+        <span class="kicker"><span lang="en">Real-world impact</span><span lang="fr">Impact concret</span></span>
+        <h2><span lang="en">What were your savings worth?</span><span lang="fr">Que valait votre épargne ?</span></h2>
+        <p class="intro"><span lang="en">Enter an amount in francs kept in cash and the year you saved it. The chart shows its value in US dollars each year after, at the annual average rate.</span><span lang="fr">Saisissez un montant en francs gardé en liquide et l'année où vous l'avez épargné. Le graphique montre sa valeur en dollars chaque année suivante, au taux moyen annuel.</span></p>
+        <div class="panel grid-2 savings">
+            <div class="stack" style="align-content:start">
+                <label class="field" for="amt"><span lang="en">Amount (CDF)</span><span lang="fr">Montant (CDF)</span><input id="amt" type="number" min="1000" step="1000" value="1000000"></label>
+                <label class="field" for="yr"><span lang="en">Saved in</span><span lang="fr">Épargné en</span><select id="yr"></select></label>
+                <div class="tile" style="padding:0.9rem"><div class="k" id="sv-k"></div><div class="v cdf" id="sv-v" style="font-size:1.6rem"></div><div class="d" id="sv-d"></div></div>
+            </div>
+            <div class="chart-md"><canvas id="sav-chart" aria-label="Savings value chart"></canvas></div>
+        </div>
+    </div>
+</section>
+
+<section class="ps-section">
+    <div class="wrap">
+        <span class="kicker"><span lang="en">Live data</span><span lang="fr">Données en direct</span></span>
+        <h2><span lang="en">Today's rates</span><span lang="fr">Les taux du jour</span></h2>
+        <p class="intro" id="live-intro"><span lang="en">Fetched when you open the page from the free ExchangeRate-API feed, so the historical series can be compared with today.</span><span lang="fr">Récupérés à l'ouverture de la page depuis le flux gratuit ExchangeRate-API, pour comparer la série historique avec aujourd'hui.</span></p>
+        <div class="live-row" id="live"></div>
+        <p class="src" id="live-src" style="margin-top:0.75rem"></p>
+    </div>
+</section>
+
+<section class="ps-section">
+    <div class="wrap">
+        <span class="kicker"><span lang="en">Findings</span><span lang="fr">Constats</span></span>
+        <h2><span lang="en">What the data says</span><span lang="fr">Ce que disent les données</span></h2>
+        <div class="grid-2" style="margin-bottom:2rem">
+            <div class="insight reveal"><h3><span lang="en">A long calm, then a break in 2016–2017</span><span lang="fr">Un long calme, puis une rupture en 2016–2017</span></h3><p id="f1"></p></div>
+            <div class="insight reveal"><h3><span lang="en">Neighbours moved far less</span><span lang="fr">Les voisins ont beaucoup moins bougé</span></h3><p id="f2"></p></div>
+            <div class="insight reveal"><h3><span lang="en">Why it matters for business</span><span lang="fr">Pourquoi c'est important pour une entreprise</span></h3><p><span lang="en">A firm that sells in francs but buys inputs in dollars sees its margin shrink every year. Pricing in dollars, holding dollar reserves or indexing contracts are the usual hedges.</span><span lang="fr">Une entreprise qui vend en francs mais achète en dollars voit sa marge fondre chaque année. Prix en dollars, réserves en devises ou contrats indexés sont les protections habituelles.</span></p></div>
+            <div class="insight reveal"><h3><span lang="en">Likely drivers (context, not tested here)</span><span lang="fr">Facteurs probables (contexte, non testés ici)</span></h3><p><span lang="en">Dependence on copper and cobalt export prices, a highly dollarised economy, inflation and periods of political uncertainty. A next step would be to test these with commodity-price and inflation series.</span><span lang="fr">Dépendance aux prix du cuivre et du cobalt, économie très dollarisée, inflation et périodes d'incertitude politique. Étape suivante : tester ces facteurs avec des séries de prix des matières premières et d'inflation.</span></p></div>
+        </div>
+        <div class="table-wrap"><table class="heat"><thead id="heat-h"></thead><tbody id="heat-b"></tbody></table></div>
+        <p class="src" style="margin-top:0.6rem"><span lang="en">Year-on-year change in units per US dollar. Red = the currency weakened. World Bank had not published the 2024 CDF average at the time of writing.</span><span lang="fr">Variation annuelle des unités par dollar. Rouge = la devise s'est affaiblie. La Banque mondiale n'avait pas encore publié la moyenne 2024 du CDF au moment de la rédaction.</span></p>
+    </div>
+</section>
+
+<section class="ps-section">
+    <div class="wrap">
+        <span class="kicker"><span lang="en">Method</span><span lang="fr">Méthode</span></span>
+        <h2><span lang="en">From API to dashboard</span><span lang="fr">De l'API au tableau de bord</span></h2>
+        <p class="intro"><span lang="en">Extract with Python, store and model with SQL, then visualise. The same steps as the PACE framework taught in the course: Plan, Analyze, Construct, Execute.</span><span lang="fr">Extraction en Python, stockage et modélisation en SQL, puis visualisation. Les étapes du cadre PACE vu dans le cours : Planifier, Analyser, Construire, Exécuter.</span></p>
+        <div class="codebox">
+            <div class="bar" role="tablist"><button type="button">extract.py</button><button type="button">model.sql</button><button type="button">analysis.py</button></div>
+<pre><code>import requests, pandas as pd
+
+COUNTRIES = "COD;UGA;KEN;EMU;GBR;CHN;IND;JPN"
+URL = (f"https://api.worldbank.org/v2/country/{COUNTRIES}"
+       "/indicator/PA.NUS.FCRF?format=json&amp;date=2012:2024&amp;per_page=500")
+
+meta, rows = requests.get(URL, timeout=30).json()
+df = pd.DataFrame({
+    "iso3":  [r["countryiso3code"] for r in rows],
+    "year":  [int(r["date"]) for r in rows],
+    "rate":  [r["value"] for r in rows],          # local currency units per USD
+}).dropna()
+
+df.to_csv("fx_rates.csv", index=False)
+print(df.pivot(index="year", columns="iso3", values="rate").tail())</code></pre>
+<pre hidden><code>-- Index each currency to its 2012 value and compute year-over-year change
+WITH base AS (
+    SELECT iso3, rate AS rate_2012
+    FROM fx_rates
+    WHERE year = 2012
+)
+SELECT  f.iso3,
+        f.year,
+        f.rate,
+        ROUND(100.0 * f.rate / b.rate_2012, 1)                                   AS index_2012,
+        ROUND(100.0 * (f.rate / LAG(f.rate) OVER (PARTITION BY f.iso3 ORDER BY f.year) - 1), 1) AS yoy_pct
+FROM    fx_rates f
+JOIN    base b USING (iso3)
+ORDER BY f.iso3, f.year;</code></pre>
+<pre hidden><code>import pandas as pd
+
+df = pd.read_csv("fx_rates.csv").pivot(index="year", columns="iso3", values="rate")
+yoy = df.pct_change() * 100
+
+summary = pd.DataFrame({
+    "change_2012_2023_%": (df.loc[2023] / df.loc[2012] - 1) * 100,
+    "avg_yearly_%":       ((df.loc[2023] / df.loc[2012]) ** (1 / 11) - 1) * 100,
+    "volatility_std_%":   yoy.std(),
+    "worst_year":         yoy.idxmax(),
+}).round(1).sort_values("change_2012_2023_%", ascending=False)
+
+print(summary)</code></pre>
+        </div>
+    </div>
+</section>
+
+<section class="ps-section">
+    <div class="wrap">
+        <span class="kicker"><span lang="en">For recruiters</span><span lang="fr">Pour les recruteurs</span></span>
+        <h2><span lang="en">What this project shows</span><span lang="fr">Ce que ce projet démontre</span></h2>
+        <div class="proves">
+            <div class="prove reveal"><span class="n">01</span><h3><span lang="en">Real data, cited</span><span lang="fr">Données réelles et citées</span></h3><p><span lang="en">Official series pulled from an API, cleaned and documented.</span><span lang="fr">Séries officielles extraites d'une API, nettoyées et documentées.</span></p></div>
+            <div class="prove reveal"><span class="n">02</span><h3><span lang="en">Metrics that answer a question</span><span lang="fr">Des indicateurs qui répondent à une question</span></h3><p><span lang="en">Indexing, year-on-year change, compound rate and volatility.</span><span lang="fr">Indexation, variation annuelle, taux composé et volatilité.</span></p></div>
+            <div class="prove reveal"><span class="n">03</span><h3><span lang="en">Dashboards people can use</span><span lang="fr">Des tableaux de bord utilisables</span></h3><p><span lang="en">KPI tiles, filters, comparisons and a plain-language takeaway.</span><span lang="fr">Indicateurs clés, filtres, comparaisons et conclusion en langage clair.</span></p></div>
+        </div>
+        <div class="grid-2" style="margin-top:2rem">
+            <div class="cert reveal" style="grid-template-columns: 140px 1fr">
+                <img src="../images/advanced_data_analytics.jpg" alt="Google Advanced Data Analytics certificate" data-tilt="10" loading="lazy">
+                <div><h3>Google Advanced Data Analytics</h3><div class="chips" style="margin:0.5rem 0 1rem"><span class="chip">Python</span><span class="chip">Statistics</span><span class="chip">Regression</span><span class="chip">Machine learning</span></div>
+                <a class="btn btn-solid btn-sm" href="https://coursera.org/verify/professional-cert/LCGH3RERGP7B" target="_blank" rel="noopener"><span lang="en">Verify</span><span lang="fr">Vérifier</span> ↗</a></div>
+            </div>
+            <div class="cert reveal" style="grid-template-columns: 140px 1fr">
+                <img src="../images/busness_inteligence.jpg" alt="Google Business Intelligence certificate" data-tilt="10" loading="lazy">
+                <div><h3>Google Business Intelligence</h3><div class="chips" style="margin:0.5rem 0 1rem"><span class="chip">SQL</span><span class="chip">Data modeling</span><span class="chip">ETL</span><span class="chip">Tableau</span><span class="chip">Dashboards</span></div>
+                <a class="btn btn-solid btn-sm" href="https://coursera.org/verify/professional-cert/YDNCH3ULLKRU" target="_blank" rel="noopener"><span lang="en">Verify</span><span lang="fr">Vérifier</span> ↗</a></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="shared.js"></script>
+<script>
+window.pageInit = function () {
+    var t = PS.t;
+    /* World Bank, Official exchange rate (LCU per US$, period average), indicator PA.NUS.FCRF. Retrieved October 2026. */
+    var YEARS = [2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024];
+    var FX = [
+        { code: 'CDF', en: 'Congolese franc', fr: 'Franc congolais', tok: '--cdf', on: true, d: [919.76, 919.57, 925.23, 925.98, 1010.30, 1464.42, 1622.52, 1647.76, 1851.12, 1989.39, 2006.71, 2340.04, null] },
+        { code: 'UGX', en: 'Ugandan shilling', fr: 'Shilling ougandais', tok: '--s1', on: true, d: [2504.56, 2586.89, 2599.79, 3240.65, 3420.10, 3611.22, 3727.07, 3704.05, 3718.25, 3587.05, 3689.82, 3726.14, 3757.26] },
+        { code: 'KES', en: 'Kenyan shilling', fr: 'Shilling kényan', tok: '--s2', on: true, d: [84.53, 86.12, 87.92, 98.18, 101.50, 103.41, 101.30, 101.99, 106.45, 109.64, 117.87, 139.85, 134.82] },
+        { code: 'EUR', en: 'Euro', fr: 'Euro', tok: '--s3', on: true, d: [0.778, 0.753, 0.753, 0.901, 0.903, 0.885, 0.847, 0.893, 0.876, 0.845, 0.950, 0.925, 0.924] },
+        { code: 'GBP', en: 'British pound', fr: 'Livre sterling', tok: '--s4', on: false, d: [0.63, 0.64, 0.61, 0.65, 0.74, 0.78, 0.75, 0.78, 0.78, 0.73, 0.81, 0.80, 0.78] },
+        { code: 'CNY', en: 'Chinese yuan', fr: 'Yuan chinois', tok: '--s5', on: false, d: [6.31, 6.20, 6.14, 6.23, 6.64, 6.76, 6.62, 6.91, 6.90, 6.45, 6.74, 7.08, 7.20] },
+        { code: 'INR', en: 'Indian rupee', fr: 'Roupie indienne', tok: '--s6', on: false, d: [53.44, 58.60, 61.03, 64.15, 67.20, 65.12, 68.39, 70.42, 74.10, 73.92, 78.60, 82.60, 83.67] },
+        { code: 'JPY', en: 'Japanese yen', fr: 'Yen japonais', tok: '--s7', on: true, d: [79.79, 97.60, 105.94, 121.04, 108.79, 112.17, 110.42, 109.01, 106.77, 109.75, 131.50, 140.49, 151.37] }
+    ];
+    var I23 = YEARS.indexOf(2023);
+    function idx(c) { return c.d.map(function (v) { return v == null ? null : Math.round(v / c.d[0] * 1000) / 10; }); }
+    function yoy(c) { return c.d.map(function (v, i) { return i === 0 || v == null || c.d[i - 1] == null ? null : Math.round((v / c.d[i - 1] - 1) * 1000) / 10; }); }
+    var cdf = FX[0];
+    var chg = (cdf.d[I23] / cdf.d[0] - 1) * 100;
+    var cagr = (Math.pow(cdf.d[I23] / cdf.d[0], 1 / 11) - 1) * 100;
+    var cdfYoy = yoy(cdf), worstI = cdfYoy.indexOf(Math.max.apply(null, cdfYoy.filter(function (x) { return x != null; })));
+    var lostValue = (1 - cdf.d[0] / cdf.d[I23]) * 100;
+
+    function renderTiles() {
+        var ugxChg = (FX[1].d[I23] / FX[1].d[0] - 1) * 100;
+        PS.$('#tiles').innerHTML = [
+            [t('CDF per US dollar, 2012 → 2023', 'CDF par dollar, 2012 → 2023'), '+' + PS.fmt(chg, 0) + '%', true, PS.fmt(cdf.d[0], 0) + ' → ' + PS.fmt(cdf.d[I23], 0)],
+            [t('Average yearly weakening', 'Affaiblissement moyen par an'), PS.fmt(cagr, 1) + '%', true, t('compound rate, 11 years', 'taux composé, 11 ans')],
+            [t('Worst single year', 'Pire année'), '+' + PS.fmt(cdfYoy[worstI], 1) + '%', true, YEARS[worstI - 1] + ' → ' + YEARS[worstI]],
+            [t('Ugandan shilling, same period', 'Shilling ougandais, même période'), '+' + PS.fmt(ugxChg, 0) + '%', false, t('for comparison', 'pour comparaison')]
+        ].map(function (x) { return '<div class="tile"><div class="k">' + x[0] + '</div><div class="v' + (x[2] ? ' cdf' : '') + '">' + x[1] + '</div><div class="d">' + x[3] + '</div></div>'; }).join('');
+        PS.$('#f1').textContent = t('From 2012 to 2015 the franc barely moved (about 920–926 per dollar). Then it weakened by ' + PS.fmt(cdfYoy[YEARS.indexOf(2016)], 1) + '% in 2016 and ' + PS.fmt(cdfYoy[YEARS.indexOf(2017)], 1) + '% in 2017, and kept sliding to ' + PS.fmt(cdf.d[I23], 0) + ' in 2023.',
+            'De 2012 à 2015, le franc a très peu bougé (environ 920–926 par dollar). Puis il a perdu ' + PS.fmt(cdfYoy[YEARS.indexOf(2016)], 1) + ' % en 2016 et ' + PS.fmt(cdfYoy[YEARS.indexOf(2017)], 1) + ' % en 2017, avant de glisser jusqu\'à ' + PS.fmt(cdf.d[I23], 0) + ' en 2023.');
+        var others = FX.slice(1).map(function (c) { return [c.code, (c.d[I23] / c.d[0] - 1) * 100]; }).sort(function (a, b) { return b[1] - a[1]; });
+        PS.$('#f2').textContent = t('Over the same 2012–2023 period the next-weakest currency in this set, ' + others[0][0] + ', rose ' + PS.fmt(others[0][1], 0) + '% against the dollar, versus ' + PS.fmt(chg, 0) + '% for the franc. Cash held in francs lost about ' + PS.fmt(lostValue, 0) + '% of its dollar value.',
+            'Sur la même période 2012–2023, la devise la plus faible après le franc dans cet échantillon, ' + others[0][0] + ', a progressé de ' + PS.fmt(others[0][1], 0) + ' % face au dollar, contre ' + PS.fmt(chg, 0) + ' % pour le franc. L\'épargne en francs a perdu environ ' + PS.fmt(lostValue, 0) + ' % de sa valeur en dollars.');
+    }
+
+    /* ---------- Main chart ---------- */
+    var view = 'index', main, sav;
+    function ds() {
+        return FX.filter(function (c) { return c.on; }).map(function (c) {
+            var data = view === 'index' ? idx(c) : view === 'yoy' ? yoy(c) : c.d;
+            var col = PS.css(c.tok), isC = c.code === 'CDF';
+            return { label: c.code, data: data, borderColor: col, backgroundColor: col, borderWidth: isC ? 3.5 : 1.8, pointRadius: isC ? 3 : 0, pointHoverRadius: 5, tension: 0.2, spanGaps: false, yAxisID: 'y' };
+        });
+    }
+    function axisFmt(v) { return view === 'yoy' ? v + '%' : view === 'raw' ? PS.fmt(v) : v; }
+    function renderMain() {
+        if (!window.Chart) return;
+        var muted = PS.css('--muted'), line = PS.css('--line');
+        var opts = { responsive: true, maintainAspectRatio: false, interaction: { mode: 'index', intersect: false }, animation: { duration: PS.reduceMotion ? 0 : 500 },
+            plugins: { legend: { display: false }, tooltip: { callbacks: { label: function (it) { return it.dataset.label + ': ' + (it.raw == null ? '–' : (view === 'yoy' ? (it.raw > 0 ? '+' : '') + it.raw + '%' : PS.fmt(it.raw, view === 'raw' && it.raw < 10 ? 3 : 1))); } } } },
+            scales: { x: { grid: { display: false }, ticks: { color: muted } }, y: { type: view === 'raw' ? 'logarithmic' : 'linear', grid: { color: line }, ticks: { color: muted, callback: axisFmt }, title: { display: true, color: muted, text: view === 'index' ? t('Index (2012 = 100)', 'Indice (2012 = 100)') : view === 'yoy' ? t('Change vs previous year', 'Variation sur un an') : t('Units per US$ (log scale)', 'Unités par $ US (échelle log)') } } } };
+        if (main) { main.data.datasets = ds(); main.options = opts; main.update(); }
+        else main = new Chart(PS.$('#main-chart'), { type: 'line', data: { labels: YEARS, datasets: ds() }, options: opts });
+    }
+    function renderControls() {
+        PS.$('#toggles').innerHTML = FX.map(function (c, i) {
+            var last = c.d[I23];
+            return '<label for="cc-' + c.code + '"><input type="checkbox" id="cc-' + c.code + '" data-i="' + i + '"' + (c.on ? ' checked' : '') + '><span class="sw" style="background:var(' + c.tok + ')"></span><span>' + c.code + ' <span class="note">' + PS.esc(t(c.en, c.fr)) + '</span></span><span class="ch">' + (last ? '+' + PS.fmt((last / c.d[0] - 1) * 100, 0) + '%' : '') + '</span></label>';
+        }).join('');
+        PS.$$('#toggles input').forEach(function (inp) { inp.addEventListener('change', function () { FX[+inp.getAttribute('data-i')].on = inp.checked; renderMain(); }); });
+        PS.$('#views').innerHTML = [['index', 'Index', 'Indice'], ['yoy', 'Yearly change', 'Variation annuelle'], ['raw', 'Raw rates', 'Taux bruts']].map(function (v) {
+            return '<button type="button" data-view="' + v[0] + '" aria-pressed="' + (view === v[0]) + '">' + t(v[1], v[2]) + '</button>';
+        }).join('');
+        PS.$$('[data-view]').forEach(function (b) { b.addEventListener('click', function () { view = b.getAttribute('data-view'); renderControls(); renderMain(); }); });
+    }
+
+    /* ---------- Savings ---------- */
+    var yrSel = PS.$('#yr');
+    yrSel.innerHTML = YEARS.slice(0, I23).map(function (y) { return '<option' + (y === 2016 ? ' selected' : '') + '>' + y + '</option>'; }).join('');
+    function renderSav() {
+        var amt = Math.max(0, +PS.$('#amt').value || 0), y0 = +yrSel.value, i0 = YEARS.indexOf(y0);
+        var yrs = YEARS.slice(i0, I23 + 1), vals = yrs.map(function (y) { return Math.round(amt / cdf.d[YEARS.indexOf(y)]); });
+        var first = vals[0], last = vals[vals.length - 1];
+        PS.$('#sv-k').textContent = t('Value in 2023', 'Valeur en 2023');
+        PS.$('#sv-v').textContent = '$' + PS.fmt(last);
+        PS.$('#sv-d').textContent = t('was $' + PS.fmt(first) + ' in ' + y0 + ' (' + PS.fmt((last / first - 1) * 100, 0) + '%)', 'valait ' + PS.fmt(first) + ' $ en ' + y0 + ' (' + PS.fmt((last / first - 1) * 100, 0) + ' %)');
+        if (!window.Chart) return;
+        var col = PS.css('--cdf'), muted = PS.css('--muted'), line = PS.css('--line');
+        var data = { labels: yrs, datasets: [{ data: vals, backgroundColor: col, borderRadius: 6, maxBarThickness: 46 }] };
+        var opts = { responsive: true, maintainAspectRatio: false, animation: { duration: PS.reduceMotion ? 0 : 400 }, plugins: { legend: { display: false }, tooltip: { callbacks: { label: function (it) { return '$' + PS.fmt(it.raw); } } } },
+            scales: { x: { grid: { display: false }, ticks: { color: muted } }, y: { beginAtZero: true, grid: { color: line }, ticks: { color: muted, callback: function (v) { return '$' + PS.fmt(v); } } } } };
+        if (sav) { sav.data = data; sav.options = opts; sav.update(); } else sav = new Chart(PS.$('#sav-chart'), { type: 'bar', data: data, options: opts });
+    }
+    PS.$('#amt').addEventListener('input', renderSav); yrSel.addEventListener('change', renderSav);
+
+    /* ---------- Year-over-year heat table ---------- */
+    function renderHeat() {
+        PS.$('#heat-h').innerHTML = '<tr><th>' + t('Currency', 'Devise') + '</th>' + YEARS.slice(1).map(function (y) { return '<th>' + y + '</th>'; }).join('') + '</tr>';
+        PS.$('#heat-b').innerHTML = FX.map(function (c) {
+            return '<tr><td><strong>' + c.code + '</strong></td>' + yoy(c).slice(1).map(function (v) {
+                if (v == null) return '<td class="note">–</td>';
+                var a = Math.min(60, Math.abs(v) * 2.2), col = v > 0 ? 'var(--bad)' : 'var(--ok)';
+                if (Math.abs(v) < 0.05) v = 0;
+                return '<td style="background:color-mix(in srgb,' + col + ' ' + a + '%,transparent)">' + (v > 0 ? '+' : '') + PS.fmt(v, 1) + '</td>';
+            }).join('') + '</tr>';
+        }).join('');
+    }
+
+    /* ---------- Live rates ---------- */
+    var live = null;
+    function renderLive() {
+        var box = PS.$('#live');
+        if (!live) { box.innerHTML = '<div class="live"><div class="c">USD</div><div class="r">…</div></div>'; return; }
+        if (live.error) { box.innerHTML = ''; PS.$('#live-src').textContent = t('Live rates are not available right now. The historical dashboard above is unaffected.', 'Les taux en direct ne sont pas disponibles pour le moment. Le tableau historique ci-dessus n\'est pas affecté.'); return; }
+        box.innerHTML = ['CDF', 'UGX', 'KES', 'EUR'].map(function (c) {
+            var r = live.rates[c], hist = FX.filter(function (x) { return x.code === c; })[0], base = hist.d[I23] || hist.d[I23 - 1];
+            var d = r ? (r / base - 1) * 100 : null;
+            return '<div class="live"><div class="c">1 USD → ' + c + '</div><div class="r">' + (r ? PS.fmt(r, r < 10 ? 3 : 0) : '–') + '</div><div class="note">' + (d == null ? '' : (d > 0 ? '+' : '') + PS.fmt(d, 1) + t('% vs 2023 avg', ' % vs moy. 2023')) + '</div></div>';
+        }).join('');
+        PS.$('#live-src').innerHTML = t('Source: ', 'Source : ') + '<a href="https://www.exchangerate-api.com" target="_blank" rel="noopener">ExchangeRate-API</a> · ' + t('updated ', 'mis à jour ') + PS.esc(live.time || '');
+    }
+    fetch('https://open.er-api.com/v6/latest/USD').then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+        .then(function (j) { live = j && j.rates ? { rates: j.rates, time: (j.time_last_update_utc || '').replace(/ \+0000$/, ' UTC') } : { error: true }; renderLive(); })
+        .catch(function () { live = { error: true }; renderLive(); });
+
+    function all() { renderTiles(); renderControls(); renderMain(); renderSav(); renderHeat(); renderLive(); }
+    PS.onLang(all);
+    PS.onMode(function () { renderMain(); renderSav(); });
+
+    /* ---------- 3D: bars of each currency's index, growing year by year ---------- */
+    var label = PS.$('#stage-label');
+    PS.scene(PS.$('#stage'), function (ctx) {
+        var THREE = ctx.THREE, scene = ctx.scene, cam = ctx.camera;
+        cam.position.set(7.5, 6.5, 10); cam.lookAt(0, 1.4, 0);
+        scene.add(new THREE.AmbientLight(0xffffff, 0.65));
+        var dl = new THREE.DirectionalLight(0xffffff, 0.8); dl.position.set(5, 10, 7); scene.add(dl);
+        var g = new THREE.Group(); scene.add(g);
+        var floor = new THREE.GridHelper(10, 10); floor.material.transparent = true; floor.material.opacity = 0.3; g.add(floor);
+        var bars = FX.map(function (c, i) {
+            var m = new THREE.Mesh(new THREE.BoxGeometry(0.75, 1, 0.75), new THREE.MeshStandardMaterial({ roughness: 0.45, metalness: 0.1 }));
+            m.position.set(-3.5 + i * 1, 0, 0); g.add(m); return { m: m, c: c, h: 0 };
+        });
+        function color() { bars.forEach(function (b) { b.m.material.color = ctx.color(b.c.tok); }); floor.material.color = ctx.color('--muted'); }
+        color(); PS.onMode(color);
+        var lastYear = -1;
+        return function (time) {
+            var cycle = PS.reduceMotion ? I23 : Math.floor((time * 0.9) % (I23 + 4));
+            var yi = Math.min(I23, cycle);
+            bars.forEach(function (b) {
+                var v = b.c.d[yi] == null ? b.c.d[yi - 1] : b.c.d[yi];
+                var target = Math.max(0.05, (v / b.c.d[0]) * 1.4 - 1.25);
+                b.h += (target - b.h) * (PS.reduceMotion ? 1 : 0.08);
+                b.m.scale.y = b.h; b.m.position.y = b.h / 2;
+            });
+            if (yi !== lastYear) { lastYear = yi; label.textContent = t('3D · index vs 2012 · ', '3D · indice vs 2012 · ') + YEARS[yi] + ' · CDF = ' + PS.fmt(cdf.d[yi] / cdf.d[0] * 100, 0); }
+            g.rotation.y = -0.45 + Math.sin(time * 0.25) * 0.2 + ctx.pointer.x * 0.5;
+            g.rotation.x = ctx.pointer.y * 0.12;
+        };
+    });
+
+    all();
+};
+</script>
+</body>
+</html>

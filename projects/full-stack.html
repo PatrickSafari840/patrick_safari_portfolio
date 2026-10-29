@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="fr" data-lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Full Stack Task Manager</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Patrick Safari — IBM Full Stack Developer project: a task manager with a REST API and SQL database, shown live layer by layer with request logs.">
+<link rel="icon" href="../your-icon-filename.png" type="image/png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="shared.css">
+<style>
+    /* Layout: engineering blueprint — strict grid, one blue, three-layer architecture as the motif */
+    :root {
+        --bg: #f4f4f4; --surface: #ffffff; --fg: #262626; --heading: #161616; --muted: #5c5c5c;
+        --line: #e0e0e0; --line-strong: #c6c6c6; --accent: #0f62fe; --on-accent: #ffffff;
+        --stage: linear-gradient(180deg, #edf3ff, #f4f4f4); --code-bg: #161616; --code-fg: #f4f4f4;
+        --ok: #198038; --warn: #b28600; --bad: #da1e28; --l-ui: #0f62fe; --l-api: #8a3ffc; --l-db: #009d9a;
+        --font-display: 'IBM Plex Sans', 'Segoe UI', system-ui, sans-serif;
+        --font-body: 'IBM Plex Sans', 'Segoe UI', system-ui, sans-serif;
+        --font-mono: 'IBM Plex Mono', ui-monospace, Menlo, monospace;
+    }
+    html[data-mode="dark"] {
+        --bg: #121212; --surface: #1c1c1c; --fg: #e0e0e0; --heading: #f4f4f4; --muted: #a8a8a8;
+        --line: #2e2e2e; --line-strong: #474747; --accent: #78a9ff; --on-accent: #0b1a33;
+        --stage: linear-gradient(180deg, #0d1626, #121212); --code-bg: #0b0b0b; --code-fg: #e0e0e0;
+        --ok: #42be65; --warn: #f1c21b; --bad: #ff8389; --l-ui: #78a9ff; --l-api: #be95ff; --l-db: #3ddbd9; color-scheme: dark;
+    }
+    body { background-image: linear-gradient(var(--line) 1px, transparent 1px), linear-gradient(90deg, var(--line) 1px, transparent 1px); background-size: 48px 48px; background-attachment: fixed; }
+    .ps-hero h1 { font-weight: 600; letter-spacing: -0.01em; }
+    .btn, .panel, .codebox, .prove, .cert, .ps-stage { border-radius: 4px; }
+    .lab { display: grid; grid-template-columns: 1.1fr 1fr; gap: 1px; background: var(--line-strong); border: 1px solid var(--line-strong); }
+    .lab > div { background: var(--surface); min-width: 0; }
+    .layer-h { display: flex; align-items: center; gap: 0.5rem; font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; padding: 0.6rem 1rem; border-bottom: 1px solid var(--line); }
+    .layer-h::before { content: ''; width: 10px; height: 10px; background: var(--c); }
+    .app { padding: 1rem; display: grid; gap: 0.75rem; }
+    .add-row { display: grid; grid-template-columns: 1fr auto auto; gap: 0.5rem; }
+    .add-row select { width: auto; }
+    .tasks { list-style: none; display: grid; gap: 0.4rem; }
+    .task { display: grid; grid-template-columns: auto 1fr auto auto; gap: 0.6rem; align-items: center; padding: 0.55rem 0.7rem; border: 1px solid var(--line); background: var(--bg); font-size: 0.92rem; }
+    .task.done .title { text-decoration: line-through; color: var(--muted); }
+    .task input[type=checkbox] { width: 18px; height: 18px; accent-color: var(--accent); }
+    .task .prio { font-family: var(--font-mono); font-size: 0.7rem; padding: 0.1rem 0.4rem; border: 1px solid var(--line-strong); }
+    .task button.del { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 1rem; padding: 0 0.3rem; }
+    .task button.del:hover { color: var(--bad); }
+    .task.pending { opacity: 0.55; }
+    .filters { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+    .filters button { font: inherit; font-size: 0.8rem; padding: 0.3rem 0.7rem; border: 1px solid var(--line-strong); background: transparent; color: var(--fg); cursor: pointer; }
+    .filters button[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+    .net { font-family: var(--font-mono); font-size: 0.76rem; max-height: 300px; overflow: auto; }
+    .net .req { display: grid; grid-template-columns: 54px 1fr auto auto; gap: 0.5rem; padding: 0.45rem 1rem; border-bottom: 1px solid var(--line); cursor: pointer; align-items: center; }
+    .net .req:hover, .net .req.open { background: var(--bg); }
+    .net .m { font-weight: 600; }
+    .net .m.GET { color: var(--l-ui); } .net .m.POST { color: var(--ok); } .net .m.PATCH { color: var(--warn); } .net .m.DELETE { color: var(--bad); }
+    .net .detail { grid-column: 1 / -1; white-space: pre-wrap; color: var(--muted); padding-top: 0.4rem; }
+    .sqlq { font-family: var(--font-mono); font-size: 0.78rem; padding: 0.6rem 1rem; color: var(--l-db); border-bottom: 1px solid var(--line); min-height: 2.4rem; overflow-x: auto; white-space: nowrap; }
+    .db td, .db th { font-family: var(--font-mono); font-size: 0.75rem; padding: 0.4rem 0.7rem; }
+    .db tr.flash td { background: color-mix(in srgb, var(--l-db) 18%, transparent); }
+    .latency { display: flex; gap: 1rem; align-items: center; padding: 0.6rem 1rem; border-top: 1px solid var(--line); font-size: 0.82rem; flex-wrap: wrap; }
+    .latency input { width: 140px; }
+    .arch { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--line-strong); border: 1px solid var(--line-strong); }
+    .arch > div { background: var(--surface); padding: 1.25rem; min-width: 0; }
+    .arch h3 { font-size: 1rem; display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.4rem; }
+    .arch h3::before { content: ''; width: 12px; height: 12px; background: var(--c); }
+    .arch p { color: var(--muted); font-size: 0.9rem; }
+    @media (max-width: 920px) { .lab { grid-template-columns: 1fr; } .arch { grid-template-columns: 1fr; } }
+    @media (max-width: 640px) { .add-row { grid-template-columns: 1fr 1fr; } .add-row input { grid-column: 1 / -1; } }
+</style>
+</head>
+<body data-project="ibm">
+
+<section class="ps-hero">
+    <div class="wrap">
+        <div>
+            <span class="ps-eyebrow">IBM Full Stack Software Developer</span>
+            <h1>
+                <span lang="en">A task manager, opened up layer by layer</span>
+                <span lang="fr">Un gestionnaire de tâches, ouvert couche par couche</span>
+            </h1>
+            <p class="lead">
+                <span lang="en">The capstone app uses an HTML/JavaScript front end, a PHP REST API and a MySQL database. Here every click shows the HTTP request it sends and the SQL it runs, so you can see how the layers talk.</span>
+                <span lang="fr">L'application finale utilise un front-end HTML/JavaScript, une API REST en PHP et une base MySQL. Ici, chaque clic montre la requête HTTP envoyée et le SQL exécuté, pour voir comment les couches dialoguent.</span>
+            </p>
+            <div class="ps-btns">
+                <a class="btn btn-solid" href="#lab"><span lang="en">Use the app</span><span lang="fr">Utiliser l'application</span></a>
+                <a class="btn btn-ghost" href="https://coursera.org/verify/professional-cert/EGUL98Z14H07" target="_blank" rel="noopener"><span lang="en">Verify certificate</span><span lang="fr">Vérifier le certificat</span> ↗</a>
+                <a class="btn btn-ghost" href="https://github.com/PatrickSafari840" target="_blank" rel="noopener">GitHub ↗</a>
+            </div>
+        </div>
+        <div class="ps-stage" id="stage">
+            <span class="stage-label"><span lang="en">3D · UI → API → Database</span><span lang="fr">3D · Interface → API → Base</span></span>
+        </div>
+    </div>
+</section>
+
+<div class="ps-proof">
+    <div class="wrap">
+        <div class="cell"><div class="k">Front end</div><div class="v">HTML · CSS · JS · React</div></div>
+        <div class="cell"><div class="k">Back end</div><div class="v">PHP · Node.js · Express</div></div>
+        <div class="cell"><div class="k"><span lang="en">Data</span><span lang="fr">Données</span></div><div class="v">MySQL · MongoDB</div></div>
+        <div class="cell"><div class="k">DevOps</div><div class="v">Git · Docker · CI/CD</div></div>
+    </div>
+</div>
+
+<section class="ps-section" id="lab">
+    <div class="wrap">
+        <span class="kicker"><span lang="en">Live lab</span><span lang="fr">Labo en direct</span></span>
+        <h2><span lang="en">Click in the app, watch the stack respond</span><span lang="fr">Cliquez dans l'app, regardez la pile répondre</span></h2>
+        <p class="intro"><span lang="en">The API and database run inside this page so it works without a server. They follow the same REST routes and SQL as the real PHP/MySQL version. Raise the latency to see optimistic updates.</span><span lang="fr">L'API et la base tournent dans cette page pour fonctionner sans serveur. Elles suivent les mêmes routes REST et le même SQL que la vraie version PHP/MySQL. Augmentez la latence pour voir les mises à jour optimistes.</span></p>
+        <div class="lab">
+            <div>
+                <div class="layer-h" style="--c: var(--l-ui)">1 · <span lang="en">Front end</span><span lang="fr">Front-end</span></div>
+                <div class="app">
+                    <form class="add-row" id="add-form">
+                        <label for="new-title" style="position:absolute;left:-9999px">Task</label>
+                        <input id="new-title" type="text" required maxlength="80" data-ph-en="New task…" data-ph-fr="Nouvelle tâche…">
+                        <label for="new-prio" style="position:absolute;left:-9999px">Priority</label>
+                        <select id="new-prio"><option value="high">High</option><option value="med" selected>Medium</option><option value="low">Low</option></select>
+                        <button class="btn btn-solid btn-sm" type="submit"><span lang="en">Add</span><span lang="fr">Ajouter</span></button>
+                    </form>
+                    <div class="filters" id="filters"></div>
+                    <ul class="tasks" id="tasks"></ul>
+                    <p class="note" id="counter"></p>
+                </div>
+            </div>
+            <div>
+                <div class="layer-h" style="--c: var(--l-api)">2 · <span lang="en">REST API · network log</span><span lang="fr">API REST · journal réseau</span></div>
+                <div class="net" id="net"></div>
+                <div class="latency"><label for="lat"><span lang="en">Server latency</span><span lang="fr">Latence serveur</span></label><input id="lat" type="range" min="0" max="1500" step="50" value="250"><span class="mono" id="lat-out"></span>
+                    <label style="display:flex;gap:0.4rem;align-items:center"><input type="checkbox" id="fail" style="width:auto"> <span lang="en">Simulate 500 errors</span><span lang="fr">Simuler des erreurs 500</span></label></div>
+            </div>
+            <div style="grid-column: 1 / -1">
+                <div class="layer-h" style="--c: var(--l-db)">3 · <span lang="en">MySQL · last query and table</span><span lang="fr">MySQL · dernière requête et table</span></div>
+                <div class="sqlq" id="sql">SELECT * FROM tasks ORDER BY created_at DESC;</div>
+                <div class="table-wrap" style="border:none;border-radius:0"><table class="db"><thead><tr><th>id</th><th>title</th><th>priority</th><th>completed</th><th>created_at</th></tr></thead><tbody id="db"></tbody></table></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="ps-section">
+    <div class="wrap">
+        <span class="kicker"><span lang="en">Architecture</span><span lang="fr">Architecture</span></span>
+        <h2><span lang="en">Three layers, one contract</span><span lang="fr">Trois couches, un contrat</span></h2>
+        <p class="intro"><span lang="en">The front end only knows the JSON contract of the API, and only the API talks to the database with prepared statements.</span><span lang="fr">Le front-end ne connaît que le contrat JSON de l'API, et seule l'API parle à la base avec des requêtes préparées.</span></p>
+        <div class="arch">
+            <div style="--c: var(--l-ui)"><h3><span lang="en">Front end</span><span lang="fr">Front-end</span></h3><p><span lang="en">Renders tasks, sends fetch() calls, updates the screen before the server answers and rolls back on error.</span><span lang="fr">Affiche les tâches, envoie les fetch(), met l'écran à jour avant la réponse et annule en cas d'erreur.</span></p></div>
+            <div style="--c: var(--l-api)"><h3>API REST</h3><p><span lang="en">GET, POST, PATCH and DELETE on /api/tasks, input validation, JSON responses and proper status codes.</span><span lang="fr">GET, POST, PATCH et DELETE sur /api/tasks, validation des entrées, réponses JSON et codes HTTP corrects.</span></p></div>
+            <div style="--c: var(--l-db)"><h3>MySQL</h3><p><span lang="en">One indexed table, PDO prepared statements against SQL injection, timestamps set by the database.</span><span lang="fr">Une table indexée, requêtes préparées PDO contre l'injection SQL, horodatage géré par la base.</span></p></div>
+        </div>
+    </div>
+</section>
+
+<section class="ps-section">
+    <div class="wrap">
+        <span class="kicker"><span lang="en">Source code</span><span lang="fr">Code source</span></span>
+        <h2><span lang="en">The real stack behind the demo</span><span lang="fr">La vraie pile derrière la démo</span></h2>
+        <div class="codebox">
+            <div class="bar" role="tablist"><button type="button">schema.sql</button><button type="button">api/tasks.php</button><button type="button">app.js</button></div>
+<pre><code>CREATE TABLE tasks (
+    id          INT AUTO_INCREMENT PRIMARY KEY,
+    title       VARCHAR(80)  NOT NULL,
+    priority    ENUM('high','med','low') NOT NULL DEFAULT 'med',
+    completed   BOOLEAN      NOT NULL DEFAULT FALSE,
+    created_at  TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    INDEX idx_completed (completed)
+);</code></pre>
+<pre hidden><code>&lt;?php
+header('Content-Type: application/json');
+$pdo = new PDO('mysql:host=localhost;dbname=todo;charset=utf8mb4', getenv('DB_USER'), getenv('DB_PASS'),
+               [PDO::ATTR_ERRMODE =&gt; PDO::ERRMODE_EXCEPTION]);
+$id = isset($_GET['id']) ? (int) $_GET['id'] : null;
+$body = json_decode(file_get_contents('php://input'), true) ?? [];
+
+switch ($_SERVER['REQUEST_METHOD']) {
+    case 'GET':
+        echo json_encode($pdo-&gt;query('SELECT * FROM tasks ORDER BY created_at DESC')-&gt;fetchAll(PDO::FETCH_ASSOC));
+        break;
+    case 'POST':
+        $title = trim($body['title'] ?? '');
+        if ($title === '' || mb_strlen($title) &gt; 80) { http_response_code(422); echo json_encode(['error' =&gt; 'Invalid title']); exit; }
+        $stmt = $pdo-&gt;prepare('INSERT INTO tasks (title, priority) VALUES (?, ?)');
+        $stmt-&gt;execute([$title, $body['priority'] ?? 'med']);
+        http_response_code(201);
+        echo json_encode(['id' =&gt; (int) $pdo-&gt;lastInsertId()]);
+        break;
+    case 'PATCH':
+        $stmt = $pdo-&gt;prepare('UPDATE tasks SET completed = ? WHERE id = ?');
+        $stmt-&gt;execute([(bool) ($body['completed'] ?? false), $id]);
+        echo json_encode(['updated' =&gt; $stmt-&gt;rowCount()]);
+        break;
+    case 'DELETE':
+        $pdo-&gt;prepare('DELETE FROM tasks WHERE id = ?')-&gt;execute([$id]);
+        http_response_code(204);
+        break;
+    default:
+        http_response_code(405);
+}</code></pre>
+<pre hidden><code>async function api(method, path, body) {
+  const res = await fetch(`/api/tasks.php${path}`, {
+    method,
+    headers: { 'Content-Type': 'application/json' },
+    body: body ? JSON.stringify(body) : undefined,
+  });
+  if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
+  return res.status === 204 ? null : res.json();
+}
+
+async function toggle(task) {
+  task.completed = !task.completed;         // optimistic update
+  render();
+  try {
+    await api('PATCH', `?id=${task.id}`, { completed: task.completed });
+  } catch (err) {
+    task.completed = !task.completed;       // roll back on failure
+    render();
+    showToast('Could not save. Please try again.');
+  }
+}</code></pre>
+        </div>
+    </div>
+</section>
+
+<section class="ps-section">
+    <div class="wrap">
+        <span class="kicker"><span lang="en">For recruiters</span><span lang="fr">Pour les recruteurs</span></span>
+        <h2><span lang="en">What this project shows</span><span lang="fr">Ce que ce projet démontre</span></h2>
+        <div class="proves">
+            <div class="prove reveal"><span class="n">01</span><h3><span lang="en">REST API design</span><span lang="fr">Conception d'API REST</span></h3><p><span lang="en">Resource routes, HTTP verbs, status codes and validation.</span><span lang="fr">Routes par ressource, verbes HTTP, codes de statut et validation.</span></p></div>
+            <div class="prove reveal"><span class="n">02</span><h3><span lang="en">Secure data access</span><span lang="fr">Accès aux données sécurisé</span></h3><p><span lang="en">Relational schema, indexes and prepared statements.</span><span lang="fr">Schéma relationnel, index et requêtes préparées.</span></p></div>
+            <div class="prove reveal"><span class="n">03</span><h3><span lang="en">Resilient front end</span><span lang="fr">Front-end robuste</span></h3><p><span lang="en">Optimistic UI with rollback and clear error messages.</span><span lang="fr">Interface optimiste avec annulation et messages d'erreur clairs.</span></p></div>
+        </div>
+        <div class="cert reveal" style="margin-top:2rem">
+            <img src="../images/ibm_full_stack_developer.jpg" alt="IBM Full Stack Software Developer certificate" data-tilt="10" loading="lazy">
+            <div>
+                <h3>IBM Full Stack Software Developer</h3>
+                <p><span lang="en">Professional certificate issued by IBM through Coursera. The link opens Coursera's own verification page.</span><span lang="fr">Certificat professionnel délivré par IBM via Coursera. Le lien ouvre la page de vérification officielle de Coursera.</span></p>
+                <div class="chips" style="margin-bottom:1rem"><span class="chip">JavaScript</span><span class="chip">React</span><span class="chip">Node.js</span><span class="chip">PHP</span><span class="chip">SQL</span><span class="chip">Docker</span><span class="chip">Git</span></div>
+                <a class="btn btn-solid btn-sm" href="https://coursera.org/verify/professional-cert/EGUL98Z14H07" target="_blank" rel="noopener"><span lang="en">Verify on Coursera</span><span lang="fr">Vérifier sur Coursera</span> ↗</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="shared.js"></script>
+<script>
+window.pageInit = function () {
+    var t = PS.t;
+    var now = Date.now();
+    function iso(ms) { var d = new Date(ms); return d.toISOString().slice(0, 19).replace('T', ' '); }
+    /* ---------- In-page "server": the database ---------- */
+    var DB = { seq: 4, rows: [
+        { id: 1, title: 'Design database schema', priority: 'high', completed: true, created_at: iso(now - 86400000 * 3) },
+        { id: 2, title: 'Build PHP REST endpoints', priority: 'high', completed: true, created_at: iso(now - 86400000 * 2) },
+        { id: 3, title: 'Connect front end with fetch()', priority: 'med', completed: false, created_at: iso(now - 86400000) },
+        { id: 4, title: 'Deploy with Docker', priority: 'low', completed: false, created_at: iso(now - 3600000) }
+    ] };
+    var flashId = null;
+    function sqlShow(q) { PS.$('#sql').textContent = q; }
+    function q(s) { return "'" + String(s).replace(/'/g, "''") + "'"; }
+    function server(method, path, body) {
+        var id = (path.match(/id=(\d+)/) || [])[1]; id = id ? +id : null;
+        if (PS.$('#fail').checked && method !== 'GET') return { status: 500, body: { error: 'Internal Server Error' } };
+        if (method === 'GET') { sqlShow('SELECT * FROM tasks ORDER BY created_at DESC;'); return { status: 200, body: DB.rows.slice().sort(function (a, b) { return a.created_at < b.created_at ? 1 : -1; }) }; }
+        if (method === 'POST') {
+            var title = String(body.title || '').trim();
+            if (!title || title.length > 80) return { status: 422, body: { error: 'Invalid title' } };
+            var row = { id: ++DB.seq, title: title, priority: body.priority || 'med', completed: false, created_at: iso(Date.now()) };
+            DB.rows.push(row); flashId = row.id;
+            sqlShow('INSERT INTO tasks (title, priority) VALUES (' + q(title) + ', ' + q(row.priority) + ');');
+            return { status: 201, body: { id: row.id } };
+        }
+        if (method === 'PATCH') {
+            var r = DB.rows.filter(function (x) { return x.id === id; })[0];
+            if (!r) return { status: 404, body: { error: 'Not found' } };
+            r.completed = !!body.completed; flashId = id;
+            sqlShow('UPDATE tasks SET completed = ' + (r.completed ? 'TRUE' : 'FALSE') + ' WHERE id = ' + id + ';');
+            return { status: 200, body: { updated: 1 } };
+        }
+        if (method === 'DELETE') {
+            DB.rows = DB.rows.filter(function (x) { return x.id !== id; });
+            sqlShow('DELETE FROM tasks WHERE id = ' + id + ';');
+            return { status: 204, body: null };
+        }
+        return { status: 405, body: null };
+    }
+    var log = [];
+    function api(method, path, body) {
+        var lat = +PS.$('#lat').value, started = performance.now();
+        if (window.__packet) window.__packet(method);
+        return new Promise(function (resolve, reject) {
+            setTimeout(function () {
+                var res = server(method, path, body);
+                var ms = Math.round(performance.now() - started);
+                log.unshift({ method: method, path: '/api/tasks.php' + path, status: res.status, ms: ms, req: body, res: res.body });
+                log = log.slice(0, 30);
+                renderNet(); renderDB();
+                if (res.status >= 400) reject(res); else resolve(res.body);
+            }, lat);
+        });
+    }
+    function renderNet() {
+        PS.$('#net').innerHTML = log.map(function (e, i) {
+            var st = e.status >= 500 ? 'bad' : e.status >= 400 ? 'warn' : 'ok';
+            return '<div class="req" data-i="' + i + '"><span class="m ' + e.method + '">' + e.method + '</span><span>' + PS.esc(e.path) + '</span><span class="pill ' + st + '">' + e.status + '</span><span>' + e.ms + ' ms</span>' +
+                '<div class="detail" hidden>' + (e.req ? 'Request  ' + PS.esc(JSON.stringify(e.req)) + '\n' : '') + 'Response ' + PS.esc(JSON.stringify(e.res, null, 0) || '(empty)') + '</div></div>';
+        }).join('') || '<div class="req"><span></span><span>' + t('No requests yet', 'Aucune requête') + '</span></div>';
+        PS.$$('.req[data-i]').forEach(function (el) { el.addEventListener('click', function () { var d = PS.$('.detail', el); d.hidden = !d.hidden; el.classList.toggle('open', !d.hidden); }); });
+    }
+    function renderDB() {
+        PS.$('#db').innerHTML = DB.rows.slice().sort(function (a, b) { return a.id - b.id; }).map(function (r) {
+            return '<tr class="' + (r.id === flashId ? 'flash' : '') + '"><td>' + r.id + '</td><td>' + PS.esc(r.title) + '</td><td>' + r.priority + '</td><td>' + (r.completed ? 1 : 0) + '</td><td>' + r.created_at + '</td></tr>';
+        }).join('');
+    }
+
+    /* ---------- Client state ---------- */
+    var tasks = [], filter = 'all';
+    var PRIO = { high: ['High', 'Haute'], med: ['Medium', 'Moyenne'], low: ['Low', 'Basse'] };
+    function renderTasks() {
+        var list = tasks.filter(function (x) { return filter === 'all' || (filter === 'open' ? !x.completed : x.completed); });
+        PS.$('#tasks').innerHTML = list.map(function (x) {
+            return '<li class="task' + (x.completed ? ' done' : '') + (x.pending ? ' pending' : '') + '" data-id="' + x.id + '">' +
+                '<input type="checkbox" aria-label="Done"' + (x.completed ? ' checked' : '') + '>' +
+                '<span class="title">' + PS.esc(x.title) + '</span><span class="prio">' + t(PRIO[x.priority][0], PRIO[x.priority][1]) + '</span>' +
+                '<button class="del" type="button" aria-label="Delete">✕</button></li>';
+        }).join('') || '<li class="note">' + t('Nothing here.', 'Rien ici.') + '</li>';
+        var open = tasks.filter(function (x) { return !x.completed; }).length;
+        PS.$('#counter').textContent = t(open + ' open · ' + (tasks.length - open) + ' done', open + ' en cours · ' + (tasks.length - open) + ' terminées');
+        PS.$$('.task').forEach(function (li) {
+            var id = +li.getAttribute('data-id'), task = tasks.filter(function (x) { return x.id === id; })[0];
+            PS.$('input', li).addEventListener('change', function () {
+                task.completed = !task.completed; renderTasks();
+                api('PATCH', '?id=' + id, { completed: task.completed }).catch(function () { task.completed = !task.completed; renderTasks(); toast(); });
+            });
+            PS.$('.del', li).addEventListener('click', function () {
+                var copy = tasks.slice(); tasks = tasks.filter(function (x) { return x.id !== id; }); renderTasks();
+                api('DELETE', '?id=' + id).catch(function () { tasks = copy; renderTasks(); toast(); });
+            });
+        });
+        PS.$('#filters').innerHTML = [['all', 'All', 'Toutes'], ['open', 'Open', 'En cours'], ['done', 'Done', 'Terminées']].map(function (f) {
+            return '<button type="button" data-f="' + f[0] + '" aria-pressed="' + (filter === f[0]) + '">' + t(f[1], f[2]) + '</button>';
+        }).join('');
+        PS.$$('[data-f]').forEach(function (b) { b.addEventListener('click', function () { filter = b.getAttribute('data-f'); renderTasks(); }); });
+        PS.$$('#new-prio option').forEach(function (o) { o.textContent = t(PRIO[o.value][0], PRIO[o.value][1]); });
+    }
+    function toast() { PS.$('#counter').textContent = t('Server error: change rolled back.', 'Erreur serveur : modification annulée.'); }
+    PS.$('#add-form').addEventListener('submit', function (e) {
+        e.preventDefault();
+        var title = PS.$('#new-title').value.trim(); if (!title) return;
+        var temp = { id: -Date.now(), title: title, priority: PS.$('#new-prio').value, completed: false, pending: true };
+        tasks.unshift(temp); renderTasks(); PS.$('#new-title').value = '';
+        api('POST', '', { title: title, priority: temp.priority }).then(function (r) { temp.id = r.id; temp.pending = false; renderTasks(); })
+            .catch(function () { tasks = tasks.filter(function (x) { return x !== temp; }); renderTasks(); toast(); });
+    });
+    PS.$('#lat').addEventListener('input', function () { PS.$('#lat-out').textContent = PS.$('#lat').value + ' ms'; });
+    PS.$('#lat-out').textContent = PS.$('#lat').value + ' ms';
+
+    api('GET', '').then(function (rows) { tasks = rows.map(function (r) { return Object.assign({}, r); }); renderTasks(); });
+    renderDB(); renderNet(); renderTasks();
+    PS.onLang(function () { renderTasks(); renderNet(); });
+
+    /* ---------- 3D: three layers with request packets ---------- */
+    PS.scene(PS.$('#stage'), function (ctx) {
+        var THREE = ctx.THREE, scene = ctx.scene, cam = ctx.camera;
+        cam.position.set(6.5, 5.2, 8); cam.lookAt(0, 0, 0);
+        scene.add(new THREE.AmbientLight(0xffffff, 0.8));
+        var dl = new THREE.DirectionalLight(0xffffff, 0.5); dl.position.set(4, 8, 6); scene.add(dl);
+        var group = new THREE.Group(); scene.add(group);
+        var layers = [['--l-ui', 1.8], ['--l-api', 0], ['--l-db', -1.8]].map(function (l) {
+            var mat = new THREE.MeshStandardMaterial({ transparent: true, opacity: 0.32, side: THREE.DoubleSide });
+            var plane = new THREE.Mesh(new THREE.BoxGeometry(4.4, 0.08, 3), mat); plane.position.y = l[1]; group.add(plane);
+            var edge = new THREE.LineSegments(new THREE.EdgesGeometry(plane.geometry), new THREE.LineBasicMaterial());
+            edge.position.y = l[1]; group.add(edge);
+            return { mat: mat, edge: edge, v: l[0] };
+        });
+        // database cylinders on the bottom layer
+        var cyl = [];
+        for (var i = 0; i < 3; i++) { var c = new THREE.Mesh(new THREE.CylinderGeometry(0.35, 0.35, 0.6, 24), new THREE.MeshStandardMaterial()); c.position.set(-1.2 + i * 1.2, -1.45, 0); group.add(c); cyl.push(c); }
+        // UI cards on the top layer
+        var cards = [];
+        for (var j = 0; j < 4; j++) { var m = new THREE.Mesh(new THREE.BoxGeometry(0.8, 0.06, 0.5), new THREE.MeshStandardMaterial()); m.position.set(-1.5 + j * 1, 1.9, -0.6 + (j % 2) * 0.9); group.add(m); cards.push(m); }
+        var packets = [];
+        function color() {
+            layers.forEach(function (l) { l.mat.color = ctx.color(l.v); l.edge.material.color = ctx.color(l.v); });
+            cyl.forEach(function (c) { c.material.color = ctx.color('--l-db'); });
+            cards.forEach(function (c) { c.material.color = ctx.color('--l-ui'); });
+        }
+        color(); PS.onMode(color);
+        var geo = new THREE.SphereGeometry(0.11, 14, 14);
+        window.__packet = function (method) {
+            var col = { GET: '--l-ui', POST: '--ok', PATCH: '--warn', DELETE: '--bad' }[method] || '--accent';
+            var p = new THREE.Mesh(geo, new THREE.MeshBasicMaterial({ color: ctx.color(col) }));
+            p.userData = { t: 0, x: (Math.random() - 0.5) * 2.5, z: (Math.random() - 0.5) * 1.5 };
+            group.add(p); packets.push(p);
+        };
+        var auto = 0;
+        return function (time, dt) {
+            group.rotation.y = -0.5 + Math.sin(time * 0.3) * 0.15 + ctx.pointer.x * 0.4;
+            group.rotation.x = ctx.pointer.y * 0.15;
+            auto += dt; if (auto > 1.4 && !PS.reduceMotion) { auto = 0; window.__packet(['GET', 'POST', 'PATCH'][Math.floor(Math.random() * 3)]); }
+            packets = packets.filter(function (p) {
+                p.userData.t += dt * 0.6;
+                var u = p.userData.t, y = u < 1 ? 1.9 - u * 3.6 : -1.7 + (u - 1) * 3.6;
+                p.position.set(p.userData.x, y, p.userData.z);
+                if (u > 2) { group.remove(p); p.material.dispose(); return false; }
+                return true;
+            });
+            cyl.forEach(function (c, k) { c.rotation.y = time * (0.5 + k * 0.2); });
+        };
+    });
+};
+</script>
+</body>
+</html>
