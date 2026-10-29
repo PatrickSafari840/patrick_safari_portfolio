@@ -1,888 +1,637 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="fr" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Patrick safari | Développeur Full Stack & Spécialiste IT</title>
-    <meta name="description" content="Patrick Safari — Développeur Full Stack et Spécialiste IT. Sites web pour entreprises, visuels pour réseaux sociaux, vidéos publicitaires IA et support informatique.">
-    <meta property="og:title" content="Patrick Safari | Développeur Full Stack & Spécialiste IT">
-    <meta property="og:description" content="Sites web, visuels réseaux sociaux, vidéos publicitaires IA et support IT pour petites entreprises.">
-    <meta property="og:image" content="profile_1-removed_bg.png">
+    <meta name="description" content="Patrick Safari — Développeur Full Stack et Spécialiste IT à Goma (RDC). 8 certifications Google & IBM. Sites web pour entreprises, visuels, vidéos publicitaires IA et support informatique.">
+    <meta property="og:title" content="Patrick Safari | Full Stack Developer & IT Specialist">
+    <meta property="og:description" content="Full stack developer and IT specialist in Goma, DR Congo. 8 Google & IBM certificates with interactive projects.">
+    <meta property="og:image" content="images/bg/hero-dark.webp">
     <meta property="og:type" content="website">
+    <meta name="theme-color" content="#050b1f">
 
-    <!-- Polices & Icônes -->
     <link rel="icon" href="your-icon-filename.png" type="image/png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=Sora:wght@500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="preload" as="image" href="profile_1-removed_bg.png">
+
+    <script>
+        /* Apply saved theme before paint (shared with project & services pages) */
+        (function () {
+            var t = null; try { t = localStorage.getItem('theme'); } catch (e) {}
+            if (!t) t = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', t);
+        })();
+    </script>
 
     <style>
-        /* ---------------------------------- */
-        /*          DESIGN VARIABLES          */
-        /* ---------------------------------- */
+        /* ============ TOKENS ============ */
         :root {
-            /* Light Mode (Default) */
-            --bg-color: #f4f7f9;
-            --main-bg-color: rgba(255, 255, 255, 0.6);
-            --header-bg-color: rgba(255, 255, 255, 0.7);
-            --text-color: #3d3d3d;
-            --heading-color: #1a253c;
-            --accent-color: #0096FF;
-            --accent-color-darker: #0072C6;
-            --border-color: rgba(200, 200, 200, 0.4);
-            --card-bg-color: rgba(249, 250, 251, 0.6);
-            --shadow-color: rgba(0, 0, 0, 0.1);
-            --gradient-accent: linear-gradient(45deg, var(--accent-color), var(--accent-color-darker));
-            --aurora-color-1: #5BCEFA;
-            --aurora-color-2: #F5A9B8;
-            --aurora-color-3: #92FE9D;
+            --bg: #f6f8fc;
+            --bg-2: #eef2f9;
+            --surface: rgba(255, 255, 255, 0.78);
+            --surface-solid: #ffffff;
+            --line: rgba(15, 30, 70, 0.10);
+            --text: #3b4560;
+            --muted: #6a7590;
+            --heading: #0b1530;
+            --accent: #1f6fff;
+            --accent-2: #7b4dff;
+            --ember: #ff8a3d;
+            --on-accent: #ffffff;
+            --shadow: 0 20px 50px -24px rgba(16, 36, 94, 0.35);
+            --hero-shade: linear-gradient(90deg, rgba(246, 248, 252, 0.97) 0%, rgba(246, 248, 252, 0.88) 38%, rgba(246, 248, 252, 0.15) 70%, rgba(246, 248, 252, 0) 100%);
+            --hero-fade: linear-gradient(180deg, rgba(246, 248, 252, 0) 60%, var(--bg) 100%);
+            --grad: linear-gradient(100deg, #1f6fff 0%, #7b4dff 55%, #ff8a3d 100%);
+            --radius: 18px;
+            --font-display: 'Sora', system-ui, sans-serif;
+            --font-body: 'DM Sans', system-ui, sans-serif;
+        }
+        :root[data-theme="dark"] {
+            --bg: #050b1f;
+            --bg-2: #08112b;
+            --surface: rgba(14, 24, 54, 0.62);
+            --surface-solid: #0c1736;
+            --line: rgba(140, 170, 255, 0.14);
+            --text: #c3cde6;
+            --muted: #8d99b8;
+            --heading: #ffffff;
+            --accent: #4d8dff;
+            --accent-2: #9a7bff;
+            --ember: #ff9a4d;
+            --shadow: 0 24px 60px -24px rgba(0, 0, 0, 0.75);
+            --hero-shade: linear-gradient(90deg, rgba(5, 11, 31, 0.96) 0%, rgba(5, 11, 31, 0.82) 36%, rgba(5, 11, 31, 0.15) 68%, rgba(5, 11, 31, 0) 100%);
+            --hero-fade: linear-gradient(180deg, rgba(5, 11, 31, 0) 55%, var(--bg) 100%);
+            --grad: linear-gradient(100deg, #5b9bff 0%, #a98bff 50%, #ffa45c 100%);
         }
 
-        /* Dark Mode */
-        body.dark-mode {
-            --bg-color: #0d1117;
-            --main-bg-color: rgba(30, 30, 30, 0.5);
-            --header-bg-color: rgba(25, 25, 25, 0.6);
-            --text-color: #c9d1d9;
-            --heading-color: #ffffff;
-            --accent-color: #389bff;
-            --accent-color-darker: #1e7eeb;
-            --border-color: rgba(255, 255, 255, 0.1);
-            --card-bg-color: rgba(42, 42, 42, 0.5);
-            --shadow-color: rgba(0, 0, 0, 0.3);
-            --aurora-color-1: #0A4D68;
-            --aurora-color-2: #7E2E84;
-            --aurora-color-3: #146C43;
-        }
-
-        /* ---------------------------------- */
-        /*          BASE & LAYOUT STYLES      */
-        /* ---------------------------------- */
+        /* ============ BASE ============ */
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        html { scroll-behavior: smooth; }
-
+        html { scroll-behavior: smooth; scroll-padding-top: 80px; }
         body {
-            font-family: 'Poppins', sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            line-height: 1.7;
-            font-size: 16px;
+            font-family: var(--font-body); font-size: 16.5px; line-height: 1.7;
+            background: var(--bg); color: var(--text); overflow-x: hidden;
             transition: background-color 0.4s ease, color 0.4s ease;
-            overflow-x: hidden;
         }
-        
-        /* Animated Aurora Background */
-        body::before, body::after {
-            content: ''; position: fixed; z-index: -1; filter: blur(100px);
-            opacity: 0.5; transition: opacity 1s ease;
-        }
-        body::before {
-            width: 400px; height: 400px; background: radial-gradient(circle, var(--aurora-color-1), transparent 60%);
-            top: 10vh; left: 10vw; animation: moveAurora1 20s infinite alternate ease-in-out;
-        }
-        body::after {
-            width: 500px; height: 500px; background: radial-gradient(circle, var(--aurora-color-2), transparent 70%);
-            bottom: 5vh; right: 15vw; animation: moveAurora2 25s infinite alternate ease-in-out;
-        }
-        @keyframes moveAurora1 { from { transform: translate(0, 0) rotate(0deg); } to { transform: translate(100px, 50px) rotate(90deg); } }
-        @keyframes moveAurora2 { from { transform: translate(0, 0) rotate(0deg); } to { transform: translate(-80px, -40px) rotate(-90deg); } }
+        img { max-width: 100%; display: block; }
+        a { color: var(--accent); text-decoration: none; }
+        h1, h2, h3 { font-family: var(--font-display); color: var(--heading); line-height: 1.15; letter-spacing: -0.02em; }
+        .container { width: min(1180px, 100% - 2.5rem); margin-inline: auto; }
+        .grad { background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+        :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 6px; }
 
-        .container { max-width: 1100px; margin: 0 auto; padding: 0 2rem; }
-        h1, h2, h3 { color: var(--heading-color); font-weight: 600; }
-        a { color: var(--accent-color); text-decoration: none; transition: color 0.3s; }
-        a:hover { color: var(--accent-color-darker); }
+        /* ============ HEADER ============ */
+        .site-header { position: fixed; inset: 0 0 auto 0; z-index: 50; transition: background-color .3s, border-color .3s, backdrop-filter .3s; border-bottom: 1px solid transparent; }
+        .site-header.scrolled { background: color-mix(in srgb, var(--bg) 78%, transparent); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-bottom-color: var(--line); }
+        .nav { display: flex; align-items: center; justify-content: space-between; height: 72px; gap: 1rem; }
+        .logo { font-family: var(--font-display); font-weight: 800; font-size: 1.25rem; color: var(--heading); display: flex; align-items: center; gap: .6rem; white-space: nowrap; }
+        .logo-mark { width: 34px; height: 34px; border-radius: 10px; display: grid; place-items: center; background: var(--grad); color: #fff; font-size: .85rem; font-weight: 800; letter-spacing: .02em; }
+        .nav-links { display: flex; list-style: none; gap: .25rem; }
+        .nav-links a { color: var(--text); font-weight: 500; font-size: .95rem; padding: .45rem .8rem; border-radius: 999px; transition: background-color .2s, color .2s; }
+        .nav-links a:hover { color: var(--heading); background: var(--line); }
+        .nav-links a.active { color: var(--heading); background: color-mix(in srgb, var(--accent) 18%, transparent); }
+        .nav-tools { display: flex; align-items: center; gap: .5rem; flex-shrink: 0; }
+        .lang-switch { display: flex; border: 1px solid var(--line); border-radius: 999px; overflow: hidden; background: var(--surface); }
+        .lang-switch button { font: 700 .78rem var(--font-body); letter-spacing: .05em; padding: .4rem .7rem; min-width: 2.5rem; border: 0; background: transparent; color: var(--muted); cursor: pointer; }
+        .lang-switch button[aria-pressed="true"] { background: var(--accent); color: var(--on-accent); }
+        .icon-btn { width: 38px; height: 38px; border-radius: 50%; border: 1px solid var(--line); background: var(--surface); color: var(--heading); display: grid; place-items: center; cursor: pointer; font-size: .95rem; }
+        .menu-btn { display: none; }
 
-        /* ---------------------------------- */
-        /*        HEADER & NAVIGATION         */
-        /* ---------------------------------- */
-        .main-header {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            z-index: 100;
-            padding: 1rem 0;
-            background-color: var(--header-bg-color);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            border-bottom: 1px solid var(--border-color);
-            transition: top 0.3s;
-        }
-        .main-header .container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .logo { font-size: 1.5rem; font-weight: 700; color: var(--heading-color); }
-        .main-nav { display: flex; align-items: center; gap: 1.5rem; }
-        .nav-links { list-style: none; display: flex; gap: 1.5rem; }
-        .nav-links a { font-weight: 500; color: var(--text-color); position: relative; padding: 0.5rem 0; }
-        .nav-links a::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 2px;
-            background: var(--gradient-accent);
-            transform: scaleX(0);
-            transform-origin: right;
-            transition: transform 0.3s ease-out;
-        }
-        .nav-links a:hover::after, .nav-links a.active::after {
-            transform: scaleX(1);
-            transform-origin: left;
-        }
-        .nav-links a.active { color: var(--heading-color); }
+        /* ============ HERO ============ */
+        .hero { position: relative; min-height: 100svh; display: flex; align-items: center; padding: 110px 0 70px; overflow: hidden; isolation: isolate; }
+        .hero-bg { position: absolute; inset: 0; z-index: -2; }
+        .hero-bg img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 70% 50%; transition: opacity .6s ease; transform: scale(1.04); }
+        .hero-bg .bg-light { opacity: 0; }
+        :root[data-theme="light"] .hero-bg .bg-light { opacity: 1; }
+        :root[data-theme="light"] .hero-bg .bg-dark { opacity: 0; }
+        .hero::before { content: ''; position: absolute; inset: 0; z-index: -1; background: var(--hero-shade); }
+        .hero::after { content: ''; position: absolute; inset: 0; z-index: -1; background: var(--hero-fade); pointer-events: none; }
+        .hero-grid { display: grid; grid-template-columns: 1.05fr .95fr; align-items: center; gap: 2rem; }
 
-        .hamburger { display: none; cursor: pointer; font-size: 1.5rem; }
-        .theme-switch-wrapper { display: flex; align-items: center; }
+        .eyebrow { display: inline-flex; align-items: center; gap: .55rem; padding: .4rem .9rem .4rem .7rem; border-radius: 999px; font-size: .85rem; font-weight: 500; color: var(--heading); background: var(--surface); border: 1px solid var(--line); backdrop-filter: blur(10px); }
+        .pulse { width: 9px; height: 9px; border-radius: 50%; background: #22c55e; box-shadow: 0 0 0 0 rgba(34, 197, 94, .6); animation: pulse 2s infinite; }
+        @keyframes pulse { 70% { box-shadow: 0 0 0 10px rgba(34, 197, 94, 0); } 100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); } }
+        .hero h1 { font-size: clamp(2.8rem, 6.4vw, 5.2rem); font-weight: 800; margin: 1.1rem 0 .6rem; letter-spacing: -0.035em; }
+        .hero .role { font-family: var(--font-display); font-size: clamp(1.1rem, 2vw, 1.45rem); font-weight: 600; color: var(--heading); opacity: .92; }
+        .hero .bio { max-width: 34rem; margin-top: 1rem; font-size: 1.05rem; }
+        .hero-actions { display: flex; flex-wrap: wrap; gap: .8rem; margin-top: 1.8rem; }
+        .btn { display: inline-flex; align-items: center; gap: .6rem; padding: .85rem 1.4rem; border-radius: 999px; font-weight: 700; font-size: .98rem; border: 1px solid transparent; cursor: pointer; transition: transform .2s, box-shadow .2s, background-color .2s; font-family: var(--font-body); }
+        .btn:hover { transform: translateY(-2px); }
+        .btn-primary { background: var(--accent); color: #fff; box-shadow: 0 12px 30px -10px color-mix(in srgb, var(--accent) 70%, transparent); }
+        .btn-ghost { background: var(--surface); color: var(--heading); border-color: var(--line); backdrop-filter: blur(10px); }
+        .hero-stats { display: flex; flex-wrap: wrap; gap: 2rem; margin-top: 2.4rem; }
+        .stat strong { display: block; font-family: var(--font-display); font-size: 1.9rem; font-weight: 800; color: var(--heading); line-height: 1; }
+        .stat span { font-size: .88rem; color: var(--muted); }
 
-        /* ---------------------------------- */
-        /*        MAIN CONTENT (MAIN)         */
-        /* ---------------------------------- */
-        .main-content { padding-top: 80px; /* Header height */ }
-        .content-section {
-            padding: 5rem 0;
-            opacity: 0;
-            transform: translateY(30px);
-            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
-        }
-        .content-section.visible { opacity: 1; transform: translateY(0); }
-        .content-section:not(#hero) {
-             background-color: var(--main-bg-color); 
-             padding: 4rem; 
-             margin-bottom: 2.5rem; 
-             border-radius: 20px;
-             box-shadow: 0 8px 32px var(--shadow-color); 
-             border: 1px solid var(--border-color);
-             backdrop-filter: blur(15px); 
-            -webkit-backdrop-filter: blur(15px);
-        }
+        /* Portrait — the star of the page */
+        .portrait { position: relative; justify-self: center; width: min(470px, 100%); aspect-ratio: 470 / 560; perspective: 900px; }
+        .portrait-inner { position: absolute; inset: 0; transform-style: preserve-3d; transition: transform .25s ease-out; }
+        .halo { position: absolute; left: 50%; top: 44%; width: 104%; aspect-ratio: 1; transform: translate(-50%, -50%) translateZ(-40px);
+            -webkit-mask-image: radial-gradient(circle, #000 52%, transparent 70%); mask-image: radial-gradient(circle, #000 52%, transparent 70%); }
+        .halo img { width: 100%; height: 100%; object-fit: cover; animation: spin 60s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .orbit { position: absolute; left: 50%; top: 44%; width: 86%; aspect-ratio: 1; translate: -50% -50%; border-radius: 50%; border: 1px dashed color-mix(in srgb, var(--accent) 45%, transparent); animation: spin 40s linear infinite reverse; }
+        .orbit::after { content: ''; position: absolute; top: -5px; left: 50%; width: 10px; height: 10px; border-radius: 50%; background: var(--ember); box-shadow: 0 0 16px 4px color-mix(in srgb, var(--ember) 70%, transparent); }
+        .me { position: absolute; left: 50%; bottom: 0; height: 100%; width: auto; max-width: none; transform: translateX(-50%) translateZ(30px);
+            filter: drop-shadow(0 30px 40px rgba(0, 0, 0, .45)) drop-shadow(0 0 30px color-mix(in srgb, var(--accent) 28%, transparent));
+            -webkit-mask-image: linear-gradient(180deg, #000 82%, transparent 100%); mask-image: linear-gradient(180deg, #000 82%, transparent 100%); }
+        .plinth { position: absolute; left: 8%; right: 8%; bottom: -14px; height: 70px; border-radius: 50%; background: radial-gradient(ellipse at center, color-mix(in srgb, var(--accent) 45%, transparent), transparent 70%); filter: blur(14px); transform: translateZ(-10px); }
+        .chip { position: absolute; display: flex; align-items: center; gap: .6rem; padding: .6rem .9rem; border-radius: 14px; background: var(--surface); border: 1px solid var(--line); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); box-shadow: var(--shadow); font-size: .85rem; color: var(--heading); font-weight: 600; white-space: nowrap; transform: translateZ(70px); animation: float 6s ease-in-out infinite; }
+        .chip i { width: 30px; height: 30px; border-radius: 9px; display: grid; place-items: center; color: #fff; font-size: .85rem; }
+        .chip small { display: block; font-weight: 500; color: var(--muted); font-size: .75rem; line-height: 1.2; }
+        .chip b { display: block; line-height: 1.2; }
+        .chip-1 { top: 16%; left: -6%; }
+        .chip-1 i { background: linear-gradient(135deg, #4285f4, #34a853); }
+        .chip-2 { top: 50%; right: -8%; animation-delay: -2s; }
+        .chip-2 i { background: linear-gradient(135deg, #7b4dff, #1f6fff); }
+        .chip-3 { bottom: 9%; left: -2%; animation-delay: -4s; }
+        .chip-3 i { background: linear-gradient(135deg, #ff8a3d, #ff4d6d); }
+        @keyframes float { 0%, 100% { translate: 0 0; } 50% { translate: 0 -10px; } }
+        .scroll-cue { position: absolute; left: 50%; bottom: 22px; transform: translateX(-50%); color: var(--muted); font-size: .8rem; display: flex; flex-direction: column; align-items: center; gap: .3rem; }
+        .scroll-cue span { width: 22px; height: 34px; border: 2px solid var(--muted); border-radius: 12px; position: relative; }
+        .scroll-cue span::after { content: ''; position: absolute; left: 50%; top: 6px; width: 4px; height: 7px; margin-left: -2px; border-radius: 2px; background: var(--muted); animation: wheel 1.8s infinite; }
+        @keyframes wheel { to { transform: translateY(10px); opacity: 0; } }
 
-       /* ---------------------------------- */
-/*        HERO SECTION - ALIGNED      */
-/* ---------------------------------- */
-#hero {
-    min-height: 90vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: left;
-    padding: 80px 0 2rem 0;
-    margin-bottom: 2.5rem;
-}
+        /* ============ SECTIONS ============ */
+        section.block { padding: 110px 0; position: relative; }
+        .section-head { max-width: 46rem; margin-bottom: 3rem; }
+        .kicker { font-family: var(--font-display); font-size: .8rem; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; color: var(--accent); }
+        .section-head h2 { font-size: clamp(2rem, 4vw, 2.9rem); font-weight: 800; margin: .5rem 0 .8rem; }
+        .section-head p { font-size: 1.08rem; color: var(--muted); }
+        .card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
 
-.hero-container {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 3rem;
-    width: 100%;
-}
+        /* About */
+        .about-grid { display: grid; grid-template-columns: 1.4fr 1fr; gap: 2rem; align-items: start; }
+        .about-text p + p { margin-top: 1.1rem; }
+        .about-text p { font-size: 1.06rem; }
+        .about-card { padding: 1.6rem; }
+        .about-card h3 { font-size: 1.1rem; margin-bottom: 1.1rem; }
+        .lang-row { margin-bottom: 1rem; }
+        .lang-row div { display: flex; justify-content: space-between; font-size: .92rem; color: var(--heading); font-weight: 500; }
+        .lang-row div small { color: var(--muted); font-weight: 400; }
+        .bar { height: 6px; border-radius: 6px; background: var(--line); margin-top: .4rem; overflow: hidden; }
+        .bar i { display: block; height: 100%; border-radius: 6px; background: var(--grad); width: 0; transition: width 1.2s cubic-bezier(.2, .8, .2, 1); }
+        .in .bar i { width: var(--w); }
+        .interests { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: 1.3rem; padding-top: 1.2rem; border-top: 1px solid var(--line); }
+        .tag { display: inline-flex; align-items: center; gap: .45rem; padding: .4rem .75rem; border-radius: 999px; font-size: .85rem; background: var(--bg-2); border: 1px solid var(--line); color: var(--heading); }
+        .tag i { color: var(--accent); }
 
-.hero-text-content {
-    flex: 1.5;
-    max-width: 600px;
-}
+        /* Services */
+        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.2rem; }
+        .service { padding: 1.6rem; transition: transform .25s, border-color .25s; }
+        .service:hover { transform: translateY(-5px); border-color: color-mix(in srgb, var(--accent) 45%, transparent); }
+        .service .ico { width: 48px; height: 48px; border-radius: 14px; display: grid; place-items: center; font-size: 1.2rem; color: #fff; background: var(--grad); margin-bottom: 1rem; }
+        .service h3 { font-size: 1.12rem; margin-bottom: .45rem; }
+        .service p { font-size: .96rem; color: var(--muted); }
+        .center { text-align: center; margin-top: 2.2rem; }
 
-.hero-image-content {
-    flex: 1;
-    position: relative; /* Crucial for positioning the background glow */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
+        /* Skills */
+        .skills { display: flex; flex-wrap: wrap; gap: .8rem; }
+        .skill { display: inline-flex; align-items: center; gap: .65rem; padding: .8rem 1.15rem; font-weight: 600; color: var(--heading); transition: transform .2s, border-color .2s; }
+        .skill:hover { transform: translateY(-3px); border-color: color-mix(in srgb, var(--accent) 45%, transparent); }
+        .skill i { font-size: 1.25rem; color: var(--accent); }
 
-/* This new pseudo-element creates the soft blue circle BEHIND the image */
-.hero-image-content::before {
-    content: '';
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    max-width: 450px; /* Controls the size of the glow */
-    max-height: 450px;
-    background: radial-gradient(circle, var(--accent-color) 10%, transparent 65%);
-    border-radius: 50%;
-    filter: blur(25px); /* Creates the soft, blurry edge */
-    z-index: 0; /* Sits behind the image */
-    opacity: 0.8;
-}
+        /* Timeline */
+        .timeline { position: relative; display: grid; gap: 1.2rem; padding-left: 2rem; }
+        .timeline::before { content: ''; position: absolute; left: 7px; top: 8px; bottom: 8px; width: 2px; background: linear-gradient(var(--accent), var(--accent-2), var(--ember)); border-radius: 2px; }
+        .t-item { position: relative; padding: 1.4rem 1.6rem; }
+        .t-item::before { content: ''; position: absolute; left: calc(-2rem + 1px); top: 1.75rem; width: 14px; height: 14px; border-radius: 50%; background: var(--bg); border: 3px solid var(--accent); }
+        .t-item h3 { font-size: 1.15rem; }
+        .t-meta { font-size: .9rem; color: var(--muted); margin: .25rem 0 .6rem; }
+        .t-meta span { color: var(--accent); font-weight: 700; }
+        .t-ref { font-size: .86rem; color: var(--muted); margin-top: .5rem; }
 
+        /* Certificates */
+        .cert-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.2rem; }
+        .cert { overflow: hidden; display: flex; flex-direction: column; transition: transform .25s, border-color .25s, box-shadow .25s; }
+        .cert:hover { transform: translateY(-6px); border-color: color-mix(in srgb, var(--accent) 45%, transparent); box-shadow: var(--shadow); }
+        .cert-thumb { position: relative; aspect-ratio: 1760 / 1100; overflow: hidden; background: #fff; }
+        .cert-thumb img { width: 100%; height: 100%; object-fit: cover; object-position: top center; transition: transform .5s; }
+        .cert:hover .cert-thumb img { transform: scale(1.05); }
+        .cert-badge { position: absolute; top: .6rem; left: .6rem; padding: .2rem .55rem; border-radius: 999px; font-size: .72rem; font-weight: 700; color: #fff; background: rgba(5, 11, 31, .78); }
+        .cert-body { padding: 1rem 1.1rem 1.1rem; display: flex; flex-direction: column; flex: 1; }
+        .cert-body h3 { font-size: 1rem; margin-bottom: .2rem; }
+        .cert-body p { font-size: .85rem; color: var(--muted); }
+        .cert-actions { display: flex; gap: .5rem; margin-top: auto; padding-top: .9rem; }
+        .cert-actions a { flex: 1; text-align: center; font-size: .83rem; font-weight: 700; padding: .55rem .5rem; border-radius: 10px; }
+        .cert-actions .go { background: var(--accent); color: #fff; }
+        .cert-actions .verify { border: 1px solid var(--line); color: var(--heading); }
 
-/* Updated styles for the image */
-.hero-img-redesigned {
-    max-width: 600px; /* Made the image significantly larger */
-    width: 100%;
-    height: auto;
-    object-fit: contain;
-    position: relative; /* Ensures it sits on top of the ::before element */
-    z-index: 1;
-    /* We removed the border, background, and box-shadow here */
-}
+        /* Contact */
+        #contact { overflow: hidden; isolation: isolate; }
+        .contact-bg { position: absolute; inset: 0; z-index: -1; opacity: 0; transition: opacity .6s; }
+        .contact-bg img { width: 100%; height: 100%; object-fit: cover; object-position: right bottom; }
+        :root[data-theme="dark"] .contact-bg { opacity: 1; }
+        .contact-grid { display: grid; grid-template-columns: 1fr 1.2fr; gap: 2rem; align-items: start; }
+        .contact-list { list-style: none; display: grid; gap: .8rem; margin-top: 1.4rem; }
+        .contact-list a, .contact-list span { display: flex; align-items: center; gap: .8rem; color: var(--heading); font-weight: 500; }
+        .contact-list i { width: 40px; height: 40px; border-radius: 12px; display: grid; place-items: center; background: var(--surface); border: 1px solid var(--line); color: var(--accent); }
+        .socials { display: flex; gap: .6rem; margin-top: 1.6rem; }
+        .socials a { width: 42px; height: 42px; border-radius: 50%; display: grid; place-items: center; background: var(--surface); border: 1px solid var(--line); color: var(--heading); transition: background-color .2s, color .2s; }
+        .socials a:hover { background: var(--accent); color: #fff; }
+        form.card { padding: 1.8rem; display: grid; gap: 1rem; }
+        .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        input, textarea { width: 100%; font: inherit; color: var(--heading); background: var(--bg-2); border: 1px solid var(--line); border-radius: 12px; padding: .85rem 1rem; resize: vertical; }
+        input::placeholder, textarea::placeholder { color: var(--muted); }
+        input:focus, textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 25%, transparent); }
+        #form-status { min-height: 1.4em; font-size: .92rem; text-align: center; }
 
-.hero-name { font-size: 3.5rem; font-weight: 800; }
-.hero-title { font-size: 1.3rem; font-weight: 400; color: var(--text-color); margin-top: -0.5rem; }
-.hero-bio { margin: 1.5rem 0; font-size: 1.1rem; }
-.hero-cta { display: inline-block; background: var(--gradient-accent); color: #fff; padding: 0.8rem 2rem; border-radius: 10px; font-weight: 600; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; font-size: 1.1rem; }
-.hero-cta:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0, 150, 255, 0.4); }
+        /* Footer */
+        footer { border-top: 1px solid var(--line); padding: 2rem 0; font-size: .9rem; color: var(--muted); }
+        footer .container { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 1rem; }
 
-/* Animation for the new hero section elements */
-.hero-text-content > *, .hero-image-content {
-    animation: fadeInSlideUp 0.8s ease-out forwards;
-    opacity: 0;
-}
-
-.hero-name { animation-delay: 0.2s; }
-.hero-title { animation-delay: 0.4s; }
-.hero-bio { animation-delay: 0.5s; }
-.hero-cta { animation-delay: 0.6s; }
-.hero-image-content { animation-delay: 0.3s; }
-
-@keyframes fadeInSlideUp {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-/* Responsive adjustments for the hero section */
-@media (max-width: 992px) {
-    .hero-container {
-        flex-direction: column;
-        text-align: center;
-        gap: 2rem;
-    }
-    .hero-text-content {
-        max-width: 100%;
-    }
-    .hero-name {
-        font-size: 2.8rem;
-    }
-}
-
-@media (max-width: 768px) {
-    .hero-img-redesigned {
-        max-width: 380px; /* Adjusted size for mobile */
-    }
-    .hero-name {
-        font-size: 2.4rem;
-    }
-}
-        /* ABOUT SECTION - NOUVEAUX STYLES */
-        .about-container {
-            display: flex;
-            gap: 3rem;
-            align-items: flex-start; /* Aligner les éléments en haut */
-        }
-
-        .about-text {
-            flex: 2; /* Prend 2/3 de l'espace */
-            text-align: left;
-        }
-        .about-text p {
-            margin-bottom: 1.5rem;
-        }
-
-        .about-sidebar {
-            flex: 1; /* Prend 1/3 de l'espace */
-            background-color: var(--card-bg-color);
-            padding: 1.5rem;
-            border-radius: 12px;
-            border: 1px solid var(--border-color);
-        }
-
-        .about-sidebar h3 {
-            margin-bottom: 1.5rem;
-            text-align: center;
-            color: var(--heading-color);
-        }
-
-        .about-details {
-            list-style: none;
-            padding: 0;
-            text-align: left; /* Aligner le texte à gauche pour la lisibilité */
-        }
-
-        .about-details li {
-            display: flex;
-            align-items: center;
-            gap: 1rem; /* Espace entre l'icône et le texte */
-            font-size: 1rem;
-            margin-bottom: 1.25rem;
-            flex-wrap: wrap; /* Permet au texte de passer à la ligne */
-        }
-
-        .about-details i {
-            color: var(--accent-color);
-            font-size: 1.4rem;
-            width: 25px; /* Largeur fixe pour l'alignement */
-            text-align: center;
-        }
-
-        .about-details small {
-            display: block;
-            width: 100%;
-            margin-left: calc(25px + 1rem); /* Aligner avec le texte principal */
-            opacity: 0.7;
-            font-style: italic;
-            font-size: 0.85rem;
-            margin-top: -0.25rem;
-        }
-        
-        /* NOUVEAUX STYLES POUR LES BARRES DE PROGRESSION */
-        .language-item {
-            width: calc(100% - 25px - 1rem); /* Prend la largeur restante */
-        }
-        .progress-bar-container {
-            width: 100%;
-            background-color: var(--border-color);
-            border-radius: 5px;
-            height: 8px;
-            margin-top: 0.5rem;
-            overflow: hidden;
-        }
-        .progress-bar {
-            height: 100%;
-            background: var(--gradient-accent);
-            border-radius: 5px;
-        }
-
-
-        /* RESPONSIVE DESIGN pour la section ABOUT */
-        @media (max-width: 992px) {
-            .about-container {
-                flex-direction: column;
-                gap: 2.5rem;
-            }
-            .about-text, .about-sidebar {
-                flex: 1; /* Prend toute la largeur */
-                width: 100%;
-            }
-            .about-sidebar {
-                padding: 2rem;
-            }
-        }
-                /* SKILLS SECTION - NEW */
-                .skills-grid {
-                    display: grid;
-                    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-                    gap: 1.5rem;
-                    text-align: center;
-                }
-                .skill-card {
-                    background-color: var(--card-bg-color);
-                    padding: 1.5rem;
-                    border-radius: 12px;
-                    border: 1px solid var(--border-color);
-                    transition: transform 0.3s ease, box-shadow 0.3s ease;
-                }
-                .skill-card:hover {
-                    transform: translateY(-5px);
-                    box-shadow: 0 8px 20px var(--shadow-color);
-                    border-color: var(--accent-color);
-                }
-                .skill-card i {
-                    font-size: 2.5rem;
-                    margin-bottom: 1rem;
-                    display: block;
-                    background: var(--gradient-accent);
-                    -webkit-background-clip: text;
-                    background-clip: text;
-                    -webkit-text-fill-color: transparent;
-                }
-                .skill-card h3 { font-size: 1rem; font-weight: 500; }
-
-
-        /* TIMELINE (No major changes) */
-        .timeline { position: relative; max-width: 800px; margin: 0 auto; }
-        .timeline-item { padding-left: 3rem; position: relative; margin-bottom: 2.5rem; }
-        .timeline-item:last-child { margin-bottom: 0; }
-        .timeline-item::before { content: ''; position: absolute; left: 0.7rem; top: 0.25rem; width: 3px; height: 100%; background: var(--gradient-accent); border-radius: 3px; }
-        .timeline-icon { position: absolute; left: 0; top: 0.1rem; width: 24px; height: 24px; border-radius: 50%; background: var(--bg-color); border: 4px solid var(--accent-color); box-shadow: 0 0 10px var(--accent-color); }
-        .timeline-title { font-size: 1.3rem; font-weight: 500; }
-        
-        .timeline-reference {
-            font-size: 0.9rem;
-            font-style: italic;
-            opacity: 0.8;
-            margin-top: 0.5rem;
-        }
-        /* PROJECTS/CERTIFICATIONS GRID (No major changes) */
-        .certifications-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; }
-        .card { background-color: var(--card-bg-color); padding: 1.5rem; border-radius: 12px; border: 1px solid var(--border-color); text-align: center; transition: transform 0.3s ease, box-shadow 0.3s ease; cursor: pointer; }
-        .card-icon {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-            background: var(--gradient-accent);
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        .card-icon { font-size: 3rem; margin-bottom: 1rem; background: var(--gradient-accent); background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .card h3 { font-size: 1.2rem; margin-bottom: 1rem; }
-        .card-button { display: inline-block; background: var(--gradient-accent); color: #fff; padding: 0.6rem 1.4rem; border-radius: 8px; font-weight: 500; }
-
-        /* CONTACT FORM (No major changes) */
-        #contact-intro { text-align: center; max-width: 600px; margin: 0 auto 2.5rem auto; }
-        .form-group { display: flex; gap: 1.5rem; margin-bottom: 1.5rem; }
-        .form-group input, .form-group textarea { width: 100%; padding: 1rem; border-radius: 8px; border: 1px solid var(--border-color); background-color: var(--bg-color); color: var(--text-color); font-family: 'Poppins', sans-serif; font-size: 1rem; transition: border-color 0.3s, box-shadow 0.3s; }
-        .form-group input:focus, .form-group textarea:focus { outline: none; border-color: var(--accent-color); box-shadow: 0 0 0 3px rgba(0, 150, 255, 0.2); }
-        .submit-button { display: block; width: 100%; padding: 1rem; background: var(--gradient-accent); color: #fff; border: none; border-radius: 8px; font-size: 1.1rem; font-weight: 600; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; }
-        .submit-button:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0, 150, 255, 0.4); }
-        
-        /* FOOTER - NEW */
-        .main-footer {
-            padding: 3rem 2rem;
-            text-align: center;
-            margin-top: 3rem;
-            background-color: var(--main-bg-color);
-            border-top: 1px solid var(--border-color);
-        }
-        .footer-contact-info { list-style: none; display: flex; justify-content: center; gap: 2rem; flex-wrap: wrap; margin-bottom: 1rem; }
-        .footer-contact-info li { font-size: 1rem; }
-        .footer-contact-info i { margin-right: 8px; color: var(--accent-color); }
-        .footer-copyright { font-size: 0.9rem; opacity: 0.8; }
-        
-        /* THEME SWITCH (No changes) */
-        .theme-switch { display: inline-block; height: 24px; position: relative; width: 50px; }
-        .theme-switch input { display: none; }
-        .slider { background-color: #ccc; bottom: 0; cursor: pointer; left: 0; position: absolute; right: 0; top: 0; transition: .4s; border-radius: 34px; }
-        .slider:before { background-color: #fff; bottom: 4px; content: ""; height: 16px; left: 4px; position: absolute; transition: .4s; width: 16px; border-radius: 50%; }
-        input:checked + .slider { background: var(--gradient-accent); }
-        input:checked + .slider:before { transform: translateX(26px); }
-        
-        /* MODAL (No changes) */
-        .modal { position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.7); display: none; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s ease; backdrop-filter: blur(5px); }
-        .modal.show { display: flex; opacity: 1; }
-        .modal-content { background-color: var(--main-bg-color); padding: 2.5rem; border-radius: 12px; width: 90%; max-width: 800px; max-height: 90vh; overflow-y: auto; position: relative; transform: scale(0.95); transition: transform 0.3s ease; border: 1px solid var(--border-color); }
-        .modal.show .modal-content { transform: scale(1); }
-        .modal-close { position: absolute; top: 1rem; right: 1.5rem; font-size: 2rem; font-weight: bold; color: var(--text-color); cursor: pointer; transition: transform 0.2s; }
-        .modal-close:hover { transform: rotate(90deg); }
-        .modal-title { font-size: 2rem; margin-bottom: 1.5rem; }
-        body.modal-open { overflow: hidden; }
-
-        /* SECTION TITLES */
-        .section-title { font-size: 2.6rem; text-align: center; margin-bottom: 1rem; text-wrap: balance; }
-        .section-subtitle { text-align: center; max-width: 650px; margin: 0 auto 2.5rem auto; font-size: 1.15rem; opacity: 0.85; }
-
-        /* HERO ACTIONS */
-        .hero-actions { display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; }
-        .hero-cta-secondary { display: inline-block; padding: 0.75rem 1.8rem; border-radius: 10px; font-weight: 600; font-size: 1.05rem; border: 2px solid var(--accent-color); color: var(--accent-color); transition: background-color 0.2s, color 0.2s; }
-        .hero-cta-secondary:hover { background-color: var(--accent-color); color: #fff; }
-        @media (max-width: 992px) { .hero-actions { justify-content: center; } }
-
-        /* SERVICES SECTION */
-        .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.5rem; }
-        .service-card { background-color: var(--card-bg-color); padding: 1.75rem; border-radius: 12px; border: 1px solid var(--border-color); transition: transform 0.3s ease, border-color 0.3s ease; }
-        .service-card:hover { transform: translateY(-5px); border-color: var(--accent-color); }
-        .service-card i { font-size: 2rem; margin-bottom: 1rem; display: block; background: var(--gradient-accent); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
-        .service-card h3 { font-size: 1.15rem; margin-bottom: 0.5rem; }
-        .service-card p { font-size: 0.95rem; opacity: 0.85; }
-        .services-cta { text-align: center; margin-top: 2.5rem; }
-
-        /* WHATSAPP FLOATING BUTTON */
-        .whatsapp-float { position: fixed; right: calc(20px + env(safe-area-inset-right, 0px)); bottom: calc(20px + env(safe-area-inset-bottom, 0px)); width: 58px; height: 58px; border-radius: 50%; background-color: #25D366; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 2rem; box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25); z-index: 200; transition: transform 0.2s; }
+        .whatsapp-float { position: fixed; right: 20px; bottom: 20px; z-index: 40; width: 56px; height: 56px; border-radius: 50%; display: grid; place-items: center; background: #25d366; color: #fff; font-size: 1.7rem; box-shadow: 0 12px 30px -8px rgba(37, 211, 102, .7); transition: transform .2s; }
         .whatsapp-float:hover { transform: scale(1.08); color: #fff; }
 
-        /* RESPONSIVE DESIGN */
-        @media (max-width: 992px) {
-             .nav-links {
-                display: none;
-                flex-direction: column;
-                position: absolute;
-                top: 100%;
-                left: 0;
-                width: 100%;
-                background-color: var(--header-bg-color);
-                padding: 1rem 0;
-                border-bottom: 1px solid var(--border-color);
-             }
-             .nav-links.active { display: flex; }
-             .nav-links li { text-align: center; width: 100%; }
-             .nav-links a { padding: 1rem; width: 100%; }
-             .hamburger { display: block; }
-             .section-title { font-size: 2.5rem; }
-             .section-subtitle { font-size: 1.2rem; }
-        }
+        /* Reveal */
+        .reveal { opacity: 0; transform: translateY(26px); transition: opacity .8s ease, transform .8s ease; }
+        .reveal.in { opacity: 1; transform: none; }
+        .hero .reveal { transition-duration: 1s; }
 
-        @media (max-width: 768px) {
-            body { font-size: 15px; }
-            .container { padding: 0 1.5rem; }
-            .content-section:not(#hero) { padding: 2.5rem; }
-            #hero { min-height: 90vh; }
-            .section-title { font-size: 2rem; }
-            .section-subtitle { font-size: 1rem; }
-            .form-group { flex-direction: column; gap: 0; margin-bottom: 0; }
-            .form-group input, .form-group textarea { margin-bottom: 1.5rem; }
-            body::before, body::after { filter: blur(70px); }
+        /* ============ RESPONSIVE ============ */
+        @media (max-width: 1100px) {
+            .cert-grid { grid-template-columns: repeat(3, 1fr); }
+            .nav-links a { padding: .45rem .55rem; }
         }
-
-        /* Language switch */
-        .lang-switch { display: flex; border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden; flex-shrink: 0; }
-        .lang-switch button { font: inherit; font-size: 0.8rem; font-weight: 700; letter-spacing: 0.05em; padding: 0.35rem 0.6rem; min-width: 2.4rem; border: none; background: transparent; color: var(--text-color); cursor: pointer; }
-        .lang-switch button[aria-pressed="true"] { background: var(--accent-color); color: #fff; }
-        @media (max-width: 992px) { .main-nav { gap: 0.9rem; } }
+        @media (max-width: 960px) {
+            .menu-btn { display: grid; }
+            .nav-links { position: absolute; top: 72px; left: 1rem; right: 1rem; flex-direction: column; padding: .6rem; border-radius: var(--radius); background: var(--surface-solid); border: 1px solid var(--line); box-shadow: var(--shadow); display: none; }
+            .nav-links.open { display: flex; }
+            .nav-links a { display: block; padding: .8rem 1rem; }
+            .site-header { background: color-mix(in srgb, var(--bg) 82%, transparent); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); }
+            .hero { padding-top: 96px; text-align: center; }
+            .hero::before { background: linear-gradient(180deg, color-mix(in srgb, var(--bg) 35%, transparent) 0%, color-mix(in srgb, var(--bg) 70%, transparent) 55%, var(--bg) 100%); }
+            .hero-grid { grid-template-columns: 1fr; gap: 1rem; }
+            .portrait { order: -1; width: min(330px, 82vw); }
+            .hero .bio { margin-inline: auto; }
+            .hero-actions, .hero-stats { justify-content: center; }
+            .chip { font-size: .78rem; padding: .45rem .65rem; }
+            .chip i { width: 26px; height: 26px; }
+            .chip-1 { left: -10%; } .chip-2 { right: -10%; } .chip-3 { left: -4%; }
+            .scroll-cue { display: none; }
+            .about-grid, .contact-grid { grid-template-columns: 1fr; }
+            .grid-3 { grid-template-columns: repeat(2, 1fr); }
+            .cert-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 560px) {
+            body { font-size: 16px; }
+            section.block { padding: 80px 0; }
+            .logo-text { display: none; }
+            .grid-3, .cert-grid, .row-2 { grid-template-columns: 1fr; }
+            .hero-stats { gap: 1.4rem; }
+            .chip small { display: none; }
+            .chip-1 { left: -4%; top: 12%; } .chip-2 { right: -4%; } .chip-3 { left: 0; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { animation: none !important; transition: none !important; }
+            .reveal { opacity: 1; transform: none; }
+            html { scroll-behavior: auto; }
+        }
     </style>
 </head>
 <body>
 
     <!-- ==================== HEADER ==================== -->
-    <header class="main-header">
-        <div class="container">
-            <a href="#" class="logo">Patrick safari</a>
-            <nav class="main-nav">
-                <ul class="nav-links" id="nav-links">
-                    <li><a href="#hero" class="nav-link active" data-en="Home">Accueil</a></li>
-                    <li><a href="#about" class="nav-link" data-en="About">À Propos</a></li>
-                    <li><a href="#services" class="nav-link" data-en="Services">Services</a></li>
-                    <li><a href="#skills" class="nav-link" data-en="Skills">Compétences</a></li>
-                    <li><a href="#experience" class="nav-link" data-en="Experience">Parcours</a></li>
-                    <li><a href="#projects" class="nav-link" data-en="Projects">Projets</a></li>
-                    <li><a href="#contact" class="nav-link" data-en="Contact">Contact</a></li>
-                </ul>
+    <header class="site-header" id="header">
+        <div class="container nav">
+            <a href="#hero" class="logo" aria-label="Patrick safari"><span class="logo-mark">PS</span><span class="logo-text">Patrick safari</span></a>
+            <ul class="nav-links" id="nav-links">
+                <li><a href="#hero" class="nav-link active" data-en="Home">Accueil</a></li>
+                <li><a href="#about" class="nav-link" data-en="About">À propos</a></li>
+                <li><a href="#services" class="nav-link" data-en="Services">Services</a></li>
+                <li><a href="#skills" class="nav-link" data-en="Skills">Compétences</a></li>
+                <li><a href="#experience" class="nav-link" data-en="Experience">Parcours</a></li>
+                <li><a href="#projects" class="nav-link" data-en="Projects">Projets</a></li>
+                <li><a href="#contact" class="nav-link" data-en="Contact">Contact</a></li>
+            </ul>
+            <div class="nav-tools">
                 <div class="lang-switch" role="group" aria-label="Language / Langue">
                     <button type="button" data-set-lang="en" aria-pressed="false">EN</button>
                     <button type="button" data-set-lang="fr" aria-pressed="true">FR</button>
                 </div>
-                <div class="theme-switch-wrapper">
-                    <label class="theme-switch" for="checkbox">
-                        <input type="checkbox" id="checkbox" />
-                        <div class="slider round"></div>
-                    </label>
-                </div>
-                <div class="hamburger" id="hamburger">
-                    <i class="fas fa-bars"></i>
-                </div>
-            </nav>
+                <button type="button" class="icon-btn" id="theme-btn" aria-label="Changer de thème" data-en-aria-label="Toggle theme"><i class="fas fa-moon"></i></button>
+                <button type="button" class="icon-btn menu-btn" id="menu-btn" aria-label="Menu" aria-expanded="false"><i class="fas fa-bars"></i></button>
+            </div>
         </div>
     </header>
 
-    <!-- ==================== MAIN CONTENT ==================== -->
-    <main class="main-content">
-        <div class="container">
-
-            <!-- HERO SECTION - AMÉLIORÉE -->
-            <section id="hero" class="content-section">
-                <div class="hero-container">
-                    <!-- Colonne de gauche pour le texte -->
-                    <div class="hero-image-content">
-                        <!-- IMPORTANT: Utilisez une image sans arrière-plan (format .png) -->
-                        <img src="profile_1-removed_bg.png" alt="Photo de Patrick safari" data-en-alt="Photo of Patrick safari" class="hero-img-redesigned">
+    <main>
+        <!-- ==================== HERO ==================== -->
+        <section class="hero" id="hero">
+            <div class="hero-bg" aria-hidden="true">
+                <img class="bg-dark" src="images/bg/hero-dark.webp" alt="" fetchpriority="high">
+                <img class="bg-light" src="images/bg/hero-light.webp" alt="">
+            </div>
+            <div class="container hero-grid">
+                <div class="hero-copy">
+                    <span class="eyebrow reveal"><span class="pulse"></span><span data-en="Available for freelance work">Disponible pour missions freelance</span></span>
+                    <h1 class="reveal">Patrick <span class="grad">safari</span></h1>
+                    <p class="role reveal" data-en="Full Stack Developer &amp; IT Specialist">Développeur Full Stack &amp; Spécialiste IT</p>
+                    <p class="bio reveal" data-en="I build reliable web applications and solve complex IT problems. I also help small businesses get seen online with websites, social media visuals and video ads.">Je conçois des applications web robustes et je résous des problèmes informatiques complexes. J'aide aussi les petites entreprises à se montrer en ligne : sites web, visuels pour les réseaux sociaux et vidéos publicitaires.</p>
+                    <div class="hero-actions reveal">
+                        <a href="#projects" class="btn btn-primary"><span data-en="See my certified projects">Voir mes projets certifiés</span> <i class="fas fa-arrow-right"></i></a>
+                        <a href="services.html" class="btn btn-ghost"><i class="fas fa-briefcase"></i> <span data-en="Services &amp; prices">Services &amp; tarifs</span></a>
                     </div>
-                    
-                    <!-- Colonne de droite pour l'image -->
-                     <div class="hero-text-content">
-                        <h1 class="hero-name">Patrick safari</h1>
-                        <p class="hero-title" data-en="Full Stack Developer &amp;amp; IT Specialist">Développeur Full Stack & Spécialiste IT</p>
-                        <p class="hero-bio" data-en="Welcome to my portfolio. I am a digital problem-solver who builds reliable web applications and fixes complex IT issues. I also help small businesses get seen online with websites, social media visuals and video ads.">
-                            Bienvenue sur mon portfolio. Je suis un créateur de solutions numériques passionné, spécialisé dans la conception d'applications web robustes et la résolution de défis informatiques complexes. J'aide aussi les petites entreprises à se montrer en ligne : sites web, visuels pour les réseaux sociaux et vidéos publicitaires.
-                        </p>
-                        <div class="hero-actions">
-                            <a href="services.html" class="hero-cta" data-en="See my services &lt;i class=&quot;fas fa-arrow-right&quot; style=&quot;margin-left: 8px;&quot;&gt;&lt;/i&gt;">
-                                Voir mes services <i class="fas fa-arrow-right" style="margin-left: 8px;"></i>
-                            </a>
-                            <a href="#projects" class="hero-cta-secondary" data-en="My certifications">Mes certifications</a>
+                    <div class="hero-stats reveal">
+                        <div class="stat"><strong>8</strong><span data-en="Google &amp; IBM certificates">certificats Google &amp; IBM</span></div>
+                        <div class="stat"><strong>4</strong><span data-en="languages spoken">langues parlées</span></div>
+                        <div class="stat"><strong>2021</strong><span data-en="started working in IT">début dans l'IT</span></div>
+                    </div>
+                </div>
+
+                <div class="portrait reveal" id="portrait">
+                    <div class="portrait-inner" id="portrait-inner">
+                        <div class="halo" aria-hidden="true"><img src="images/bg/halo.webp" alt=""></div>
+                        <div class="orbit" aria-hidden="true"></div>
+                        <div class="plinth" aria-hidden="true"></div>
+                        <img class="me" src="profile_1-removed_bg.png" alt="Photo de Patrick safari" data-en-alt="Photo of Patrick safari" width="411" height="607">
+                        <div class="chip chip-1"><i class="fab fa-google"></i><span><b data-en="8 certificates">8 certificats</b><small>Google · IBM</small></span></div>
+                        <div class="chip chip-2"><i class="fas fa-code"></i><span><b>Full Stack</b><small>JS · Python · SQL</small></span></div>
+                        <div class="chip chip-3"><i class="fas fa-location-dot"></i><span><b data-en="Goma, DR Congo">Goma, RDC</b><small data-en="FR · EN · Swahili">FR · EN · Swahili</small></span></div>
+                    </div>
+                </div>
+            </div>
+            <a href="#about" class="scroll-cue" aria-label="Défiler" data-en-aria-label="Scroll down"><span></span></a>
+        </section>
+
+        <!-- ==================== ABOUT ==================== -->
+        <section class="block" id="about">
+            <div class="container">
+                <div class="section-head reveal">
+                    <span class="kicker" data-en="About me">À propos</span>
+                    <h2 data-en="From IT support to building the tools">Du support IT à la création des outils</h2>
+                    <p data-en="I turn complex ideas into clean, fast digital solutions.">Je transforme des idées complexes en solutions numériques élégantes et performantes.</p>
+                </div>
+                <div class="about-grid">
+                    <div class="about-text reveal">
+                        <p data-en="My path in IT started in technical support, where I grew a love for solving problems and a real understanding of what users need. That foundation led me to software development, where I can not only fix problems but also build the tools that prevent them.">Mon parcours dans l'informatique a débuté par le support technique, une expérience formatrice où j'ai développé une passion pour la résolution de problèmes et une compréhension approfondie des besoins des utilisateurs. Cette base solide m'a naturellement conduit vers le développement de logiciels, où je pouvais non seulement résoudre des problèmes, mais aussi construire les outils pour les prévenir.</p>
+                        <p data-en="Today, as a Full Stack Developer and IT Specialist, I enjoy combining technical rigour with creativity. I hold a degree in Business Computing and keep learning, as my Google and IBM certifications show. I believe clear communication and a user-centred approach are the keys to a successful project.">Aujourd'hui, en tant que Développeur Full Stack et Spécialiste IT, je m'épanouis en combinant ma rigueur technique et ma créativité. Diplômé en Informatique de Gestion, je suis un fervent adepte de l'apprentissage continu, comme en témoignent mes certifications Google et IBM. Je suis convaincu qu'une bonne communication et une approche centrée sur l'utilisateur sont les clés de la réussite d'un projet.</p>
+                    </div>
+                    <aside class="card about-card reveal">
+                        <h3 data-en="Languages">Langues</h3>
+                        <div class="lang-row"><div><span data-en="French">Français</span><small data-en="Native">Natif</small></div><div class="bar"><i style="--w:100%"></i></div></div>
+                        <div class="lang-row"><div><span data-en="English">Anglais</span><small data-en="Professional">Professionnel</small></div><div class="bar"><i style="--w:90%"></i></div></div>
+                        <div class="lang-row"><div><span>Swahili</span><small data-en="Professional">Professionnel</small></div><div class="bar"><i style="--w:90%"></i></div></div>
+                        <div class="lang-row"><div><span>Lingala</span><small data-en="Professional">Professionnel</small></div><div class="bar"><i style="--w:90%"></i></div></div>
+                        <div class="interests">
+                            <span class="tag"><i class="fas fa-pencil-ruler"></i><span data-en="Art &amp; drawing">Art &amp; dessin</span></span>
+                            <span class="tag"><i class="fas fa-dumbbell"></i><span data-en="Calisthenics">Calisthénie</span></span>
+                            <span class="tag"><i class="fas fa-graduation-cap"></i><span data-en="Lifelong learning">Apprentissage continu</span></span>
                         </div>
-                    </div>
+                    </aside>
                 </div>
-            </section>
+            </div>
+        </section>
 
-            <!-- ABOUT SECTION - AMÉLIORÉE -->
-            <section id="about" class="content-section">
-                <h2 class="section-title" data-en="About Me">À Propos de Moi</h2>
-                <p class="section-subtitle" data-en="I turn complex ideas into clean, fast digital solutions.">
-                    Je transforme des idées complexes en solutions numériques élégantes et performantes.
-                </p>
-
-                <br>
-
-                <div class="about-container">
-                    <div class="about-text">
-                        <p data-en="My path in IT started in technical support, where I grew a love for solving problems and a real understanding of what users need. That foundation led me to software development, where I can not only fix problems but also build the tools that prevent them.">
-                            Mon parcours dans l'informatique a débuté par le support technique, une expérience formatrice où j'ai développé une passion pour la résolution de problèmes et une compréhension approfondie des besoins des utilisateurs. Cette base solide m'a naturellement conduit vers le développement de logiciels, où je pouvais non seulement résoudre des problèmes, mais aussi construire les outils pour les prévenir.
-                        </p>
-                        <p data-en="Today, as a Full Stack Developer and IT Specialist, I enjoy combining technical rigour with creativity. I hold a degree in Business Computing and keep learning, as my Google and IBM certifications show. I believe clear communication and a user-centred approach are the keys to a successful project.">
-                            Aujourd'hui, en tant que Développeur Full Stack et Spécialiste IT, je m'épanouis en combinant ma rigueur technique et ma créativité. Diplômé en Informatique de Gestion, je suis un fervent adepte de l'apprentissage continu, comme en témoignent mes certifications Google et IBM. Je suis convaincu qu'une bonne communication et une approche centrée sur l'utilisateur sont les clés de la réussite d'un projet.
-                        </p>
-                    </div>
-                    <div class="about-sidebar">
-                        <h3 data-en="Interests &amp;amp; Languages">Intérêts &amp; Langues</h3>
-                        <ul class="about-details">
-                            <li>
-                                <i class="fas fa-language"></i>
-                                <div class="language-item">
-                                    <span data-en="French (Native)">Français (Natif)</span>
-                                    <div class="progress-bar-container"><div class="progress-bar" style="width: 100%;"></div></div>
-                                </div>
-                            </li>
-                            <li>
-                                <i class="fas fa-language"></i>
-                                <div class="language-item">
-                                    <span data-en="English (Professional)">Anglais (Professionnel)</span>
-                                    <div class="progress-bar-container"><div class="progress-bar" style="width: 90%;"></div></div>
-                                </div>
-                            </li>
-                            <li>
-                                <i class="fas fa-language"></i>
-                                <div class="language-item">
-                                    <span data-en="Swahili (Professional)">Swahili (Professionnel)</span>
-                                    <div class="progress-bar-container"><div class="progress-bar" style="width: 90%;"></div></div>
-                                </div>
-                            </li>
-                            <li>
-                                <i class="fas fa-language"></i>
-                                <div class="language-item">
-                                    <span data-en="Lingala (Professional)">Lingala (Professionnel)</span>
-                                    <div class="progress-bar-container"><div class="progress-bar" style="width: 90%;"></div></div>
-                                </div>
-                            </li>
-                            <li><i class="fas fa-pencil-ruler"></i><span data-en="Art &amp;amp; Drawing">Art &amp; Dessin</span><small data-en="Creativity &amp;amp; Attention to detail">Créativité & Souci du détail</small></li>
-                            <li><i class="fas fa-dumbbell"></i><span data-en="Calisthenics">Calisthenie</span><small data-en="Discipline &amp;amp; Perseverance">Discipline & Persévérance</small></li>
-                        </ul>
-                    </div>
+        <!-- ==================== SERVICES ==================== -->
+        <section class="block" id="services">
+            <div class="container">
+                <div class="section-head reveal">
+                    <span class="kicker">Services</span>
+                    <h2 data-en="What I can do for your business">Ce que je peux faire pour votre entreprise</h2>
+                    <p data-en="I work with businesses in East Africa and abroad, in French, English and Swahili.">Je travaille avec des entreprises en Afrique de l'Est et à l'étranger, en français, anglais et swahili.</p>
                 </div>
-            </section>
-            
-            <!-- SERVICES SECTION -->
-            <section id="services" class="content-section">
-                <h2 class="section-title" data-en="My Services">Mes Services</h2>
-                <p class="section-subtitle" data-en="I work with businesses in East Africa and abroad, in French, English and Swahili.">
-                    Je travaille avec des entreprises en Afrique de l'Est et à l'étranger, en français, anglais et swahili.
-                </p>
-                <div class="services-grid">
-                    <div class="service-card">
-                        <i class="fas fa-globe"></i>
-                        <h3 data-en="Business websites">Sites web pour entreprises</h3>
-                        <p data-en="A fast, mobile-friendly site with a WhatsApp button, map and contact form.">Site rapide, adapté au mobile, avec bouton WhatsApp, carte et formulaire de contact.</p>
-                    </div>
-                    <div class="service-card">
-                        <i class="fas fa-photo-film"></i>
-                        <h3 data-en="Social media visuals">Visuels réseaux sociaux</h3>
-                        <p data-en="Clean product photos and posts ready for Facebook, Instagram and WhatsApp.">Photos produits propres et publications prêtes pour Facebook, Instagram et WhatsApp.</p>
-                    </div>
-                    <div class="service-card">
-                        <i class="fas fa-video"></i>
-                        <h3 data-en="AI video ads">Vidéos publicitaires IA</h3>
-                        <p data-en="Short videos that show off your products on TikTok, Reels and Facebook.">Courtes vidéos pour présenter vos produits sur TikTok, Reels et Facebook.</p>
-                    </div>
-                    <div class="service-card">
-                        <i class="fas fa-pen-nib"></i>
-                        <h3 data-en="Logos &amp;amp; posters">Logo & affiches</h3>
-                        <p data-en="A simple visual identity: logo, flyers, menus and business cards.">Identité visuelle simple : logo, flyers, menus et cartes de visite.</p>
-                    </div>
-                    <div class="service-card">
-                        <i class="fas fa-laptop-code"></i>
-                        <h3 data-en="IT support &amp;amp; automation">Support IT & automatisation</h3>
-                        <p data-en="Troubleshooting, basic security and Python scripts that save you time.">Dépannage, sécurité de base et scripts Python pour gagner du temps.</p>
-                    </div>
-                    <div class="service-card">
-                        <i class="fas fa-chart-column"></i>
-                        <h3 data-en="Dashboards">Tableaux de bord</h3>
-                        <p data-en="Your sales and key numbers in one clear, easy-to-read dashboard.">Vos ventes et chiffres clés dans un tableau clair et facile à lire.</p>
-                    </div>
+                <div class="grid-3">
+                    <div class="card service reveal"><div class="ico"><i class="fas fa-globe"></i></div><h3 data-en="Business websites">Sites web pour entreprises</h3><p data-en="A fast, mobile-friendly site with a WhatsApp button, map and contact form.">Site rapide, adapté au mobile, avec bouton WhatsApp, carte et formulaire de contact.</p></div>
+                    <div class="card service reveal"><div class="ico"><i class="fas fa-photo-film"></i></div><h3 data-en="Social media visuals">Visuels réseaux sociaux</h3><p data-en="Clean product photos and posts ready for Facebook, Instagram and WhatsApp.">Photos produits propres et publications prêtes pour Facebook, Instagram et WhatsApp.</p></div>
+                    <div class="card service reveal"><div class="ico"><i class="fas fa-video"></i></div><h3 data-en="AI video ads">Vidéos publicitaires IA</h3><p data-en="Short videos that show off your products on TikTok, Reels and Facebook.">Courtes vidéos pour présenter vos produits sur TikTok, Reels et Facebook.</p></div>
+                    <div class="card service reveal"><div class="ico"><i class="fas fa-pen-nib"></i></div><h3 data-en="Logos &amp; posters">Logo &amp; affiches</h3><p data-en="A simple visual identity: logo, flyers, menus and business cards.">Identité visuelle simple : logo, flyers, menus et cartes de visite.</p></div>
+                    <div class="card service reveal"><div class="ico"><i class="fas fa-laptop-code"></i></div><h3 data-en="IT support &amp; automation">Support IT &amp; automatisation</h3><p data-en="Troubleshooting, basic security and Python scripts that save you time.">Dépannage, sécurité de base et scripts Python pour gagner du temps.</p></div>
+                    <div class="card service reveal"><div class="ico"><i class="fas fa-chart-column"></i></div><h3 data-en="Dashboards">Tableaux de bord</h3><p data-en="Your sales and key numbers in one clear, easy-to-read dashboard.">Vos ventes et chiffres clés dans un tableau clair et facile à lire.</p></div>
                 </div>
-                <div class="services-cta">
-                    <a href="services.html" class="hero-cta" data-en="See packages and prices &lt;i class=&quot;fas fa-arrow-right&quot; style=&quot;margin-left: 8px;&quot;&gt;&lt;/i&gt;">Voir les offres et les prix <i class="fas fa-arrow-right" style="margin-left: 8px;"></i></a>
-                </div>
-            </section>
+                <div class="center reveal"><a href="services.html" class="btn btn-primary"><span data-en="See packages and prices">Voir les offres et les prix</span> <i class="fas fa-arrow-right"></i></a></div>
+            </div>
+        </section>
 
-            <!-- SKILLS SECTION -->
-            <section id="skills" class="content-section">
-                <h2 class="section-title" data-en="Technical Skills">Compétences Techniques</h2>
-                <div class="skills-grid">
-                    <div class="skill-card"> <i class="fab fa-html5"></i> <h3>HTML5 & CSS3</h3> </div>
-                    <div class="skill-card"> <i class="fab fa-js-square"></i> <h3>JavaScript</h3> </div>
-                    <div class="skill-card"> <i class="fab fa-react"></i> <h3>React.js</h3> </div>
-                    <div class="skill-card"> <i class="fab fa-node-js"></i> <h3>Node.js</h3> </div>
-                    <div class="skill-card"> <i class="fab fa-python"></i> <h3>Python</h3> </div>
-                    <div class="skill-card"> <i class="fas fa-database"></i> <h3>SQL & NoSQL</h3> </div>
-                    <div class="skill-card"> <i class="fab fa-docker"></i> <h3>Docker</h3> </div>
-                    <div class="skill-card"> <i class="fas fa-shield-alt"></i> <h3 data-en="Cybersecurity">Cybersécurité</h3> </div>
-                    <div class="skill-card"> <i class="fas fa-drafting-compass"></i> <h3>UX/UI Design</h3> </div>
-                    <div class="skill-card"> <i class="fas fa-tasks"></i> <h3 data-en="Project Management">Gestion de Projet</h3> </div>
+        <!-- ==================== SKILLS ==================== -->
+        <section class="block" id="skills">
+            <div class="container">
+                <div class="section-head reveal">
+                    <span class="kicker" data-en="Skills">Compétences</span>
+                    <h2 data-en="My technical toolbox">Ma boîte à outils technique</h2>
                 </div>
-            </section>
+                <div class="skills reveal">
+                    <span class="card skill"><i class="fab fa-html5"></i>HTML5 &amp; CSS3</span>
+                    <span class="card skill"><i class="fab fa-js"></i>JavaScript</span>
+                    <span class="card skill"><i class="fab fa-react"></i>React.js</span>
+                    <span class="card skill"><i class="fab fa-node-js"></i>Node.js</span>
+                    <span class="card skill"><i class="fab fa-python"></i>Python</span>
+                    <span class="card skill"><i class="fas fa-database"></i>SQL &amp; NoSQL</span>
+                    <span class="card skill"><i class="fab fa-docker"></i>Docker</span>
+                    <span class="card skill"><i class="fas fa-shield-halved"></i><span data-en="Cybersecurity">Cybersécurité</span></span>
+                    <span class="card skill"><i class="fas fa-compass-drafting"></i>UX/UI Design</span>
+                    <span class="card skill"><i class="fas fa-list-check"></i><span data-en="Project Management">Gestion de projet</span></span>
+                    <span class="card skill"><i class="fas fa-chart-line"></i><span data-en="Data analytics">Analyse de données</span></span>
+                    <span class="card skill"><i class="fas fa-headset"></i><span data-en="IT support">Support IT</span></span>
+                </div>
+            </div>
+        </section>
 
-            <!-- EXPERIENCE & EDUCATION SECTION -->
-            <section id="experience" class="content-section">
-                <h2 class="section-title" data-en="Experience &amp;amp; Education">Parcours Professionnel & Formation</h2>
+        <!-- ==================== EXPERIENCE ==================== -->
+        <section class="block" id="experience">
+            <div class="container">
+                <div class="section-head reveal">
+                    <span class="kicker" data-en="Experience">Parcours</span>
+                    <h2 data-en="Experience &amp; education">Parcours professionnel &amp; formation</h2>
+                </div>
                 <div class="timeline">
-                    <!-- Experience -->
-                    <div class="timeline-item">
-                        <div class="timeline-icon"></div> <h3 class="timeline-title" data-en="Freelance Software Developer">Développeur Logiciel Freelance</h3>
-                        <p class="timeline-subtitle" data-en="Self-employed | &lt;span&gt;2023 - Present&lt;/span&gt;">Indépendant | <span>2023 - Présent</span></p>
+                    <div class="card t-item reveal">
+                        <h3 data-en="Freelance Software Developer">Développeur logiciel freelance</h3>
+                        <p class="t-meta"><span data-en="Self-employed">Indépendant</span> · <span data-en="2023 – Present">2023 – Présent</span></p>
                         <p data-en="Design and development of custom web applications for a range of clients. Building business websites, social media visuals and AI-assisted video ads for small businesses.">Conception et développement d'applications web sur mesure pour divers clients. Création de sites vitrines, de visuels pour les réseaux sociaux et de vidéos publicitaires assistées par IA pour petites entreprises.</p>
                     </div>
-                    <div class="timeline-item">
-                        <div class="timeline-icon"></div> <h3 class="timeline-title" data-en="IT Support &amp;amp; Developer">Support Informatique & Développeur</h3>
-                        <p class="timeline-subtitle" data-en="Mutombo Establishment (Agricultural company) | &lt;span&gt;2021 - 2023&lt;/span&gt;">Mutombo Establishment (Entreprise Agricole) | <span>2021 - 2023</span></p>
+                    <div class="card t-item reveal">
+                        <h3 data-en="IT Support &amp; Developer">Support informatique &amp; développeur</h3>
+                        <p class="t-meta"><span data-en="Mutombo Establishment (Agricultural company)">Mutombo Establishment (Entreprise agricole)</span> · <span>2021 – 2023</span></p>
                         <p data-en="Technical support, maintenance of company computers and development of internal tools.">Assistance technique, maintenance du parc informatique et développement d'outils internes.</p>
-                        <p class="timeline-reference" data-en="Reference: Mutombo Rolland (+2438531234002)">Référence : Mutombo Rolland (+2438531234002)</p>
+                        <p class="t-ref" data-en="Reference: Mutombo Rolland (+2438531234002)">Référence : Mutombo Rolland (+2438531234002)</p>
                     </div>
-                     <!-- Education -->
-                    <div class="timeline-item">
-                        <div class="timeline-icon"></div> <h3 class="timeline-title" data-en="Degree in Business Computing">Diplôme en Informatique de Gestion</h3>
-                        <p class="timeline-subtitle">UHTGL | <span>2025</span></p>
+                    <div class="card t-item reveal">
+                        <h3 data-en="Degree in Business Computing">Diplôme en Informatique de Gestion</h3>
+                        <p class="t-meta"><span>UHTGL</span> · <span>2025</span></p>
                         <p data-en="Training in programming, databases, networking and systems analysis.">Formation en programmation, bases de données, réseaux et analyse de systèmes.</p>
-                        <p class="timeline-reference" data-en="Reference: Mr Bienfait (+243970708378)">Référence : Mr Bienfait (+243970708378)</p>
+                        <p class="t-ref" data-en="Reference: Mr Bienfait (+243970708378)">Référence : Mr Bienfait (+243970708378)</p>
                     </div>
                 </div>
-            </section>
-            
-            <!-- PROJECTS & CERTIFICATIONS SECTION -->
-            <section id="projects" class="content-section">
-                <h2 class="section-title" data-en="Certifications &amp;amp; Projects">Certifications & Projets</h2>
-                <div class="certifications-grid">
-                    <a href="projects/project-management.html" class="card"><i class="fas fa-tasks card-icon"></i><h3>Google Project Management</h3><span class="card-button" data-en="View interactive project">Voir le projet interactif</span></a>
-                    <a href="projects/cybersecurity.html" class="card"><i class="fas fa-shield-alt card-icon"></i><h3>Google Cybersecurity</h3><span class="card-button" data-en="View interactive project">Voir le projet interactif</span></a>
-                    <a href="projects/full-stack.html" class="card"><i class="fas fa-code card-icon"></i><h3>IBM Full Stack Developer</h3><span class="card-button" data-en="View interactive project">Voir le projet interactif</span></a>
-                    <a href="projects/ux-design.html" class="card"><i class="fas fa-drafting-compass card-icon"></i><h3>Google UX Design</h3><span class="card-button" data-en="View interactive project">Voir le projet interactif</span></a>
-                    <a href="projects/it-automation.html" class="card"><i class="fab fa-python card-icon"></i><h3>Google IT Automation</h3><span class="card-button" data-en="View interactive project">Voir le projet interactif</span></a>
-                    <a href="projects/it-support.html" class="card"><i class="fas fa-headset card-icon"></i><h3>Google IT Support</h3><span class="card-button" data-en="View interactive project">Voir le projet interactif</span></a>
-                    <a href="projects/data-analytics.html" class="card"><i class="fas fa-chart-line card-icon"></i><h3>Google Advance Data Analytics</h3><span class="card-button" data-en="View interactive project">Voir le projet interactif</span></a>
-                    <a href="projects/data-analytics.html" class="card"><i class="fas fa-chart-pie card-icon"></i><h3>Google Business Intelligence</h3><span class="card-button" data-en="View interactive project">Voir le projet interactif</span></a>
-                
-                </div>
-            </section>
+            </div>
+        </section>
 
-            <!-- CONTACT SECTION -->
-            <section id="contact" class="content-section">
-                <h2 class="section-title" data-en="Contact Me">Contactez-Moi</h2>
-                <p id="contact-intro" data-en="Have a question or a project in mind? Feel free to send me a message.">Vous avez une question ou une proposition ? N'hésitez pas à m'envoyer un message.</p>
-                <form id="contactForm" action="https://api.web3forms.com/submit" method="POST">
+        <!-- ==================== CERTIFICATES & PROJECTS ==================== -->
+        <section class="block" id="projects">
+            <div class="container">
+                <div class="section-head reveal">
+                    <span class="kicker" data-en="Certificates &amp; projects">Certifications &amp; projets</span>
+                    <h2 data-en="8 certificates, each with a project you can try">8 certificats, chacun avec un projet à tester</h2>
+                    <p data-en="Every certificate opens an interactive project that shows the skills in action. Use “Verify” to check it on Coursera.">Chaque certificat ouvre un projet interactif qui montre les compétences en action. « Vérifier » permet de le contrôler sur Coursera.</p>
+                </div>
+                <div class="cert-grid">
+                    <article class="card cert reveal"><div class="cert-thumb"><img src="images/thumbs/project_management.webp" alt="Certificat Google Project Management" loading="lazy"><span class="cert-badge">Google</span></div><div class="cert-body"><h3>Google Project Management</h3><p data-en="Farm project plan in Kalehe">Plan de projet agricole à Kalehe</p><div class="cert-actions"><a class="go" href="projects/project-management.html" data-en="Project">Projet</a><a class="verify" href="https://coursera.org/verify/professional-cert/351UXTQ0NEAH" target="_blank" rel="noopener" data-en="Verify ↗">Vérifier ↗</a></div></div></article>
+                    <article class="card cert reveal"><div class="cert-thumb"><img src="images/thumbs/cybersecurity.webp" alt="Certificat Google Cybersecurity" loading="lazy"><span class="cert-badge">Google</span></div><div class="cert-body"><h3>Google Cybersecurity</h3><p data-en="Browser-based security analyst toolkit">Boîte à outils d'analyste sécurité</p><div class="cert-actions"><a class="go" href="projects/cybersecurity.html" data-en="Project">Projet</a><a class="verify" href="https://coursera.org/verify/professional-cert/705DJ3IF51UQ" target="_blank" rel="noopener" data-en="Verify ↗">Vérifier ↗</a></div></div></article>
+                    <article class="card cert reveal"><div class="cert-thumb"><img src="images/thumbs/ibm_full_stack_developer.webp" alt="Certificat IBM Full Stack Developer" loading="lazy"><span class="cert-badge">IBM</span></div><div class="cert-body"><h3>IBM Full Stack Developer</h3><p data-en="Task manager: UI, API and database">Gestionnaire de tâches : UI, API et base de données</p><div class="cert-actions"><a class="go" href="projects/full-stack.html" data-en="Project">Projet</a><a class="verify" href="https://coursera.org/verify/professional-cert/EGUL98Z14H07" target="_blank" rel="noopener" data-en="Verify ↗">Vérifier ↗</a></div></div></article>
+                    <article class="card cert reveal"><div class="cert-thumb"><img src="images/thumbs/ux_design.webp" alt="Certificat Google UX Design" loading="lazy"><span class="cert-badge">Google</span></div><div class="cert-body"><h3>Google UX Design</h3><p data-en="Table Libre restaurant booking app">Table Libre, réservation de restaurant</p><div class="cert-actions"><a class="go" href="projects/ux-design.html" data-en="Project">Projet</a><a class="verify" href="https://coursera.org/verify/professional-cert/6R8451VM3CQ5" target="_blank" rel="noopener" data-en="Verify ↗">Vérifier ↗</a></div></div></article>
+                    <article class="card cert reveal"><div class="cert-thumb"><img src="images/thumbs/it_automation_with_python.webp" alt="Certificat Google IT Automation with Python" loading="lazy"><span class="cert-badge">Google</span></div><div class="cert-body"><h3>Google IT Automation</h3><p data-en="Python log report you can run">Rapport de logs en Python, exécutable</p><div class="cert-actions"><a class="go" href="projects/it-automation.html" data-en="Project">Projet</a><a class="verify" href="https://coursera.org/verify/professional-cert/GMEVP24UVGP8" target="_blank" rel="noopener" data-en="Verify ↗">Vérifier ↗</a></div></div></article>
+                    <article class="card cert reveal"><div class="cert-thumb"><img src="images/thumbs/it_support.webp" alt="Certificat Google IT Support" loading="lazy"><span class="cert-badge">Google</span></div><div class="cert-body"><h3>Google IT Support</h3><p data-en="Help desk playbook and ticket queue">Guide help desk et file de tickets</p><div class="cert-actions"><a class="go" href="projects/it-support.html" data-en="Project">Projet</a><a class="verify" href="https://coursera.org/verify/professional-cert/L4ZFS6SSKHE6" target="_blank" rel="noopener" data-en="Verify ↗">Vérifier ↗</a></div></div></article>
+                    <article class="card cert reveal"><div class="cert-thumb"><img src="images/thumbs/advanced_data_analytics.webp" alt="Certificat Google Advanced Data Analytics" loading="lazy"><span class="cert-badge">Google</span></div><div class="cert-body"><h3>Google Advanced Data Analytics</h3><p data-en="Congolese franc dashboard (World Bank data)">Tableau de bord du franc congolais</p><div class="cert-actions"><a class="go" href="projects/data-analytics.html" data-en="Project">Projet</a><a class="verify" href="https://coursera.org/verify/professional-cert/LCGH3RERGP7B" target="_blank" rel="noopener" data-en="Verify ↗">Vérifier ↗</a></div></div></article>
+                    <article class="card cert reveal"><div class="cert-thumb"><img src="images/thumbs/busness_inteligence.webp" alt="Certificat Google Business Intelligence" loading="lazy"><span class="cert-badge">Google</span></div><div class="cert-body"><h3>Google Business Intelligence</h3><p data-en="Same dashboard: KPIs and data model">Même tableau : KPI et modèle de données</p><div class="cert-actions"><a class="go" href="projects/data-analytics.html" data-en="Project">Projet</a><a class="verify" href="https://coursera.org/verify/professional-cert/YDNCH3ULLKRU" target="_blank" rel="noopener" data-en="Verify ↗">Vérifier ↗</a></div></div></article>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== CONTACT ==================== -->
+        <section class="block" id="contact">
+            <div class="contact-bg" aria-hidden="true"><img src="images/bg/section-dark.webp" alt="" loading="lazy"></div>
+            <div class="container contact-grid">
+                <div class="reveal">
+                    <div class="section-head" style="margin-bottom:0">
+                        <span class="kicker">Contact</span>
+                        <h2 data-en="Let's work together">Travaillons ensemble</h2>
+                        <p data-en="Have a question or a project in mind? Feel free to send me a message.">Vous avez une question ou une proposition ? N'hésitez pas à m'envoyer un message.</p>
+                    </div>
+                    <ul class="contact-list">
+                        <li><a href="mailto:patricksafari840@gmail.com"><i class="fas fa-envelope"></i>patricksafari840@gmail.com</a></li>
+                        <li><a href="https://wa.me/243819405130" target="_blank" rel="noopener"><i class="fab fa-whatsapp"></i>+243 819 405 130</a></li>
+                        <li><span><i class="fas fa-location-dot"></i><span data-en="Goma, North Kivu, DR Congo">Goma, Nord-Kivu, RDC</span></span></li>
+                    </ul>
+                    <div class="socials">
+                        <a href="https://github.com/PatrickSafari840" target="_blank" rel="noopener" aria-label="GitHub"><i class="fab fa-github"></i></a>
+                        <a href="https://www.linkedin.com/in/patrick-safari-166077255/" target="_blank" rel="noopener" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="https://www.instagram.com/PatrickSafariCimana" target="_blank" rel="noopener" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="https://www.facebook.com/patricksafari.cimana" target="_blank" rel="noopener" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    </div>
+                </div>
+                <form id="contactForm" class="card reveal" action="https://api.web3forms.com/submit" method="POST">
                     <input type="hidden" name="access_key" value="37343818-9e62-4fa8-b533-ae3dc4ff25c4">
-                    <div class="form-group">
-                        <input type="text" name="name" placeholder="Votre Nom" data-en-placeholder="Your Name" required>
-                        <input type="email" name="email" placeholder="Votre Email" data-en-placeholder="Your Email" required>
+                    <div class="row-2">
+                        <input type="text" name="name" placeholder="Votre nom" data-en-placeholder="Your name" aria-label="Nom" required>
+                        <input type="email" name="email" placeholder="Votre email" data-en-placeholder="Your email" aria-label="Email" required>
                     </div>
-                    <div class="form-group">
-                        <textarea name="message" rows="6" placeholder="Votre Message" data-en-placeholder="Your Message" required></textarea>
-                    </div>
-                    <button type="submit" class="submit-button" data-en="Send Message">Envoyer le Message</button>
-                    <p id="form-status" style="margin-top: 1rem; text-align: center;"></p>
+                    <textarea name="message" rows="6" placeholder="Votre message" data-en-placeholder="Your message" aria-label="Message" required></textarea>
+                    <button type="submit" class="btn btn-primary" style="justify-content:center"><span data-en="Send message">Envoyer le message</span> <i class="fas fa-paper-plane"></i></button>
+                    <p id="form-status" role="status"></p>
                 </form>
-            </section>
-        </div>
+            </div>
+        </section>
     </main>
 
-    <!-- ==================== FOOTER ==================== -->
-    <footer class="main-footer">
-        <ul class="footer-contact-info">
-            <li><i class="fas fa-envelope"></i><a href="mailto:patricksafari840@gmail.com">patricksafari840@gmail.com</a></li>
-            <li><i class="fas fa-phone"></i><span>+243 819 405 130</span></li>
-            <li><i class="fas fa-map-marker-alt"></i><span data-en="Goma, North Kivu, DR Congo">Ville De Goma, Nord-kivu en RDC</span></li>
-            <li><i class="fab fa-github"></i><a href="https://github.com/PatrickSafari840">Github</a></li>
-            <li><i class="fab fa-linkedin"></i> <a href="https://www.linkedin.com/in/patrick-safari-166077255/">LinkedIn</a></li>
-            <li><i class="fab fa-instagram"></i> <a href="https://www.instagram.com/PatrickSafariCimana">Instagram</a></li>
-            <li><i class="fab fa-facebook"></i><a href="https://www.facebook.com/patricksafari.cimana">Facebook</a></li>
-        </ul>
-        <p class="footer-copyright">&copy; <span id="year">2026</span> Patrick safari. <span data-en="All rights reserved.">Tous droits réservés.</span></p>
+    <footer>
+        <div class="container">
+            <span>&copy; <span id="year">2026</span> Patrick safari. <span data-en="All rights reserved.">Tous droits réservés.</span></span>
+            <span data-en="Made in Goma · Backgrounds generated with AI">Fait à Goma · Arrière-plans générés par IA</span>
+        </div>
     </footer>
 
-    <!-- WHATSAPP BUTTON -->
-    <a href="https://wa.me/243819405130" class="whatsapp-float" target="_blank" rel="noopener" aria-label="Écrire sur WhatsApp" data-en-aria-label="Chat on WhatsApp">
-        <i class="fab fa-whatsapp"></i>
-    </a>
-
-    <!-- PROJECT MODAL -->
-    <div id="projectModal" class="modal">
-        <div class="modal-content">
-            <span class="modal-close" onclick="closeModal()">&times;</span>
-            <h2 id="modalTitle" class="modal-title"></h2>
-            <div id="modalBody" class="modal-body"></div>
-        </div>
-    </div>
+    <a href="https://wa.me/243819405130" class="whatsapp-float" target="_blank" rel="noopener" aria-label="Écrire sur WhatsApp" data-en-aria-label="Chat on WhatsApp"><i class="fab fa-whatsapp"></i></a>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            document.getElementById('year').textContent = new Date().getFullYear();
+    document.addEventListener('DOMContentLoaded', function () {
+        var root = document.documentElement;
+        var store = {
+            get: function (k) { try { return localStorage.getItem(k); } catch (e) { return null; } },
+            set: function (k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+        };
+        document.getElementById('year').textContent = new Date().getFullYear();
 
-
-            // --- LANGUAGE (EN / FR) ---
-            const T = {
-                fr: { title: "Patrick safari | Développeur Full Stack & Spécialiste IT", sending: "Envoi en cours...", sent: "Message envoyé !", error: "Erreur." },
-                en: { title: "Patrick safari | Full Stack Developer & IT Specialist", sending: "Sending...", sent: "Message sent!", error: "Something went wrong." }
-            };
-            let lang = 'fr';
-            const ATTRS = ['placeholder', 'alt', 'aria-label'];
-            const setLang = (l) => {
-                lang = l === 'en' ? 'en' : 'fr';
-                document.documentElement.lang = lang;
-                document.title = T[lang].title;
-                document.querySelectorAll('[data-en]').forEach(el => {
-                    if (el.dataset.fr === undefined) el.dataset.fr = el.innerHTML;
-                    el.innerHTML = lang === 'en' ? el.dataset.en : el.dataset.fr;
-                });
-                ATTRS.forEach(a => document.querySelectorAll('[data-en-' + a + ']').forEach(el => {
-                    const key = 'fr' + a.replace(/-/g, '');
+        /* ---------- Language (EN / FR) ---------- */
+        var T = {
+            fr: { title: "Patrick safari | Développeur Full Stack & Spécialiste IT", sending: "Envoi en cours...", sent: "Message envoyé !", error: "Erreur." },
+            en: { title: "Patrick safari | Full Stack Developer & IT Specialist", sending: "Sending...", sent: "Message sent!", error: "Something went wrong." }
+        };
+        var lang = 'fr';
+        var ATTRS = ['placeholder', 'alt', 'aria-label'];
+        function setLang(l) {
+            lang = l === 'en' ? 'en' : 'fr';
+            root.lang = lang;
+            document.title = T[lang].title;
+            document.querySelectorAll('[data-en]').forEach(function (el) {
+                if (el.dataset.fr === undefined) el.dataset.fr = el.innerHTML;
+                el.innerHTML = lang === 'en' ? el.dataset.en : el.dataset.fr;
+            });
+            ATTRS.forEach(function (a) {
+                document.querySelectorAll('[data-en-' + a + ']').forEach(function (el) {
+                    var key = 'fr' + a.replace(/-/g, '');
                     if (el.dataset[key] === undefined) el.dataset[key] = el.getAttribute(a);
                     el.setAttribute(a, lang === 'en' ? el.getAttribute('data-en-' + a) : el.dataset[key]);
-                }));
-                document.querySelectorAll('[data-set-lang]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.setLang === lang)));
-                document.getElementById('year').textContent = new Date().getFullYear();
-                try { localStorage.setItem('lang', lang); } catch (e) {}
-            };
-            document.querySelectorAll('[data-set-lang]').forEach(b => b.addEventListener('click', () => setLang(b.dataset.setLang)));
-            let savedLang = null; try { savedLang = localStorage.getItem('lang'); } catch (e) {}
-            const urlLang = new URLSearchParams(location.search).get('lang');
-            setLang(urlLang || savedLang || ((navigator.language || '').toLowerCase().startsWith('fr') ? 'fr' : 'en'));
-
-            // --- DARK MODE LOGIC ---
-            const themeSwitch = document.getElementById('checkbox');
-            const applyTheme = (theme) => { document.body.classList.toggle('dark-mode', theme === 'dark'); themeSwitch.checked = (theme === 'dark'); };
-            themeSwitch.addEventListener('change', () => { const newTheme = themeSwitch.checked ? 'dark' : 'light'; localStorage.setItem('theme', newTheme); applyTheme(newTheme); });
-            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-            applyTheme(localStorage.getItem('theme') || (prefersDark ? 'dark' : 'light'));
-
-             // --- RESPONSIVE NAV (HAMBURGER) ---
-            const hamburger = document.getElementById('hamburger');
-            const navLinks = document.getElementById('nav-links');
-            hamburger.addEventListener('click', () => { navLinks.classList.toggle('active'); });
-            document.querySelectorAll('.nav-link').forEach(link => {
-                link.addEventListener('click', () => {
-                    if (navLinks.classList.contains('active')) {
-                        navLinks.classList.remove('active');
-                    }
                 });
             });
+            document.querySelectorAll('[data-set-lang]').forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.setLang === lang)); });
+            store.set('lang', lang);
+        }
+        document.querySelectorAll('[data-set-lang]').forEach(function (b) { b.addEventListener('click', function () { setLang(b.dataset.setLang); }); });
+        var urlLang = new URLSearchParams(location.search).get('lang');
+        setLang(urlLang || store.get('lang') || ((navigator.language || '').toLowerCase().indexOf('fr') === 0 ? 'fr' : 'en'));
 
-            // --- SCROLL ANIMATION & ACTIVE NAV LOGIC ---
-            const sections = document.querySelectorAll('.content-section');
-            const navLinkItems = document.querySelectorAll('.nav-link');
-
-            const observerOptions = { root: null, rootMargin: "-50% 0px -50% 0px", threshold: 0 };
-
-            const observer = new IntersectionObserver(entries => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        const id = entry.target.getAttribute('id');
-                        entry.target.classList.add('visible');
-                        
-                        navLinkItems.forEach(link => {
-                            link.classList.remove('active');
-                            if (link.getAttribute('href') === `#${id}`) {
-                                link.classList.add('active');
-                            }
-                        });
-                    }
-                });
-            }, observerOptions);
-            sections.forEach(section => observer.observe(section));
-
-
-            // --- CONTACT FORM LOGIC ---
-            const contactForm = document.getElementById('contactForm');
-            const formStatus = document.getElementById('form-status');
-            contactForm.addEventListener('submit', function(e) {
-                e.preventDefault();
-                const formData = new FormData(contactForm);
-                formStatus.innerHTML = T[lang].sending; formStatus.style.color = 'gray';
-                fetch(contactForm.action, { method: 'POST', body: formData, headers: { 'Accept': 'application/json' }})
-                .then(r => { if(r.ok) { formStatus.innerHTML = T[lang].sent; formStatus.style.color = 'green'; contactForm.reset(); } else { r.json().then(d => { formStatus.innerHTML = d.message || T[lang].error; formStatus.style.color = 'red'; }); }})
-                .catch(err => { formStatus.innerHTML = T[lang].error; formStatus.style.color = 'red'; });
-                setTimeout(() => { formStatus.innerHTML = ""; }, 6000);
-            });
+        /* ---------- Theme ---------- */
+        var themeBtn = document.getElementById('theme-btn');
+        function applyTheme(t) {
+            root.setAttribute('data-theme', t);
+            themeBtn.innerHTML = t === 'dark' ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+            var meta = document.querySelector('meta[name="theme-color"]'); if (meta) meta.content = t === 'dark' ? '#050b1f' : '#f6f8fc';
+        }
+        applyTheme(root.getAttribute('data-theme') || 'dark');
+        themeBtn.addEventListener('click', function () {
+            var t = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+            store.set('theme', t); applyTheme(t);
         });
+
+        /* ---------- Header + mobile menu ---------- */
+        var header = document.getElementById('header');
+        function onScroll() { header.classList.toggle('scrolled', window.scrollY > 20); }
+        onScroll(); window.addEventListener('scroll', onScroll, { passive: true });
+        var menuBtn = document.getElementById('menu-btn'), navLinks = document.getElementById('nav-links');
+        menuBtn.addEventListener('click', function () {
+            var open = navLinks.classList.toggle('open');
+            menuBtn.setAttribute('aria-expanded', String(open));
+            menuBtn.innerHTML = open ? '<i class="fas fa-xmark"></i>' : '<i class="fas fa-bars"></i>';
+        });
+        navLinks.querySelectorAll('a').forEach(function (a) { a.addEventListener('click', function () { navLinks.classList.remove('open'); menuBtn.innerHTML = '<i class="fas fa-bars"></i>'; menuBtn.setAttribute('aria-expanded', 'false'); }); });
+
+        /* ---------- Reveal on scroll + active nav ---------- */
+        var reveals = document.querySelectorAll('.reveal');
+        if ('IntersectionObserver' in window) {
+            var io = new IntersectionObserver(function (entries) {
+                entries.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+            }, { threshold: 0.12 });
+            reveals.forEach(function (el, i) { el.style.transitionDelay = (el.closest('.hero') ? i * 0.08 : 0) + 's'; io.observe(el); });
+            var links = document.querySelectorAll('.nav-link');
+            var so = new IntersectionObserver(function (entries) {
+                entries.forEach(function (e) {
+                    if (!e.isIntersecting) return;
+                    links.forEach(function (l) { l.classList.toggle('active', l.getAttribute('href') === '#' + e.target.id); });
+                });
+            }, { rootMargin: '-45% 0px -50% 0px' });
+            document.querySelectorAll('main section[id]').forEach(function (s) { so.observe(s); });
+        } else { reveals.forEach(function (el) { el.classList.add('in'); }); }
+
+        /* ---------- Portrait tilt ---------- */
+        var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        var portrait = document.getElementById('portrait'), inner = document.getElementById('portrait-inner');
+        if (!reduce && window.matchMedia('(pointer: fine)').matches) {
+            document.getElementById('hero').addEventListener('pointermove', function (e) {
+                var r = portrait.getBoundingClientRect();
+                var x = (e.clientX - (r.left + r.width / 2)) / window.innerWidth;
+                var y = (e.clientY - (r.top + r.height / 2)) / window.innerHeight;
+                inner.style.transform = 'rotateY(' + (x * 14).toFixed(2) + 'deg) rotateX(' + (-y * 10).toFixed(2) + 'deg)';
+            });
+            document.getElementById('hero').addEventListener('pointerleave', function () { inner.style.transform = ''; });
+        }
+
+        /* ---------- Contact form ---------- */
+        var form = document.getElementById('contactForm'), status = document.getElementById('form-status');
+        form.addEventListener('submit', function (e) {
+            e.preventDefault();
+            status.textContent = T[lang].sending; status.style.color = 'var(--muted)';
+            fetch(form.action, { method: 'POST', body: new FormData(form), headers: { 'Accept': 'application/json' } })
+                .then(function (r) {
+                    if (r.ok) { status.textContent = T[lang].sent; status.style.color = '#22c55e'; form.reset(); }
+                    else { r.json().then(function (d) { status.textContent = d.message || T[lang].error; status.style.color = '#ef4444'; }); }
+                })
+                .catch(function () { status.textContent = T[lang].error; status.style.color = '#ef4444'; });
+            setTimeout(function () { status.textContent = ''; }, 6000);
+        });
+    });
     </script>
 </body>
 </html>
