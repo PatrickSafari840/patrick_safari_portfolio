@@ -4,6 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Patrick safari | Développeur Full Stack & Spécialiste IT</title>
+    <meta name="description" content="Patrick Safari — Développeur Full Stack et Spécialiste IT. Sites web pour entreprises, visuels pour réseaux sociaux, vidéos publicitaires IA et support informatique.">
+    <meta property="og:title" content="Patrick Safari | Développeur Full Stack & Spécialiste IT">
+    <meta property="og:description" content="Sites web, visuels réseaux sociaux, vidéos publicitaires IA et support IT pour petites entreprises.">
+    <meta property="og:image" content="profile_1-removed_bg.png">
+    <meta property="og:type" content="website">
 
     <!-- Polices & Icônes -->
     <link rel="icon" href="your-icon-filename.png" type="image/png">
@@ -456,6 +461,29 @@
         .modal-title { font-size: 2rem; margin-bottom: 1.5rem; }
         body.modal-open { overflow: hidden; }
 
+        /* SECTION TITLES */
+        .section-title { font-size: 2.6rem; text-align: center; margin-bottom: 1rem; text-wrap: balance; }
+        .section-subtitle { text-align: center; max-width: 650px; margin: 0 auto 2.5rem auto; font-size: 1.15rem; opacity: 0.85; }
+
+        /* HERO ACTIONS */
+        .hero-actions { display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; }
+        .hero-cta-secondary { display: inline-block; padding: 0.75rem 1.8rem; border-radius: 10px; font-weight: 600; font-size: 1.05rem; border: 2px solid var(--accent-color); color: var(--accent-color); transition: background-color 0.2s, color 0.2s; }
+        .hero-cta-secondary:hover { background-color: var(--accent-color); color: #fff; }
+        @media (max-width: 992px) { .hero-actions { justify-content: center; } }
+
+        /* SERVICES SECTION */
+        .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.5rem; }
+        .service-card { background-color: var(--card-bg-color); padding: 1.75rem; border-radius: 12px; border: 1px solid var(--border-color); transition: transform 0.3s ease, border-color 0.3s ease; }
+        .service-card:hover { transform: translateY(-5px); border-color: var(--accent-color); }
+        .service-card i { font-size: 2rem; margin-bottom: 1rem; display: block; background: var(--gradient-accent); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+        .service-card h3 { font-size: 1.15rem; margin-bottom: 0.5rem; }
+        .service-card p { font-size: 0.95rem; opacity: 0.85; }
+        .services-cta { text-align: center; margin-top: 2.5rem; }
+
+        /* WHATSAPP FLOATING BUTTON */
+        .whatsapp-float { position: fixed; right: calc(20px + env(safe-area-inset-right, 0px)); bottom: calc(20px + env(safe-area-inset-bottom, 0px)); width: 58px; height: 58px; border-radius: 50%; background-color: #25D366; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 2rem; box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25); z-index: 200; transition: transform 0.2s; }
+        .whatsapp-float:hover { transform: scale(1.08); color: #fff; }
+
         /* RESPONSIVE DESIGN */
         @media (max-width: 992px) {
              .nav-links {
@@ -483,7 +511,7 @@
             .content-section:not(#hero) { padding: 2.5rem; }
             #hero { min-height: 90vh; }
             .section-title { font-size: 2rem; }
-            .section-subtitle
+            .section-subtitle { font-size: 1rem; }
             .form-group { flex-direction: column; gap: 0; margin-bottom: 0; }
             .form-group input, .form-group textarea { margin-bottom: 1.5rem; }
             body::before, body::after { filter: blur(70px); }
@@ -500,6 +528,7 @@
                 <ul class="nav-links" id="nav-links">
                     <li><a href="#hero" class="nav-link active">Accueil</a></li>
                     <li><a href="#about" class="nav-link">À Propos</a></li>
+                    <li><a href="#services" class="nav-link">Services</a></li>
                     <li><a href="#skills" class="nav-link">Compétences</a></li>
                     <li><a href="#experience" class="nav-link">Parcours</a></li>
                     <li><a href="#projects" class="nav-link">Projets</a></li>
@@ -536,11 +565,14 @@
                         <h1 class="hero-name">Patrick safari</h1>
                         <p class="hero-title">Développeur Full Stack & Spécialiste IT</p>
                         <p class="hero-bio">
-                            Bienvenue sur mon portfolio. Je suis un créateur de solutions numériques passionné, spécialisé dans la conception d'applications web robustes et la résolution de défis informatiques complexes.
+                            Bienvenue sur mon portfolio. Je suis un créateur de solutions numériques passionné, spécialisé dans la conception d'applications web robustes et la résolution de défis informatiques complexes. J'aide aussi les petites entreprises à se montrer en ligne : sites web, visuels pour les réseaux sociaux et vidéos publicitaires.
                         </p>
-                        <a href="#projects" class="hero-cta">
-                            Découvrir mes projets <i class="fas fa-arrow-right" style="margin-left: 8px;"></i>
-                        </a>
+                        <div class="hero-actions">
+                            <a href="services.html" class="hero-cta">
+                                Voir mes services <i class="fas fa-arrow-right" style="margin-left: 8px;"></i>
+                            </a>
+                            <a href="#projects" class="hero-cta-secondary">Mes certifications</a>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -601,6 +633,49 @@
                 </div>
             </section>
             
+            <!-- SERVICES SECTION -->
+            <section id="services" class="content-section">
+                <h2 class="section-title">Mes Services</h2>
+                <p class="section-subtitle">
+                    Je travaille avec des entreprises en Afrique de l'Est et à l'étranger, en français, anglais et swahili.
+                </p>
+                <div class="services-grid">
+                    <div class="service-card">
+                        <i class="fas fa-globe"></i>
+                        <h3>Sites web pour entreprises</h3>
+                        <p>Site rapide, adapté au mobile, avec bouton WhatsApp, carte et formulaire de contact.</p>
+                    </div>
+                    <div class="service-card">
+                        <i class="fas fa-photo-film"></i>
+                        <h3>Visuels réseaux sociaux</h3>
+                        <p>Photos produits propres et publications prêtes pour Facebook, Instagram et WhatsApp.</p>
+                    </div>
+                    <div class="service-card">
+                        <i class="fas fa-video"></i>
+                        <h3>Vidéos publicitaires IA</h3>
+                        <p>Courtes vidéos pour présenter vos produits sur TikTok, Reels et Facebook.</p>
+                    </div>
+                    <div class="service-card">
+                        <i class="fas fa-pen-nib"></i>
+                        <h3>Logo & affiches</h3>
+                        <p>Identité visuelle simple : logo, flyers, menus et cartes de visite.</p>
+                    </div>
+                    <div class="service-card">
+                        <i class="fas fa-laptop-code"></i>
+                        <h3>Support IT & automatisation</h3>
+                        <p>Dépannage, sécurité de base et scripts Python pour gagner du temps.</p>
+                    </div>
+                    <div class="service-card">
+                        <i class="fas fa-chart-column"></i>
+                        <h3>Tableaux de bord</h3>
+                        <p>Vos ventes et chiffres clés dans un tableau clair et facile à lire.</p>
+                    </div>
+                </div>
+                <div class="services-cta">
+                    <a href="services.html" class="hero-cta">Voir les offres et les prix <i class="fas fa-arrow-right" style="margin-left: 8px;"></i></a>
+                </div>
+            </section>
+
             <!-- SKILLS SECTION -->
             <section id="skills" class="content-section">
                 <h2 class="section-title">Compétences Techniques</h2>
@@ -626,7 +701,7 @@
                     <div class="timeline-item">
                         <div class="timeline-icon"></div> <h3 class="timeline-title">Développeur Logiciel Freelance</h3>
                         <p class="timeline-subtitle">Indépendant | <span>2023 - Présent</span></p>
-                        <p>Conception et développement d'applications web sur mesure pour divers clients.</p>
+                        <p>Conception et développement d'applications web sur mesure pour divers clients. Création de sites vitrines, de visuels pour les réseaux sociaux et de vidéos publicitaires assistées par IA pour petites entreprises.</p>
                     </div>
                     <div class="timeline-item">
                         <div class="timeline-icon"></div> <h3 class="timeline-title">Support Informatique & Développeur</h3>
@@ -683,7 +758,7 @@
     <!-- ==================== FOOTER ==================== -->
     <footer class="main-footer">
         <ul class="footer-contact-info">
-            <li><i class="fas fa-envelope"></i><a href="mailto:patricksafari840@mail.com">patricksafari840@mail.com</a></li>
+            <li><i class="fas fa-envelope"></i><a href="mailto:patricksafari840@gmail.com">patricksafari840@gmail.com</a></li>
             <li><i class="fas fa-phone"></i><span>+243 819 405 130</span></li>
             <li><i class="fas fa-map-marker-alt"></i><span>Ville De Goma, Nord-kivu en RDC</span></li>
             <li><i class="fab fa-github"></i><a href="https://github.com/PatrickSafari840">Github</a></li>
@@ -691,8 +766,13 @@
             <li><i class="fab fa-instagram"></i> <a href="https://www.instagram.com/PatrickSafariCimana">Instagram</a></li>
             <li><i class="fab fa-facebook"></i><a href="https://www.facebook.com/patricksafari.cimana">Facebook</a></li>
         </ul>
-        <p class="footer-copyright">&copy; 2024 Patrick safari. Tous droits réservés.</p>
+        <p class="footer-copyright">&copy; <span id="year">2026</span> Patrick safari. Tous droits réservés.</p>
     </footer>
+
+    <!-- WHATSAPP BUTTON -->
+    <a href="https://wa.me/243819405130" class="whatsapp-float" target="_blank" rel="noopener" aria-label="Écrire sur WhatsApp">
+        <i class="fab fa-whatsapp"></i>
+    </a>
 
     <!-- PROJECT MODAL -->
     <div id="projectModal" class="modal">
@@ -704,7 +784,9 @@
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {            
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('year').textContent = new Date().getFullYear();
+
             // --- DARK MODE LOGIC ---
             const themeSwitch = document.getElementById('checkbox');
             const applyTheme = (theme) => { document.body.classList.toggle('dark-mode', theme === 'dark'); themeSwitch.checked = (theme === 'dark'); };

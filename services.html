@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="en" data-lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Patrick Safari Services</title>
+    <meta name="claude:viewport-fit-sides" content="cover">
+    <meta name="description" content="Websites, social media visuals, AI video ads and IT support for small businesses. Clear prices, free sample, payment by Mobile Money or international transfer.">
+    <meta property="og:title" content="Patrick Safari | Websites, Visuals & IT Services">
+    <meta property="og:description" content="Get your business online in days: websites, social media posts, AI video ads and IT support.">
+    <meta property="og:type" content="website">
+
+    <link rel="icon" href="your-icon-filename.png" type="image/png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+    <style>
+        /* Layout: same glass-card system as the portfolio, one column of bands, pricing as the centrepiece */
+        :root {
+            --bg: #f4f7f9;
+            --surface: rgba(255, 255, 255, 0.72);
+            --surface-solid: #ffffff;
+            --card: rgba(249, 250, 251, 0.85);
+            --text: #3d3d3d;
+            --heading: #1a253c;
+            --muted: #5d6675;
+            --accent: #0096FF;
+            --accent-dark: #0072C6;
+            --accent-soft: rgba(0, 150, 255, 0.10);
+            --border: rgba(160, 170, 185, 0.35);
+            --shadow: rgba(16, 37, 66, 0.10);
+            --whatsapp: #1FAF54;
+            --aurora-1: #5BCEFA;
+            --aurora-2: #F5A9B8;
+            --gradient: linear-gradient(45deg, var(--accent), var(--accent-dark));
+            --font: 'Poppins', 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+        body.dark-mode {
+            --bg: #0d1117;
+            --surface: rgba(30, 34, 42, 0.62);
+            --surface-solid: #161b22;
+            --card: rgba(40, 46, 56, 0.6);
+            --text: #c9d1d9;
+            --heading: #ffffff;
+            --muted: #9aa4b2;
+            --accent-soft: rgba(0, 150, 255, 0.16);
+            --border: rgba(120, 130, 145, 0.3);
+            --shadow: rgba(0, 0, 0, 0.35);
+            --aurora-1: #1d4ed8;
+            --aurora-2: #7c3aed;
+            color-scheme: dark;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: var(--font);
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+            font-size: 16px;
+            overflow-x: hidden;
+            transition: background-color 0.4s ease, color 0.4s ease;
+        }
+        body::before, body::after {
+            content: ''; position: fixed; z-index: -1; filter: blur(100px); opacity: 0.45; pointer-events: none;
+        }
+        body::before { width: 400px; height: 400px; background: radial-gradient(circle, var(--aurora-1), transparent 60%); top: 8vh; left: 5vw; }
+        body::after { width: 480px; height: 480px; background: radial-gradient(circle, var(--aurora-2), transparent 70%); bottom: 5vh; right: 8vw; }
+
+        /* Show only the active language */
+        html[data-lang="en"] [lang="fr"] { display: none !important; }
+        html[data-lang="fr"] [lang="en"] { display: none !important; }
+
+        .container {
+            max-width: 1100px; margin: 0 auto;
+            padding-left: max(16px, env(safe-area-inset-left, 0px));
+            padding-right: max(16px, env(safe-area-inset-right, 0px));
+        }
+        h1, h2, h3 { color: var(--heading); font-weight: 600; line-height: 1.25; text-wrap: balance; }
+        a { color: var(--accent); text-decoration: none; }
+        a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
+            outline: 3px solid var(--accent); outline-offset: 3px;
+        }
+
+        /* HEADER */
+        .main-header {
+            position: sticky; top: env(safe-area-inset-top, 0px); z-index: 100;
+            background-color: var(--surface);
+            backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+            border-bottom: 1px solid var(--border);
+        }
+        .header-row { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding-block: 0.9rem; }
+        .logo { font-size: 1.3rem; font-weight: 700; color: var(--heading); white-space: nowrap; }
+        .nav-links { list-style: none; display: flex; gap: 1.4rem; }
+        .nav-links a { color: var(--text); font-weight: 500; font-size: 0.95rem; }
+        .nav-links a:hover { color: var(--accent); }
+        .header-tools { display: flex; align-items: center; gap: 0.75rem; }
+        .lang-switch { display: flex; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+        .lang-switch button {
+            font-family: var(--font); font-size: 0.8rem; font-weight: 600; letter-spacing: 0.04em;
+            padding: 0.3rem 0.6rem; background: transparent; color: var(--muted); border: none; cursor: pointer;
+        }
+        .lang-switch button[aria-pressed="true"] { background: var(--accent); color: #fff; }
+        .theme-btn {
+            width: 36px; height: 36px; border-radius: 8px; border: 1px solid var(--border);
+            background: transparent; color: var(--text); cursor: pointer; font-size: 1rem;
+        }
+        .hamburger { display: none; background: none; border: none; color: var(--text); font-size: 1.4rem; cursor: pointer; }
+
+        /* SECTIONS */
+        main { padding-block: 2rem 4rem; }
+        .band {
+            background-color: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            box-shadow: 0 8px 32px var(--shadow);
+            backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+            padding: 3.5rem 3rem;
+            margin-bottom: 2rem;
+        }
+        .eyebrow {
+            display: inline-block; font-size: 0.78rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase;
+            color: var(--accent); margin-bottom: 0.6rem;
+        }
+        .section-title { font-size: 2.2rem; margin-bottom: 0.6rem; }
+        .section-lead { max-width: 640px; color: var(--muted); font-size: 1.05rem; margin-bottom: 2.25rem; }
+
+        /* HERO */
+        .hero { display: grid; grid-template-columns: 1.25fr 1fr; gap: 3rem; align-items: center; padding-block: 3rem 2.5rem; }
+        .hero h1 { font-size: 3.1rem; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 1rem; }
+        .hero h1 .grad { background: var(--gradient); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+        .hero p.lead { font-size: 1.15rem; max-width: 540px; margin-bottom: 1.75rem; }
+        .btn-row { display: flex; flex-wrap: wrap; gap: 0.9rem; }
+        .btn {
+            display: inline-flex; align-items: center; gap: 0.6rem; padding: 0.85rem 1.6rem; border-radius: 10px;
+            font-weight: 600; font-size: 1rem; border: 2px solid transparent; cursor: pointer; font-family: var(--font);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .btn:hover { transform: translateY(-2px); }
+        .btn-whatsapp { background: var(--whatsapp); color: #fff; }
+        .btn-whatsapp:hover { box-shadow: 0 8px 20px rgba(31, 175, 84, 0.35); color: #fff; }
+        .btn-primary { background: var(--gradient); color: #fff; }
+        .btn-primary:hover { box-shadow: 0 8px 20px rgba(0, 150, 255, 0.35); color: #fff; }
+        .btn-outline { border-color: var(--accent); color: var(--accent); background: transparent; }
+        .hero-facts { display: flex; flex-wrap: wrap; gap: 0.5rem 1.5rem; margin-top: 1.75rem; font-size: 0.92rem; color: var(--muted); }
+        .hero-facts span { display: inline-flex; align-items: center; gap: 0.45rem; }
+        .hero-facts i { color: var(--accent); }
+
+        /* Hero visual: a phone showing a sample business site */
+        .phone {
+            justify-self: center; width: 100%; max-width: 280px; aspect-ratio: 9 / 18;
+            border-radius: 34px; border: 10px solid var(--heading); background: var(--surface-solid);
+            box-shadow: 0 30px 60px var(--shadow); overflow: hidden; display: flex; flex-direction: column;
+        }
+        .phone-bar { height: 22px; display: flex; justify-content: center; align-items: center; }
+        .phone-bar::after { content: ''; width: 70px; height: 6px; border-radius: 6px; background: var(--border); }
+        .demo-hero { margin: 0 12px; border-radius: 14px; padding: 18px 14px; color: #fff; background: linear-gradient(135deg, #0096FF, #0057a3); }
+        .demo-hero b { display: block; font-size: 1.05rem; line-height: 1.2; }
+        .demo-hero small { font-size: 0.72rem; opacity: 0.9; }
+        .demo-chip { display: inline-block; margin-top: 10px; background: #fff; color: #0072C6; font-size: 0.7rem; font-weight: 600; padding: 4px 10px; border-radius: 20px; }
+        .demo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 12px; }
+        .demo-tile { aspect-ratio: 1; border-radius: 10px; background: var(--accent-soft); display: flex; align-items: flex-end; padding: 6px; font-size: 0.65rem; color: var(--heading); font-weight: 500; }
+        .demo-tile:nth-child(2) { background: rgba(245, 169, 184, 0.35); }
+        .demo-tile:nth-child(3) { background: rgba(146, 254, 157, 0.35); }
+        .demo-tile:nth-child(4) { background: rgba(91, 206, 250, 0.3); }
+        .demo-wa { margin: auto 12px 14px; border-radius: 10px; background: var(--whatsapp); color: #fff; text-align: center; font-size: 0.75rem; font-weight: 600; padding: 9px; }
+
+        /* SERVICES */
+        .services-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; }
+        .service {
+            background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 1.6rem;
+            display: flex; flex-direction: column; gap: 0.5rem; min-width: 0;
+        }
+        .service .icon {
+            width: 46px; height: 46px; border-radius: 12px; background: var(--accent-soft); color: var(--accent);
+            display: flex; align-items: center; justify-content: center; font-size: 1.25rem; margin-bottom: 0.4rem;
+        }
+        .service h3 { font-size: 1.12rem; }
+        .service p { font-size: 0.95rem; color: var(--muted); }
+        .service ul { list-style: none; font-size: 0.9rem; display: grid; gap: 0.3rem; margin-top: 0.3rem; }
+        .service li::before { content: '\f00c'; font-family: 'Font Awesome 6 Free'; font-weight: 900; color: var(--accent); margin-right: 0.5rem; font-size: 0.8rem; }
+
+        /* PRICING */
+        .price-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; align-items: stretch; }
+        .plan {
+            background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 1.8rem;
+            display: flex; flex-direction: column; gap: 0.9rem; position: relative; min-width: 0;
+        }
+        .plan.featured { border: 2px solid var(--accent); box-shadow: 0 12px 30px rgba(0, 150, 255, 0.18); }
+        .badge {
+            position: absolute; top: -13px; left: 1.8rem; background: var(--accent); color: #fff;
+            font-size: 0.72rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; padding: 0.2rem 0.75rem; border-radius: 20px;
+        }
+        .plan h3 { font-size: 1.2rem; }
+        .plan .for { font-size: 0.9rem; color: var(--muted); }
+        .price { font-variant-numeric: tabular-nums; }
+        .price .ugx { display: block; font-size: 1.75rem; font-weight: 700; color: var(--heading); line-height: 1.2; }
+        .price .ugx small { font-size: 0.85rem; font-weight: 500; color: var(--muted); }
+        .price .usd { font-size: 0.9rem; color: var(--muted); }
+        .plan ul { list-style: none; display: grid; gap: 0.45rem; font-size: 0.93rem; flex: 1; }
+        .plan li { display: flex; gap: 0.6rem; }
+        .plan li i { color: var(--accent); margin-top: 0.35rem; font-size: 0.8rem; }
+        .plan .time { font-size: 0.85rem; color: var(--muted); display: flex; gap: 0.5rem; align-items: center; }
+        .plan .btn { justify-content: center; }
+
+        .extras { margin-top: 2rem; border: 1px solid var(--border); border-radius: 14px; overflow: hidden; }
+        .extras table { width: 100%; border-collapse: collapse; font-size: 0.95rem; font-variant-numeric: tabular-nums; }
+        .extras th, .extras td { text-align: left; padding: 0.85rem 1.2rem; border-bottom: 1px solid var(--border); }
+        .extras th { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); font-weight: 600; background: var(--accent-soft); }
+        .extras tr:last-child td { border-bottom: none; }
+        .extras td:last-child, .extras th:last-child { text-align: right; white-space: nowrap; }
+        .extras td small { display: block; color: var(--muted); font-size: 0.83rem; }
+        .table-wrap { overflow-x: auto; }
+        .note { margin-top: 1rem; font-size: 0.88rem; color: var(--muted); }
+
+        /* PROCESS */
+        .steps { list-style: none; display: grid; grid-template-columns: repeat(5, 1fr); gap: 1rem; counter-reset: step; }
+        .steps li { counter-increment: step; position: relative; padding-top: 3rem; min-width: 0; }
+        .steps li::before {
+            content: counter(step); position: absolute; top: 0; left: 0; width: 2.2rem; height: 2.2rem; border-radius: 50%;
+            background: var(--gradient); color: #fff; font-weight: 700; display: flex; align-items: center; justify-content: center;
+        }
+        .steps li:not(:last-child)::after { content: ''; position: absolute; top: 1.1rem; left: 2.8rem; right: 0.4rem; height: 2px; background: var(--border); }
+        .steps h3 { font-size: 1rem; margin-bottom: 0.3rem; }
+        .steps p { font-size: 0.9rem; color: var(--muted); }
+
+        /* WHY */
+        .why-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.25rem; }
+        .why { min-width: 0; }
+        .why i { font-size: 1.4rem; color: var(--accent); margin-bottom: 0.6rem; display: block; }
+        .why h3 { font-size: 1rem; margin-bottom: 0.3rem; }
+        .why p { font-size: 0.9rem; color: var(--muted); }
+        .certs { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 2rem; }
+        .certs span { font-size: 0.82rem; padding: 0.35rem 0.8rem; border-radius: 20px; border: 1px solid var(--border); background: var(--card); }
+
+        /* FAQ */
+        .faq { display: grid; gap: 0.75rem; max-width: 800px; }
+        .faq details { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 1rem 1.25rem; }
+        .faq summary { cursor: pointer; font-weight: 600; color: var(--heading); list-style: none; display: flex; justify-content: space-between; gap: 1rem; }
+        .faq summary::-webkit-details-marker { display: none; }
+        .faq summary::after { content: '+'; font-size: 1.3rem; line-height: 1; color: var(--accent); }
+        .faq details[open] summary::after { content: '−'; }
+        .faq details p { margin-top: 0.6rem; color: var(--muted); font-size: 0.95rem; }
+
+        /* CONTACT */
+        .contact-grid { display: grid; grid-template-columns: 1fr 1.3fr; gap: 2.5rem; }
+        .contact-list { list-style: none; display: grid; gap: 1rem; margin-top: 1.5rem; }
+        .contact-list li { display: flex; gap: 0.8rem; align-items: center; }
+        .contact-list i { color: var(--accent); width: 1.2rem; text-align: center; }
+        .contact-list span, .contact-list a { overflow-wrap: anywhere; }
+        form { display: grid; gap: 1rem; min-width: 0; }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        label { font-size: 0.85rem; font-weight: 500; display: grid; gap: 0.35rem; color: var(--heading); }
+        input, select, textarea {
+            width: 100%; padding: 0.8rem 1rem; border-radius: 8px; border: 1px solid var(--border);
+            background-color: var(--bg); color: var(--text); font-family: var(--font); font-size: 0.95rem;
+        }
+        textarea { resize: vertical; }
+        #form-status { font-size: 0.92rem; min-height: 1.4em; }
+
+        footer { text-align: center; padding-block: 2rem 5rem; font-size: 0.9rem; color: var(--muted); }
+
+        .whatsapp-float {
+            position: fixed; right: calc(20px + env(safe-area-inset-right, 0px)); bottom: calc(20px + env(safe-area-inset-bottom, 0px));
+            width: 58px; height: 58px; border-radius: 50%; background-color: var(--whatsapp); color: #fff;
+            display: flex; align-items: center; justify-content: center; font-size: 2rem;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25); z-index: 200;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 960px) {
+            .hamburger { display: block; }
+            .nav-links {
+                display: none; position: absolute; top: 100%; left: 0; right: 0; flex-direction: column; gap: 0;
+                background: var(--surface-solid); border-bottom: 1px solid var(--border);
+            }
+            .nav-links.open { display: flex; }
+            .nav-links a { display: block; padding: 0.9rem max(16px, env(safe-area-inset-left, 0px)); }
+            .hero { grid-template-columns: 1fr; }
+            .hero h1 { font-size: 2.5rem; }
+            .phone { max-width: 240px; }
+            .services-grid, .price-grid { grid-template-columns: 1fr 1fr; }
+            .why-grid { grid-template-columns: 1fr 1fr; }
+            .steps { grid-template-columns: 1fr; gap: 1.25rem; }
+            .steps li { padding-top: 0; padding-left: 3.2rem; }
+            .steps li:not(:last-child)::after { display: none; }
+            .contact-grid { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 640px) {
+            .band { padding: 2rem 1.25rem; border-radius: 16px; }
+            .hero h1 { font-size: 2.05rem; }
+            .section-title { font-size: 1.7rem; }
+            .services-grid, .price-grid, .why-grid, .form-row { grid-template-columns: 1fr; }
+            .price-grid { gap: 1.75rem; }
+            .logo { font-size: 1.1rem; }
+            .extras th, .extras td { padding: 0.75rem 0.9rem; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            html { scroll-behavior: auto; }
+            .btn, body { transition: none; }
+        }
+    </style>
+</head>
+<body>
+
+<header class="main-header">
+    <div class="container header-row">
+        <a href="index.html" class="logo">Patrick Safari</a>
+        <nav aria-label="Main">
+            <ul class="nav-links" id="nav-links">
+                <li><a href="#services"><span lang="en">Services</span><span lang="fr">Services</span></a></li>
+                <li><a href="#pricing"><span lang="en">Pricing</span><span lang="fr">Tarifs</span></a></li>
+                <li><a href="#process"><span lang="en">How it works</span><span lang="fr">Comment ça marche</span></a></li>
+                <li><a href="#faq">FAQ</a></li>
+                <li><a href="#contact">Contact</a></li>
+                <li><a href="index.html"><span lang="en">Portfolio</span><span lang="fr">Portfolio</span></a></li>
+            </ul>
+        </nav>
+        <div class="header-tools">
+            <div class="lang-switch" role="group" aria-label="Language">
+                <button type="button" id="lang-en" data-set-lang="en" aria-pressed="true">EN</button>
+                <button type="button" id="lang-fr" data-set-lang="fr" aria-pressed="false">FR</button>
+            </div>
+            <button type="button" class="theme-btn" id="theme-btn" aria-label="Switch light or dark mode"><i class="fas fa-moon"></i></button>
+            <button type="button" class="hamburger" id="hamburger" aria-label="Menu" aria-expanded="false"><i class="fas fa-bars"></i></button>
+        </div>
+    </div>
+</header>
+
+<main class="container">
+
+    <!-- HERO -->
+    <section class="hero" id="top">
+        <div>
+            <span class="eyebrow"><span lang="en">Websites · Visuals · AI video · IT</span><span lang="fr">Sites web · Visuels · Vidéo IA · IT</span></span>
+            <h1>
+                <span lang="en">Get your business <span class="grad">online in days</span>, not months.</span>
+                <span lang="fr">Votre entreprise <span class="grad">en ligne en quelques jours</span>.</span>
+            </h1>
+            <p class="lead">
+                <span lang="en">I build websites, social media posts and short video ads for shops, restaurants, salons, hotels and schools. You see a free sample before you pay anything.</span>
+                <span lang="fr">Je crée des sites web, des publications pour les réseaux sociaux et de courtes vidéos publicitaires pour boutiques, restaurants, salons, hôtels et écoles. Vous voyez un exemple gratuit avant de payer.</span>
+            </p>
+            <div class="btn-row">
+                <a class="btn btn-whatsapp" href="https://wa.me/243819405130" target="_blank" rel="noopener"><i class="fab fa-whatsapp"></i><span lang="en">Chat on WhatsApp</span><span lang="fr">Écrire sur WhatsApp</span></a>
+                <a class="btn btn-outline" href="#pricing"><span lang="en">See prices</span><span lang="fr">Voir les prix</span></a>
+            </div>
+            <div class="hero-facts">
+                <span><i class="fas fa-gift"></i><span lang="en">Free sample first</span><span lang="fr">Exemple gratuit</span></span>
+                <span><i class="fas fa-mobile-screen"></i><span lang="en">Mobile Money accepted</span><span lang="fr">Mobile Money accepté</span></span>
+                <span><i class="fas fa-language"></i>English · Français · Kiswahili</span>
+            </div>
+        </div>
+        <div class="phone" aria-hidden="true">
+            <div class="phone-bar"></div>
+            <div class="demo-hero">
+                <b>Mama Grace Restaurant</b>
+                <small><span lang="en">Fresh local food · Open daily</span><span lang="fr">Cuisine locale · Ouvert tous les jours</span></small>
+                <span class="demo-chip"><span lang="en">View menu</span><span lang="fr">Voir le menu</span></span>
+            </div>
+            <div class="demo-grid">
+                <div class="demo-tile">Luwombo</div>
+                <div class="demo-tile">Rolex</div>
+                <div class="demo-tile">Matooke</div>
+                <div class="demo-tile">Juice</div>
+            </div>
+            <div class="demo-wa"><i class="fab fa-whatsapp"></i> <span lang="en">Order on WhatsApp</span><span lang="fr">Commander</span></div>
+        </div>
+    </section>
+
+    <!-- SERVICES -->
+    <section class="band" id="services">
+        <span class="eyebrow"><span lang="en">What I do</span><span lang="fr">Ce que je fais</span></span>
+        <h2 class="section-title"><span lang="en">Services for small businesses</span><span lang="fr">Services pour petites entreprises</span></h2>
+        <p class="section-lead"><span lang="en">Pick one service or combine them. Everything is done online, so I can work with you wherever you are.</span><span lang="fr">Choisissez un service ou combinez-les. Tout se fait en ligne, je peux donc travailler avec vous où que vous soyez.</span></p>
+
+        <div class="services-grid">
+            <article class="service">
+                <div class="icon"><i class="fas fa-globe"></i></div>
+                <h3><span lang="en">Business websites</span><span lang="fr">Sites web pour entreprises</span></h3>
+                <p><span lang="en">A fast, mobile-friendly site that helps customers find and contact you.</span><span lang="fr">Un site rapide et adapté au mobile pour que vos clients vous trouvent et vous contactent.</span></p>
+                <ul>
+                    <li><span lang="en">WhatsApp button and Google Map</span><span lang="fr">Bouton WhatsApp et carte Google</span></li>
+                    <li><span lang="en">Menu, products or room gallery</span><span lang="fr">Menu, produits ou galerie de chambres</span></li>
+                    <li><span lang="en">Ready for Google search</span><span lang="fr">Prêt pour la recherche Google</span></li>
+                </ul>
+            </article>
+            <article class="service">
+                <div class="icon"><i class="fas fa-photo-film"></i></div>
+                <h3><span lang="en">Social media posts</span><span lang="fr">Publications réseaux sociaux</span></h3>
+                <p><span lang="en">Clean product photos and designed posts that make people stop scrolling.</span><span lang="fr">Photos produits propres et publications soignées qui attirent l'attention.</span></p>
+                <ul>
+                    <li><span lang="en">Background removal and retouching</span><span lang="fr">Détourage et retouche</span></li>
+                    <li><span lang="en">Facebook, Instagram, WhatsApp Status</span><span lang="fr">Facebook, Instagram, Statut WhatsApp</span></li>
+                    <li><span lang="en">Captions written for you</span><span lang="fr">Textes rédigés pour vous</span></li>
+                </ul>
+            </article>
+            <article class="service">
+                <div class="icon"><i class="fas fa-video"></i></div>
+                <h3><span lang="en">AI video ads</span><span lang="fr">Vidéos publicitaires IA</span></h3>
+                <p><span lang="en">Short vertical videos that show your product in action, made from your photos.</span><span lang="fr">Courtes vidéos verticales qui montrent votre produit, créées à partir de vos photos.</span></p>
+                <ul>
+                    <li><span lang="en">15–30 seconds, TikTok and Reels format</span><span lang="fr">15–30 secondes, format TikTok et Reels</span></li>
+                    <li><span lang="en">Music, text and voice-over</span><span lang="fr">Musique, texte et voix off</span></li>
+                    <li><span lang="en">English, French or Swahili</span><span lang="fr">Anglais, français ou swahili</span></li>
+                </ul>
+            </article>
+            <article class="service">
+                <div class="icon"><i class="fas fa-pen-nib"></i></div>
+                <h3><span lang="en">Logo and print design</span><span lang="fr">Logo et impression</span></h3>
+                <p><span lang="en">A simple identity your customers remember, ready to print or post.</span><span lang="fr">Une identité simple que vos clients retiennent, prête à imprimer ou publier.</span></p>
+                <ul>
+                    <li><span lang="en">Logo in 3 versions</span><span lang="fr">Logo en 3 versions</span></li>
+                    <li><span lang="en">Flyers, menus, business cards</span><span lang="fr">Flyers, menus, cartes de visite</span></li>
+                    <li><span lang="en">Signboard and banner files</span><span lang="fr">Fichiers enseigne et bannière</span></li>
+                </ul>
+            </article>
+            <article class="service">
+                <div class="icon"><i class="fas fa-laptop-code"></i></div>
+                <h3><span lang="en">IT support and automation</span><span lang="fr">Support IT et automatisation</span></h3>
+                <p><span lang="en">Help with computers, accounts and security, plus small scripts that save hours.</span><span lang="fr">Aide pour ordinateurs, comptes et sécurité, et petits scripts qui font gagner des heures.</span></p>
+                <ul>
+                    <li><span lang="en">Remote troubleshooting</span><span lang="fr">Dépannage à distance</span></li>
+                    <li><span lang="en">Google Workspace and email setup</span><span lang="fr">Configuration Google Workspace et e-mail</span></li>
+                    <li><span lang="en">Basic security check</span><span lang="fr">Vérification de sécurité de base</span></li>
+                </ul>
+            </article>
+            <article class="service">
+                <div class="icon"><i class="fas fa-chart-column"></i></div>
+                <h3><span lang="en">Sales dashboards</span><span lang="fr">Tableaux de ventes</span></h3>
+                <p><span lang="en">Turn your sales book or Excel file into a clear dashboard you can check every day.</span><span lang="fr">Transformez votre cahier de ventes ou fichier Excel en tableau clair à consulter chaque jour.</span></p>
+                <ul>
+                    <li><span lang="en">Google Sheets or Excel</span><span lang="fr">Google Sheets ou Excel</span></li>
+                    <li><span lang="en">Best products and slow days</span><span lang="fr">Meilleurs produits et jours calmes</span></li>
+                    <li><span lang="en">Monthly summary</span><span lang="fr">Résumé mensuel</span></li>
+                </ul>
+            </article>
+        </div>
+    </section>
+
+    <!-- PRICING -->
+    <section class="band" id="pricing">
+        <span class="eyebrow"><span lang="en">Clear prices</span><span lang="fr">Prix clairs</span></span>
+        <h2 class="section-title"><span lang="en">Website packages</span><span lang="fr">Offres site web</span></h2>
+        <p class="section-lead"><span lang="en">Starting prices in Ugandan shillings, with the approximate US dollar amount. Final price depends on what you need, and you always get a quote before we start.</span><span lang="fr">Prix de départ en shillings ougandais, avec le montant approximatif en dollars US. Le prix final dépend de vos besoins, et vous recevez toujours un devis avant de commencer.</span></p>
+
+        <div class="price-grid">
+            <article class="plan">
+                <h3>Starter</h3>
+                <p class="for"><span lang="en">For a small shop or salon that needs to be found.</span><span lang="fr">Pour une petite boutique ou un salon qui veut être trouvé.</span></p>
+                <div class="price"><span class="ugx">UGX 300,000</span><span class="usd">≈ USD 80</span></div>
+                <ul>
+                    <li><i class="fas fa-check"></i><span><span lang="en">1-page website</span><span lang="fr">Site d'une page</span></span></li>
+                    <li><i class="fas fa-check"></i><span><span lang="en">Services, photos, opening hours</span><span lang="fr">Services, photos, horaires</span></span></li>
+                    <li><i class="fas fa-check"></i><span><span lang="en">WhatsApp button and map</span><span lang="fr">Bouton WhatsApp et carte</span></span></li>
+                    <li><i class="fas fa-check"></i><span><span lang="en">2 rounds of changes</span><span lang="fr">2 séries de modifications</span></span></li>
+                </ul>
+                <p class="time"><i class="far fa-clock"></i><span lang="en">Ready in 3–5 days</span><span lang="fr">Prêt en 3–5 jours</span></p>
+                <a class="btn btn-outline" href="#contact" data-plan="Starter website"><span lang="en">Choose Starter</span><span lang="fr">Choisir Starter</span></a>
+            </article>
+
+            <article class="plan featured">
+                <span class="badge"><span lang="en">Most chosen</span><span lang="fr">Le plus choisi</span></span>
+                <h3>Business</h3>
+                <p class="for"><span lang="en">For restaurants, hotels, schools and growing shops.</span><span lang="fr">Pour restaurants, hôtels, écoles et boutiques en croissance.</span></p>
+                <div class="price"><span class="ugx">UGX 600,000</span><span class="usd">≈ USD 160</span></div>
+                <ul>
+                    <li><i class="fas fa-check"></i><span><span lang="en">Up to 5 pages</span><span lang="fr">Jusqu'à 5 pages</span></span></li>
+                    <li><i class="fas fa-check"></i><span><span lang="en">Menu, product or room gallery</span><span lang="fr">Galerie menu, produits ou chambres</span></span></li>
+                    <li><i class="fas fa-check"></i><span><span lang="en">Contact form and Google listing help</span><span lang="fr">Formulaire et aide fiche Google</span></span></li>
+                    <li><i class="fas fa-check"></i><span><span lang="en">5 social media posts included</span><span lang="fr">5 publications offertes</span></span></li>
+                </ul>
+                <p class="time"><i class="far fa-clock"></i><span lang="en">Ready in 7–10 days</span><span lang="fr">Prêt en 7–10 jours</span></p>
+                <a class="btn btn-primary" href="#contact" data-plan="Business website"><span lang="en">Choose Business</span><span lang="fr">Choisir Business</span></a>
+            </article>
+
+            <article class="plan">
+                <h3><span lang="en">Online shop</span><span lang="fr">Boutique en ligne</span></h3>
+                <p class="for"><span lang="en">For sellers who take orders every day.</span><span lang="fr">Pour les vendeurs qui reçoivent des commandes chaque jour.</span></p>
+                <div class="price"><span class="ugx">UGX 1,200,000</span><span class="usd">≈ USD 320</span></div>
+                <ul>
+                    <li><i class="fas fa-check"></i><span><span lang="en">Product catalogue with prices</span><span lang="fr">Catalogue avec prix</span></span></li>
+                    <li><i class="fas fa-check"></i><span><span lang="en">Orders by WhatsApp or online payment</span><span lang="fr">Commandes WhatsApp ou paiement en ligne</span></span></li>
+                    <li><i class="fas fa-check"></i><span><span lang="en">Easy product updates</span><span lang="fr">Mise à jour facile des produits</span></span></li>
+                    <li><i class="fas fa-check"></i><span><span lang="en">1 month of free care</span><span lang="fr">1 mois de maintenance offert</span></span></li>
+                </ul>
+                <p class="time"><i class="far fa-clock"></i><span lang="en">Ready in 2–3 weeks</span><span lang="fr">Prêt en 2–3 semaines</span></p>
+                <a class="btn btn-outline" href="#contact" data-plan="Online shop"><span lang="en">Choose Online shop</span><span lang="fr">Choisir Boutique</span></a>
+            </article>
+        </div>
+
+        <div class="extras">
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr><th><span lang="en">Other services</span><span lang="fr">Autres services</span></th><th><span lang="en">From</span><span lang="fr">À partir de</span></th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><span lang="en">Social media pack</span><span lang="fr">Pack réseaux sociaux</span><small><span lang="en">10 designed posts with captions</span><span lang="fr">10 publications avec textes</span></small></td><td>UGX 150,000 <small>≈ USD 40</small></td></tr>
+                        <tr><td><span lang="en">AI video ad</span><span lang="fr">Vidéo publicitaire IA</span><small><span lang="en">One 15–30 second vertical video</span><span lang="fr">Une vidéo verticale de 15–30 secondes</span></small></td><td>UGX 180,000 <small>≈ USD 50</small></td></tr>
+                        <tr><td><span lang="en">Logo and flyer</span><span lang="fr">Logo et flyer</span><small><span lang="en">Logo in 3 versions plus one flyer</span><span lang="fr">Logo en 3 versions et un flyer</span></small></td><td>UGX 120,000 <small>≈ USD 32</small></td></tr>
+                        <tr><td><span lang="en">Website care</span><span lang="fr">Maintenance du site</span><small><span lang="en">Updates, new photos, small changes</span><span lang="fr">Mises à jour, photos, petites modifications</span></small></td><td>UGX 75,000 <small><span lang="en">per month</span><span lang="fr">par mois</span></small></td></tr>
+                        <tr><td><span lang="en">IT support or dashboard</span><span lang="fr">Support IT ou tableau de bord</span><small><span lang="en">Priced by the job</span><span lang="fr">Prix selon le travail</span></small></td><td><span lang="en">On quote</span><span lang="fr">Sur devis</span></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <p class="note"><span lang="en">Domain name (for example yourshop.com) is paid by the client, usually around UGX 45,000 per year. USD amounts are approximate.</span><span lang="fr">Le nom de domaine (par ex. votreboutique.com) est payé par le client, environ 45 000 UGX par an. Les montants en USD sont approximatifs.</span></p>
+    </section>
+
+    <!-- PROCESS -->
+    <section class="band" id="process">
+        <span class="eyebrow"><span lang="en">How it works</span><span lang="fr">Comment ça marche</span></span>
+        <h2 class="section-title"><span lang="en">From first message to live website</span><span lang="fr">Du premier message au site en ligne</span></h2>
+        <p class="section-lead"><span lang="en">No meeting needed. We do everything by WhatsApp or email.</span><span lang="fr">Pas besoin de rendez-vous. Tout se fait par WhatsApp ou e-mail.</span></p>
+        <ol class="steps">
+            <li><h3><span lang="en">Send a message</span><span lang="fr">Envoyez un message</span></h3><p><span lang="en">Tell me your business name and what you need.</span><span lang="fr">Donnez-moi le nom de votre entreprise et vos besoins.</span></p></li>
+            <li><h3><span lang="en">Get a free sample</span><span lang="fr">Recevez un exemple</span></h3><p><span lang="en">I make a sample with your name so you can see it.</span><span lang="fr">Je crée un exemple à votre nom pour que vous le voyiez.</span></p></li>
+            <li><h3><span lang="en">Pay 50% deposit</span><span lang="fr">Payez 50 % d'acompte</span></h3><p><span lang="en">By Mobile Money or bank transfer.</span><span lang="fr">Par Mobile Money ou virement.</span></p></li>
+            <li><h3><span lang="en">Review and adjust</span><span lang="fr">Relisez et ajustez</span></h3><p><span lang="en">You ask for changes until it feels right.</span><span lang="fr">Vous demandez des modifications jusqu'à satisfaction.</span></p></li>
+            <li><h3><span lang="en">Go live</span><span lang="fr">Mise en ligne</span></h3><p><span lang="en">Pay the balance and your site is published.</span><span lang="fr">Payez le solde et votre site est publié.</span></p></li>
+        </ol>
+    </section>
+
+    <!-- WHY -->
+    <section class="band" id="why">
+        <span class="eyebrow"><span lang="en">Why work with me</span><span lang="fr">Pourquoi moi</span></span>
+        <h2 class="section-title"><span lang="en">Trained, fast and easy to reach</span><span lang="fr">Formé, rapide et joignable</span></h2>
+        <div class="why-grid">
+            <div class="why"><i class="fas fa-award"></i><h3><span lang="en">Certified</span><span lang="fr">Certifié</span></h3><p><span lang="en">Google and IBM certificates in development, IT and design.</span><span lang="fr">Certificats Google et IBM en développement, IT et design.</span></p></div>
+            <div class="why"><i class="fas fa-bolt"></i><h3><span lang="en">Fast delivery</span><span lang="fr">Livraison rapide</span></h3><p><span lang="en">Most websites are ready within two weeks.</span><span lang="fr">La plupart des sites sont prêts en deux semaines.</span></p></div>
+            <div class="why"><i class="fas fa-comments"></i><h3><span lang="en">Four languages</span><span lang="fr">Quatre langues</span></h3><p><span lang="en">English, French, Swahili and Lingala.</span><span lang="fr">Anglais, français, swahili et lingala.</span></p></div>
+            <div class="why"><i class="fas fa-key"></i><h3><span lang="en">You own it</span><span lang="fr">Il est à vous</span></h3><p><span lang="en">Your website, files and domain belong to you.</span><span lang="fr">Votre site, vos fichiers et votre domaine vous appartiennent.</span></p></div>
+        </div>
+        <div class="certs">
+            <span>Google IT Support</span><span>Google Cybersecurity</span><span>IBM Full Stack Developer</span><span>Google UX Design</span><span>Google IT Automation with Python</span><span>Google Advanced Data Analytics</span><span>Google Business Intelligence</span><span>Google Project Management</span>
+        </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="band" id="faq">
+        <span class="eyebrow">FAQ</span>
+        <h2 class="section-title"><span lang="en">Common questions</span><span lang="fr">Questions fréquentes</span></h2>
+        <div class="faq">
+            <details>
+                <summary><span lang="en">Is the sample really free?</span><span lang="fr">L'exemple est-il vraiment gratuit ?</span></summary>
+                <p><span lang="en">Yes. You see a sample with your business name first. If you do not like it, you pay nothing.</span><span lang="fr">Oui. Vous voyez d'abord un exemple à votre nom. S'il ne vous plaît pas, vous ne payez rien.</span></p>
+            </details>
+            <details>
+                <summary><span lang="en">How can I pay?</span><span lang="fr">Comment puis-je payer ?</span></summary>
+                <p><span lang="en">Mobile Money (MTN, Airtel), bank transfer, or an international transfer service for clients outside East Africa. We agree on the method before you pay.</span><span lang="fr">Mobile Money (MTN, Airtel), virement bancaire, ou service de transfert international pour les clients hors d'Afrique de l'Est. Nous choisissons le moyen ensemble avant le paiement.</span></p>
+            </details>
+            <details>
+                <summary><span lang="en">What do I need to send you?</span><span lang="fr">Que dois-je vous envoyer ?</span></summary>
+                <p><span lang="en">Your business name, phone number, location, a few photos and your logo if you have one. Phone photos are fine, I clean them up.</span><span lang="fr">Le nom de votre entreprise, téléphone, adresse, quelques photos et votre logo si vous en avez un. Des photos de téléphone suffisent, je les retouche.</span></p>
+            </details>
+            <details>
+                <summary><span lang="en">Do you work with clients in other countries?</span><span lang="fr">Travaillez-vous avec des clients d'autres pays ?</span></summary>
+                <p><span lang="en">Yes. Everything is done online, so I work with businesses in Uganda, DR Congo, the rest of East Africa and abroad.</span><span lang="fr">Oui. Tout se fait en ligne, je travaille avec des entreprises en Ouganda, en RD Congo, en Afrique de l'Est et à l'étranger.</span></p>
+            </details>
+            <details>
+                <summary><span lang="en">Can you combine services?</span><span lang="fr">Pouvez-vous combiner les services ?</span></summary>
+                <p><span lang="en">Yes. A website plus a social media pack is the most popular combination, and bundles get a better price.</span><span lang="fr">Oui. Site web et pack réseaux sociaux est la combinaison la plus demandée, avec un meilleur prix pour les offres groupées.</span></p>
+            </details>
+        </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section class="band" id="contact">
+        <div class="contact-grid">
+            <div>
+                <span class="eyebrow"><span lang="en">Start today</span><span lang="fr">Commencez aujourd'hui</span></span>
+                <h2 class="section-title"><span lang="en">Ask for your free sample</span><span lang="fr">Demandez votre exemple gratuit</span></h2>
+                <p><span lang="en">WhatsApp is the fastest way to reach me. You can also fill in the form and I reply within one day.</span><span lang="fr">WhatsApp est le moyen le plus rapide. Vous pouvez aussi remplir le formulaire, je réponds sous 24 heures.</span></p>
+                <ul class="contact-list">
+                    <li><i class="fab fa-whatsapp"></i><a href="https://wa.me/243819405130" target="_blank" rel="noopener">+243 819 405 130</a></li>
+                    <li><i class="fas fa-envelope"></i><a href="mailto:patricksafari840@gmail.com">patricksafari840@gmail.com</a></li>
+                    <li><i class="fab fa-linkedin"></i><a href="https://www.linkedin.com/in/patrick-safari-166077255/" target="_blank" rel="noopener">LinkedIn</a></li>
+                    <li><i class="fas fa-user"></i><a href="index.html"><span lang="en">My portfolio</span><span lang="fr">Mon portfolio</span></a></li>
+                </ul>
+            </div>
+            <form id="contactForm" action="https://api.web3forms.com/submit" method="POST">
+                <input type="hidden" name="access_key" value="37343818-9e62-4fa8-b533-ae3dc4ff25c4">
+                <input type="hidden" name="subject" value="New service request from services page">
+                <div class="form-row">
+                    <label for="f-name"><span lang="en">Your name</span><span lang="fr">Votre nom</span>
+                        <input id="f-name" type="text" name="name" required autocomplete="name">
+                    </label>
+                    <label for="f-business"><span lang="en">Business name</span><span lang="fr">Nom de l'entreprise</span>
+                        <input id="f-business" type="text" name="business">
+                    </label>
+                </div>
+                <div class="form-row">
+                    <label for="f-email">Email
+                        <input id="f-email" type="email" name="email" required autocomplete="email">
+                    </label>
+                    <label for="f-phone"><span lang="en">WhatsApp number</span><span lang="fr">Numéro WhatsApp</span>
+                        <input id="f-phone" type="tel" name="phone" autocomplete="tel">
+                    </label>
+                </div>
+                <label for="f-service"><span lang="en">Service</span><span lang="fr">Service</span>
+                    <select id="f-service" name="service">
+                        <option>Starter website</option>
+                        <option selected>Business website</option>
+                        <option>Online shop</option>
+                        <option>Social media pack</option>
+                        <option>AI video ad</option>
+                        <option>Logo and flyer</option>
+                        <option>IT support or dashboard</option>
+                        <option>Not sure yet</option>
+                    </select>
+                </label>
+                <label for="f-message"><span lang="en">Tell me about your business</span><span lang="fr">Parlez-moi de votre entreprise</span>
+                    <textarea id="f-message" name="message" rows="5" required></textarea>
+                </label>
+                <button type="submit" class="btn btn-primary"><i class="fas fa-paper-plane"></i><span lang="en">Send request</span><span lang="fr">Envoyer la demande</span></button>
+                <p id="form-status" role="status"></p>
+            </form>
+        </div>
+    </section>
+</main>
+
+<footer>
+    <div class="container">&copy; <span id="year">2026</span> Patrick Safari · <a href="index.html">Portfolio</a></div>
+</footer>
+
+<a href="https://wa.me/243819405130" class="whatsapp-float" target="_blank" rel="noopener" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+
+<script>
+(function () {
+    var root = document.documentElement;
+    var store = {
+        get: function (k) { try { return localStorage.getItem(k); } catch (e) { return null; } },
+        set: function (k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+    };
+
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Language
+    var messages = {
+        en: { sending: 'Sending…', sent: 'Thank you! Your request was sent. I will reply within one day.', error: 'The message could not be sent. Please write to me on WhatsApp instead.' },
+        fr: { sending: 'Envoi en cours…', sent: 'Merci ! Votre demande a été envoyée. Je réponds sous 24 heures.', error: "Le message n'a pas pu être envoyé. Écrivez-moi plutôt sur WhatsApp." }
+    };
+    function setLang(lang) {
+        root.setAttribute('data-lang', lang);
+        root.setAttribute('lang', lang);
+        document.querySelectorAll('[data-set-lang]').forEach(function (b) {
+            b.setAttribute('aria-pressed', b.getAttribute('data-set-lang') === lang ? 'true' : 'false');
+        });
+        store.set('lang', lang);
+    }
+    var savedLang = store.get('lang');
+    var browserFr = (navigator.language || '').toLowerCase().indexOf('fr') === 0;
+    setLang(savedLang || (browserFr ? 'fr' : 'en'));
+    document.querySelectorAll('[data-set-lang]').forEach(function (b) {
+        b.addEventListener('click', function () { setLang(b.getAttribute('data-set-lang')); });
+    });
+
+    // Theme (same behaviour as the portfolio)
+    var themeBtn = document.getElementById('theme-btn');
+    function applyTheme(theme) {
+        document.body.classList.toggle('dark-mode', theme === 'dark');
+        themeBtn.innerHTML = theme === 'dark' ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+    }
+    var attrTheme = root.getAttribute('data-theme');
+    var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    var currentTheme = store.get('theme') || attrTheme || (prefersDark ? 'dark' : 'light');
+    applyTheme(currentTheme);
+    themeBtn.addEventListener('click', function () {
+        currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        store.set('theme', currentTheme);
+        applyTheme(currentTheme);
+    });
+
+    // Mobile menu
+    var hamburger = document.getElementById('hamburger');
+    var navLinks = document.getElementById('nav-links');
+    hamburger.addEventListener('click', function () {
+        var open = navLinks.classList.toggle('open');
+        hamburger.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+    navLinks.querySelectorAll('a').forEach(function (a) {
+        a.addEventListener('click', function () { navLinks.classList.remove('open'); hamburger.setAttribute('aria-expanded', 'false'); });
+    });
+
+    // Plan buttons pre-select the service in the form
+    var serviceSelect = document.getElementById('f-service');
+    document.querySelectorAll('[data-plan]').forEach(function (btn) {
+        btn.addEventListener('click', function () { serviceSelect.value = btn.getAttribute('data-plan'); });
+    });
+
+    // Contact form (Web3Forms)
+    var form = document.getElementById('contactForm');
+    var status = document.getElementById('form-status');
+    form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        var t = messages[root.getAttribute('data-lang')] || messages.en;
+        status.textContent = t.sending; status.style.color = 'var(--muted)';
+        fetch(form.action, { method: 'POST', body: new FormData(form), headers: { 'Accept': 'application/json' } })
+            .then(function (r) {
+                if (r.ok) { status.textContent = t.sent; status.style.color = 'var(--whatsapp)'; form.reset(); }
+                else { status.textContent = t.error; status.style.color = '#d64545'; }
+            })
+            .catch(function () { status.textContent = t.error; status.style.color = '#d64545'; });
+    });
+})();
+</script>
+</body>
+</html>
