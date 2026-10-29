@@ -161,7 +161,7 @@
         var visible = true, last = performance.now(), t = 0;
         if ('IntersectionObserver' in window) new IntersectionObserver(function (en) { visible = en[0].isIntersecting; }).observe(container);
         function frame(now) {
-            var dt = Math.min(0.05, (now - last) / 1000); last = now;
+            var dt = Math.max(0, Math.min(0.05, (now - last) / 1000)); last = now;
             if (visible && !document.hidden) { t += dt; update(t, dt); renderer.render(scene, camera); }
             requestAnimationFrame(frame);
         }

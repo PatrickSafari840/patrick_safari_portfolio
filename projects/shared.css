@@ -40,9 +40,10 @@ html[data-lang="en"] [lang="fr"], html[data-lang="fr"] [lang="en"] { display: no
 .ps-tools { display: flex; align-items: center; gap: 0.5rem; }
 .ps-select {
     font: inherit; font-size: 0.85rem; padding: 0.4rem 0.6rem; border-radius: 8px;
-    border: 1px solid var(--line); background: var(--surface); color: var(--fg); max-width: 46vw;
+    border: 1px solid var(--line); background: var(--surface); color: var(--fg); width: 280px; max-width: 46vw; min-width: 0; flex: 0 1 auto;
 }
-.ps-lang { display: flex; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+.ps-lang { display: flex; flex-shrink: 0; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+.ps-mode { flex-shrink: 0; }
 .ps-lang button, .ps-mode {
     font: inherit; font-size: 0.78rem; font-weight: 700; letter-spacing: 0.05em; cursor: pointer;
     background: transparent; color: var(--muted); border: none; padding: 0.4rem 0.6rem;

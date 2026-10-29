@@ -375,10 +375,11 @@ window.pageInit = function () {
         var lastYear = -1;
         return function (time) {
             var cycle = PS.reduceMotion ? I23 : Math.floor((time * 0.9) % (I23 + 4));
-            var yi = Math.min(I23, cycle);
+            var yi = Math.max(0, Math.min(I23, cycle || 0));
             bars.forEach(function (b) {
                 var v = b.c.d[yi] == null ? b.c.d[yi - 1] : b.c.d[yi];
-                var target = Math.max(0.05, (v / b.c.d[0]) * 1.4 - 1.25);
+                var target = Math.max(0.15, 0.6 + Math.log2(v / b.c.d[0]) * 1.3);
+                if (!isFinite(b.h)) b.h = 0;
                 b.h += (target - b.h) * (PS.reduceMotion ? 1 : 0.08);
                 b.m.scale.y = b.h; b.m.position.y = b.h / 2;
             });
